@@ -90,7 +90,7 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
       aria-hidden="true"
     >
       {/* Top-left organic blob */}
-      <div className="bg-shape floating absolute -top-20 -left-20 w-80 h-80 opacity-20 dark:opacity-15">
+      <div className="bg-shape floating absolute -top-20 -left-20 w-80 h-80 opacity-10">
         <svg
           viewBox="0 0 200 200"
           className="w-full h-full"
@@ -98,9 +98,8 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
         >
           <defs>
             <linearGradient id="blob1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="hsl(var(--primary) / 0.08)" />
-              <stop offset="50%" stopColor="hsl(var(--primary) / 0.04)" />
-              <stop offset="100%" stopColor="hsl(var(--primary) / 0.02)" />
+              <stop offset="0%" stopColor="#fff" />
+              <stop offset="100%" stopColor="#bbb" />
             </linearGradient>
           </defs>
           <path
@@ -112,7 +111,7 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
       </div>
 
       {/* Center-right gradient orb */}
-      <div className="bg-shape parallax absolute top-1/3 -right-32 w-96 h-96 opacity-15 dark:opacity-10">
+      <div className="bg-shape parallax absolute top-1/3 -right-32 w-96 h-96 opacity-10">
         <svg
           viewBox="0 0 200 200"
           className="w-full h-full"
@@ -120,9 +119,9 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
         >
           <defs>
             <radialGradient id="orb1" cx="30%" cy="30%" r="70%">
-              <stop offset="0%" stopColor="hsl(var(--secondary) / 0.12)" />
-              <stop offset="60%" stopColor="hsl(var(--secondary) / 0.06)" />
-              <stop offset="100%" stopColor="hsl(var(--secondary) / 0)" />
+              <stop offset="0%" stopColor="#fff" />
+              <stop offset="60%" stopColor="#ddd" />
+              <stop offset="100%" stopColor="#000" stopOpacity="0.1" />
             </radialGradient>
           </defs>
           <circle
@@ -136,7 +135,7 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
       </div>
 
       {/* Bottom-left flowing wave */}
-      <div className="bg-shape floating absolute -bottom-16 -left-16 w-72 h-24 opacity-25 dark:opacity-20">
+      <div className="bg-shape floating absolute -bottom-16 -left-16 w-72 h-24 opacity-10">
         <svg
           viewBox="0 0 300 100"
           className="w-full h-full"
@@ -144,11 +143,8 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
         >
           <defs>
             <linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="hsl(var(--accent) / 0.08)" />
-              <stop offset="25%" stopColor="hsl(var(--accent) / 0.04)" />
-              <stop offset="50%" stopColor="hsl(var(--accent) / 0.06)" />
-              <stop offset="75%" stopColor="hsl(var(--accent) / 0.03)" />
-              <stop offset="100%" stopColor="hsl(var(--accent) / 0.08)" />
+              <stop offset="0%" stopColor="#fff" />
+              <stop offset="100%" stopColor="#bbb" />
             </linearGradient>
           </defs>
           <path
@@ -162,7 +158,7 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
       </div>
 
       {/* Top-center scattered dots */}
-      <div className="bg-shape absolute top-32 left-1/2 transform -translate-x-1/2 w-80 h-40 opacity-30 dark:opacity-25">
+      <div className="bg-shape absolute top-32 left-1/2 transform -translate-x-1/2 w-80 h-40 opacity-10">
         <svg
           viewBox="0 0 200 100"
           className="w-full h-full"
@@ -170,8 +166,8 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
         >
           <defs>
             <radialGradient id="dot1" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="hsl(var(--muted-foreground) / 0.15)" />
-              <stop offset="100%" stopColor="hsl(var(--muted-foreground) / 0)" />
+              <stop offset="0%" stopColor="#fff" />
+              <stop offset="100%" stopColor="#000" stopOpacity="0.1" />
             </radialGradient>
           </defs>
           <circle cx="30" cy="25" r="2" fill="url(#dot1)" />
@@ -183,7 +179,7 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
       </div>
 
       {/* Bottom-right geometric hexagon */}
-      <div className="bg-shape floating absolute -bottom-8 -right-8 w-56 h-56 opacity-18 dark:opacity-12">
+      <div className="bg-shape floating absolute -bottom-8 -right-8 w-56 h-56 opacity-10">
         <svg
           viewBox="0 0 120 120"
           className="w-full h-full"
@@ -191,9 +187,8 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
         >
           <defs>
             <linearGradient id="hex1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="hsl(var(--primary) / 0.06)" />
-              <stop offset="50%" stopColor="hsl(var(--primary) / 0.03)" />
-              <stop offset="100%" stopColor="hsl(var(--primary) / 0.01)" />
+              <stop offset="0%" stopColor="#fff" />
+              <stop offset="100%" stopColor="#bbb" />
             </linearGradient>
           </defs>
           <polygon
@@ -205,7 +200,7 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
       </div>
 
       {/* Center-left soft pill */}
-      <div className="bg-shape parallax absolute top-1/2 -left-8 w-24 h-64 opacity-12 dark:opacity-8">
+      <div className="bg-shape parallax absolute top-1/2 -left-8 w-24 h-64 opacity-10">
         <svg
           viewBox="0 0 100 200"
           className="w-full h-full"
@@ -213,8 +208,8 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
         >
           <defs>
             <linearGradient id="pill1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="hsl(var(--secondary) / 0.08)" />
-              <stop offset="100%" stopColor="hsl(var(--secondary) / 0.02)" />
+              <stop offset="0%" stopColor="#fff" />
+              <stop offset="100%" stopColor="#bbb" />
             </linearGradient>
           </defs>
           <rect
@@ -230,7 +225,7 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
       </div>
 
       {/* Top-right corner accent */}
-      <div className="bg-shape floating absolute top-0 right-0 w-40 h-40 opacity-20 dark:opacity-15">
+      <div className="bg-shape floating absolute top-0 right-0 w-40 h-40 opacity-10">
         <svg
           viewBox="0 0 100 100"
           className="w-full h-full"
@@ -238,8 +233,8 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
         >
           <defs>
             <radialGradient id="corner1" cx="80%" cy="20%" r="60%">
-              <stop offset="0%" stopColor="hsl(var(--accent) / 0.1)" />
-              <stop offset="100%" stopColor="hsl(var(--accent) / 0)" />
+              <stop offset="0%" stopColor="#fff" />
+              <stop offset="100%" stopColor="#000" stopOpacity="0.1" />
             </radialGradient>
           </defs>
           <circle
@@ -253,7 +248,7 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
       </div>
 
       {/* Center-bottom subtle line */}
-      <div className="bg-shape absolute bottom-32 left-1/2 transform -translate-x-1/2 w-64 h-16 opacity-15 dark:opacity-10">
+      <div className="bg-shape absolute bottom-32 left-1/2 transform -translate-x-1/2 w-64 h-16 opacity-10">
         <svg
           viewBox="0 0 200 50"
           className="w-full h-full"
@@ -261,9 +256,8 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
         >
           <defs>
             <linearGradient id="line1" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="hsl(var(--muted-foreground) / 0.08)" />
-              <stop offset="50%" stopColor="hsl(var(--muted-foreground) / 0.04)" />
-              <stop offset="100%" stopColor="hsl(var(--muted-foreground) / 0.08)" />
+              <stop offset="0%" stopColor="#fff" />
+              <stop offset="100%" stopColor="#bbb" />
             </linearGradient>
           </defs>
           <line

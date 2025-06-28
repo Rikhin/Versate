@@ -99,7 +99,7 @@ export default function LandingPage() {
               <Trophy className="h-8 w-8 text-blue-400" />
               <div>
                 <span className="text-2xl font-bold text-white">ColabBoard</span>
-                <p className="text-xs text-slate-400 -mt-1">built by Rikhin Kavuru - Auto Deploy Test</p>
+                <p className="text-xs text-slate-400 -mt-1">built by Rikhin Kavuru</p>
               </div>
             </div>
             <nav className="hidden md:flex items-center space-x-6">
