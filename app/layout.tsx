@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider"
+import { BackgroundDesign } from "@/components/ui/background-design"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -23,6 +24,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <SmoothScrollProvider>
+            <BackgroundDesign />
             {children}
           </SmoothScrollProvider>
         </body>
