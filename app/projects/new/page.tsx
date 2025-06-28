@@ -18,9 +18,13 @@ import { CalendarIcon, Trophy, ArrowLeft, Code, Palette, Users, Rocket } from "l
 import { format } from "date-fns"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-// Add Clerk imports:
-import { UserButton } from "@clerk/nextjs"
+// Mock user data
+const mockUser = {
+  firstName: "John",
+  imageUrl: "/placeholder-user.jpg",
+}
 
 export default function NewProjectPage() {
   const router = useRouter()
@@ -108,7 +112,6 @@ export default function NewProjectPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-sm">
-        {/* Update the header: */}
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Link href="/dashboard">
@@ -119,16 +122,18 @@ export default function NewProjectPage() {
             </Link>
             <Link href="/" className="flex items-center space-x-2">
               <Trophy className="h-8 w-8 text-slate-600" />
-              <span className="text-2xl font-bold text-slate-800">ColabBoard</span>
+              <div>
+                <span className="text-2xl font-bold text-slate-800">ColabBoard</span>
+                <p className="text-xs text-slate-500 -mt-1">built by Rikhin Kavuru</p>
+              </div>
             </Link>
           </div>
-          <UserButton
-            appearance={{
-              elements: {
-                avatarBox: "h-10 w-10",
-              },
-            }}
-          />
+          <div className="flex items-center space-x-4">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={mockUser.imageUrl || "/placeholder.svg"} alt={mockUser.firstName} />
+              <AvatarFallback>{mockUser.firstName?.[0] || "U"}</AvatarFallback>
+            </Avatar>
+          </div>
         </div>
       </header>
 
