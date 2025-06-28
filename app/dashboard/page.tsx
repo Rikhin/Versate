@@ -21,16 +21,29 @@ import {
   Zap,
 } from "lucide-react"
 import Link from "next/link"
-
-// Mock user data - replace with your auth solution later
-const mockUser = {
-  firstName: "John",
-  username: "john_doe",
-  imageUrl: "/placeholder-user.jpg",
-}
+import { useUser, UserButton } from "@clerk/nextjs"
+import { redirect } from "next/navigation"
 
 export default function DashboardPage() {
+  const { isSignedIn, user, isLoaded } = useUser()
   const [activeTab, setActiveTab] = useState("overview")
+
+  // Redirect if not signed in
+  if (isLoaded && !isSignedIn) {
+    redirect("/")
+  }
+
+  // Show loading while Clerk is loading
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-slate-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   const mockProjects = [
     {
@@ -115,10 +128,7 @@ export default function DashboardPage() {
             </Link>
           </nav>
           <div className="flex items-center space-x-4">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={mockUser.imageUrl || "/placeholder.svg"} alt={mockUser.firstName} />
-              <AvatarFallback>{mockUser.firstName?.[0] || "U"}</AvatarFallback>
-            </Avatar>
+            <UserButton afterSignOutUrl="/" />
           </div>
         </div>
       </header>
@@ -127,7 +137,7 @@ export default function DashboardPage() {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-800 mb-2">
-            Welcome back, {mockUser.firstName || mockUser.username || "there"}!
+            Welcome back, {user?.firstName || user?.username || "there"}!
           </h1>
           <p className="text-slate-600">Here's what's happening with your projects and team collaborations.</p>
         </div>

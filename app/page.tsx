@@ -4,8 +4,11 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Trophy, Users, MessageSquare, Target, Star, ArrowRight, Code, Award, Zap } from "lucide-react"
 import Link from "next/link"
+import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
 
 export default function LandingPage() {
+  const { isSignedIn } = useUser()
+
   const featuredProjects = [
     {
       title: "AI-Powered Study Assistant",
@@ -93,9 +96,23 @@ export default function LandingPage() {
             </a>
           </nav>
           <div className="flex items-center space-x-4">
-            <Link href="/dashboard">
-              <Button>Get Started</Button>
-            </Link>
+            {isSignedIn ? (
+              <>
+                <Link href="/dashboard">
+                  <Button>Dashboard</Button>
+                </Link>
+                <UserButton afterSignOutUrl="/" />
+              </>
+            ) : (
+              <>
+                <SignInButton mode="modal">
+                  <Button variant="outline">Sign In</Button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <Button>Sign Up</Button>
+                </SignUpButton>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -115,17 +132,28 @@ export default function LandingPage() {
             Build your portfolio while making lasting connections.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/dashboard">
-              <Button size="lg" className="text-lg px-8 py-3">
-                Start Building Teams
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link href="/explore">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-3 bg-transparent">
-                Explore Projects
-              </Button>
-            </Link>
+            {isSignedIn ? (
+              <Link href="/dashboard">
+                <Button size="lg" className="text-lg px-8 py-3">
+                  Go to Dashboard
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <SignUpButton mode="modal">
+                  <Button size="lg" className="text-lg px-8 py-3">
+                    Start Building Teams
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </SignUpButton>
+                <Link href="/explore">
+                  <Button size="lg" variant="outline" className="text-lg px-8 py-3 bg-transparent">
+                    Explore Projects
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>
