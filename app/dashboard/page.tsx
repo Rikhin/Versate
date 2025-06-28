@@ -9,14 +9,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Plus, MessageCircle, Users, Search, Trophy, Clock, MapPin, Star } from "lucide-react"
 import Link from "next/link"
 
-// Add Clerk imports:
-import { useUser, UserButton } from "@clerk/nextjs"
-
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("projects")
 
-  // Replace the mock user with Clerk user:
-  const { user } = useUser()
+  // Mock user data - replace with your auth system later
+  const user = {
+    firstName: "John",
+    username: "john_doe",
+  }
 
   // Mock data - in real app, this would come from your database
   const myProjects = [
@@ -137,13 +137,9 @@ export default function DashboardPage() {
               <MessageCircle className="h-4 w-4 mr-2" />
               Messages
             </Button>
-            <UserButton
-              appearance={{
-                elements: {
-                  avatarBox: "h-10 w-10",
-                },
-              }}
-            />
+            <div className="h-10 w-10 bg-slate-200 rounded-full flex items-center justify-center">
+              <span className="text-sm font-medium">JD</span>
+            </div>
           </div>
         </div>
       </header>

@@ -13,7 +13,6 @@ import { Send, Paperclip, Smile, Search, Trophy, MessageCircle } from "lucide-re
 import Link from "next/link"
 
 // Add Clerk imports:
-import { UserButton } from "@clerk/nextjs"
 
 export default function ChatPage() {
   const [selectedChat, setSelectedChat] = useState(1)
@@ -142,13 +141,9 @@ export default function ChatPage() {
               <MessageCircle className="h-4 w-4 mr-2" />
               Messages
             </Button>
-            <UserButton
-              appearance={{
-                elements: {
-                  avatarBox: "h-10 w-10",
-                },
-              }}
-            />
+            <div className="h-10 w-10 bg-slate-200 rounded-full flex items-center justify-center">
+              <span className="text-sm font-medium">JD</span>
+            </div>
           </div>
         </div>
       </header>

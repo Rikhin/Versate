@@ -1,117 +1,23 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import {
-  ArrowRight,
-  Users,
-  Target,
-  MessageCircle,
-  Trophy,
-  Lightbulb,
-  Search,
-  Code,
-  Briefcase,
-  FlaskConical,
-} from "lucide-react"
+import { Trophy, Users, MessageCircle, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
 export default function LandingPage() {
-  const competitionCategories = [
-    {
-      title: "STEM Competitions",
-      description: "Science fairs, research competitions, and STEM challenges",
-      icon: FlaskConical,
-      color: "bg-blue-50 text-blue-600",
-      examples: ["Science Fair", "Research Competition", "Engineering Challenge"],
-    },
-    {
-      title: "Computer Science",
-      description: "Hackathons, coding competitions, and tech challenges",
-      icon: Code,
-      color: "bg-green-50 text-green-600",
-      examples: ["Hackathon", "Coding Contest", "App Development"],
-    },
-    {
-      title: "Business & Entrepreneurship",
-      description: "Business plan competitions and startup challenges",
-      icon: Briefcase,
-      color: "bg-purple-50 text-purple-600",
-      examples: ["Business Plan", "Startup Pitch", "Case Competition"],
-    },
-    {
-      title: "Innovation & Design",
-      description: "Design thinking, innovation challenges, and creative contests",
-      icon: Lightbulb,
-      color: "bg-orange-50 text-orange-600",
-      examples: ["Design Challenge", "Innovation Contest", "Creative Competition"],
-    },
-  ]
-
-  const features = [
-    {
-      title: "Smart Discovery",
-      description: "Find competitions that match your interests and skills",
-      icon: Search,
-    },
-    {
-      title: "Team Matching",
-      description: "Get matched with compatible teammates based on skills and goals",
-      icon: Users,
-    },
-    {
-      title: "Real-time Collaboration",
-      description: "Chat, share files, and coordinate with your team seamlessly",
-      icon: MessageCircle,
-    },
-    {
-      title: "Competition Tracking",
-      description: "Keep track of deadlines, requirements, and progress",
-      icon: Target,
-    },
-    {
-      title: "Skill Development",
-      description: "Learn from teammates and grow your competition skills",
-      icon: Trophy,
-    },
-    {
-      title: "Mentor Network",
-      description: "Connect with experienced mentors and past winners",
-      icon: Lightbulb,
-    },
-  ]
-
-  const steps = [
-    {
-      step: "1",
-      title: "Create Your Profile",
-      description: "Tell us about your skills, interests, and competition goals",
-    },
-    {
-      step: "2",
-      title: "Discover & Match",
-      description: "Find competitions and get matched with compatible teammates",
-    },
-    {
-      step: "3",
-      title: "Collaborate & Win",
-      description: "Work together with your team to create winning submissions",
-    },
-  ]
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b bg-white/80 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Trophy className="h-8 w-8 text-slate-600" />
-            <span className="text-2xl font-bold text-slate-800">ColabBoard</span>
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold text-slate-800">ColabBoard</span>
+              <span className="text-xs text-slate-500">built by Rikhin Kavuru</span>
+            </div>
           </div>
           <div className="flex items-center space-x-4">
-            <Link href="/sign-in">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
-            <Link href="/sign-up">
+            <Link href="/dashboard">
               <Button>Get Started</Button>
             </Link>
           </div>
@@ -119,19 +25,17 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            <span className="gradient-text">Win competitions</span>
-            <br />
-            <span className="text-slate-800">together</span>
+      <section className="container mx-auto px-4 py-16 text-center">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-5xl font-bold text-slate-800 mb-6">
+            Find Your Perfect <span className="text-blue-600">Competition Team</span>
           </h1>
           <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
-            Connect with talented students, form winning teams, and dominate academic competitions. From hackathons to
-            science fairs, find your perfect teammates.
+            Connect with talented students, form winning teams, and dominate academic competitions together. Your next
+            victory starts here.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/sign-up">
+            <Link href="/dashboard">
               <Button size="lg" className="text-lg px-8 py-3">
                 Start Building Teams
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -139,88 +43,142 @@ export default function LandingPage() {
             </Link>
             <Link href="/explore">
               <Button size="lg" variant="outline" className="text-lg px-8 py-3 bg-transparent">
-                Explore Competitions
+                Explore Projects
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Competition Categories */}
-      <section className="py-16 px-4 bg-white">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-slate-800">Competition Categories</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {competitionCategories.map((category, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className={`w-12 h-12 rounded-lg ${category.color} flex items-center justify-center mb-4`}>
-                    <category.icon className="h-6 w-6" />
-                  </div>
-                  <CardTitle className="text-lg">{category.title}</CardTitle>
-                  <CardDescription>{category.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {category.examples.map((example, idx) => (
-                      <Badge key={idx} variant="secondary" className="text-xs">
-                        {example}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-slate-800 mb-4">Why Choose ColabBoard?</h2>
+          <p className="text-slate-600 max-w-2xl mx-auto">
+            Built specifically for student competitors, with features designed to help you find the right teammates and
+            win together.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Card className="text-center hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <Users className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+              <CardTitle>Smart Matching</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Our algorithm matches you with teammates based on skills, interests, and competition goals for optimal
+                team chemistry.
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <MessageCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
+              <CardTitle>Team Communication</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Built-in chat and collaboration tools keep your team connected and organized throughout the competition
+                process.
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <Trophy className="h-12 w-12 text-yellow-600 mx-auto mb-4" />
+              <CardTitle>Competition Focus</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Designed specifically for academic competitions with features tailored to help teams succeed and win
+                together.
+              </CardDescription>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-slate-800">Everything you need to win</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <feature.icon className="h-8 w-8 text-slate-600" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-slate-800">{feature.title}</h3>
-                <p className="text-slate-600">{feature.description}</p>
-              </div>
-            ))}
+      {/* Stats Section */}
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <div className="text-3xl font-bold text-slate-800 mb-2">500+</div>
+              <div className="text-slate-600">Active Students</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-slate-800 mb-2">150+</div>
+              <div className="text-slate-600">Teams Formed</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-slate-800 mb-2">50+</div>
+              <div className="text-slate-600">Competitions Won</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-slate-800 mb-2">25+</div>
+              <div className="text-slate-600">Universities</div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-16 px-4 bg-white">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-slate-800">How it works</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {steps.map((step, index) => (
-              <div key={index} className="text-center">
-                <div className="w-12 h-12 bg-slate-800 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-                  {step.step}
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-slate-800">{step.title}</h3>
-                <p className="text-slate-600">{step.description}</p>
-              </div>
-            ))}
+      <section className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-slate-800 mb-4">How It Works</h2>
+          <p className="text-slate-600 max-w-2xl mx-auto">
+            Getting started is simple. Follow these steps to find your perfect competition team.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl font-bold text-blue-600">1</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Create Your Profile</h3>
+            <p className="text-slate-600">
+              Tell us about your skills, interests, and competition experience to help us find the perfect matches.
+            </p>
+          </div>
+
+          <div className="text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl font-bold text-green-600">2</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Find Your Team</h3>
+            <p className="text-slate-600">
+              Browse projects, connect with teammates, or create your own competition project to attract collaborators.
+            </p>
+          </div>
+
+          <div className="text-center">
+            <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl font-bold text-yellow-600">3</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Win Together</h3>
+            <p className="text-slate-600">
+              Collaborate using our built-in tools, stay organized, and dominate your competition as a unified team.
+            </p>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-slate-800 text-white">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to win your next competition?</h2>
-          <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-            Join thousands of students who are already forming winning teams on ColabBoard.
+      <section className="bg-slate-800 text-white py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">Ready to Win Your Next Competition?</h2>
+          <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
+            Join hundreds of students who are already using ColabBoard to form winning teams and achieve their
+            competition goals.
           </p>
-          <Link href="/sign-up">
+          <Link href="/dashboard">
             <Button size="lg" variant="secondary" className="text-lg px-8 py-3">
-              Get Started Free
+              Get Started Now
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
@@ -228,13 +186,31 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 bg-slate-900 text-slate-400">
-        <div className="container mx-auto text-center">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <Trophy className="h-6 w-6" />
-            <span className="text-xl font-bold text-white">ColabBoard</span>
+      <footer className="bg-white border-t py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-2 mb-4 md:mb-0">
+              <Trophy className="h-6 w-6 text-slate-600" />
+              <div className="flex flex-col">
+                <span className="text-lg font-bold text-slate-800">ColabBoard</span>
+                <span className="text-xs text-slate-500">built by Rikhin Kavuru</span>
+              </div>
+            </div>
+            <div className="flex space-x-6 text-sm text-slate-600">
+              <Link href="/dashboard" className="hover:text-slate-800">
+                Dashboard
+              </Link>
+              <Link href="/explore" className="hover:text-slate-800">
+                Explore
+              </Link>
+              <Link href="/chat" className="hover:text-slate-800">
+                Chat
+              </Link>
+            </div>
           </div>
-          <p>&copy; 2024 ColabBoard. All rights reserved.</p>
+          <div className="border-t mt-8 pt-8 text-center text-sm text-slate-500">
+            <p>&copy; 2024 ColabBoard. Built for student competitors, by student competitors.</p>
+          </div>
         </div>
       </footer>
     </div>

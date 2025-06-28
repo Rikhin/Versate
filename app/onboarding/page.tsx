@@ -12,11 +12,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Code, Palette, Users, Rocket, ArrowRight, ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useUser } from "@clerk/nextjs"
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(1)
-  const { user } = useUser()
+  // Mock user data - replace with your auth system later
+  const user = {
+    firstName: "John",
+  }
   const [formData, setFormData] = useState({
     school: "",
     grade: "",
