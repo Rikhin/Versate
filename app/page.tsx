@@ -76,7 +76,7 @@ export default function LandingPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 relative overflow-hidden">
+    <div className="min-h-screen bg-black relative overflow-hidden">
       {/* Background Animations */}
       <BackgroundGradient 
         startColor="from-blue-50/50" 
@@ -93,26 +93,26 @@ export default function LandingPage() {
       {/* Main Content Container */}
       <div className="relative z-10">
         {/* Header */}
-        <header className="border-b bg-white/80 backdrop-blur-sm">
+        <header className="border-b border-slate-800 bg-black/80 backdrop-blur-sm">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <Trophy className="h-8 w-8 text-slate-600" />
+              <Trophy className="h-8 w-8 text-blue-400" />
               <div>
-                <span className="text-2xl font-bold text-slate-800">ColabBoard</span>
-                <p className="text-xs text-slate-500 -mt-1">built by Rikhin Kavuru</p>
+                <span className="text-2xl font-bold text-white">ColabBoard</span>
+                <p className="text-xs text-slate-400 -mt-1">built by Rikhin Kavuru</p>
               </div>
             </div>
             <nav className="hidden md:flex items-center space-x-6">
-              <a href="#features" className="text-slate-600 hover:text-slate-800">
+              <a href="#features" className="text-slate-300 hover:text-white transition-colors">
                 Features
               </a>
-              <a href="#competitions" className="text-slate-600 hover:text-slate-800">
+              <a href="#competitions" className="text-slate-300 hover:text-white transition-colors">
                 Competitions
               </a>
-              <a href="#projects" className="text-slate-600 hover:text-slate-800">
+              <a href="#projects" className="text-slate-300 hover:text-white transition-colors">
                 Projects
               </a>
-              <Link href="/animations" className="text-slate-600 hover:text-slate-800">
+              <Link href="/animations" className="text-slate-300 hover:text-white transition-colors">
                 Animations
               </Link>
             </nav>
@@ -142,14 +142,14 @@ export default function LandingPage() {
         <section className="container mx-auto px-4 py-16 text-center relative">
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.2}>
             <div className="max-w-4xl mx-auto">
-              <h1 className="text-5xl md:text-6xl font-bold text-slate-800 mb-6">
+              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
                 Find Your Perfect
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
                   {" "}
                   Competition Team
                 </span>
               </h1>
-              <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
+              <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
                 Connect with talented students, join exciting projects, and compete in prestigious academic competitions.
                 Build your portfolio while making lasting connections.
               </p>
@@ -188,10 +188,10 @@ export default function LandingPage() {
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
                   <div className="flex justify-center mb-4">
-                    <stat.icon className="h-12 w-12 text-blue-600" />
+                    <stat.icon className="h-12 w-12 text-blue-400" />
                   </div>
-                  <div className="text-3xl font-bold text-slate-800 mb-2">{stat.value}</div>
-                  <div className="text-slate-600">{stat.label}</div>
+                  <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
+                  <div className="text-slate-300">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -208,104 +208,104 @@ export default function LandingPage() {
           />
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.15}>
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Everything You Need to Succeed</h2>
-              <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Everything You Need to Succeed</h2>
+              <p className="text-xl text-slate-300 max-w-2xl mx-auto">
                 Our platform provides all the tools and connections you need to excel in academic competitions
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card className="hover:shadow-lg transition-shadow">
+              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Users className="h-6 w-6 text-blue-600" />
+                    <div className="p-2 bg-blue-900/50 rounded-lg">
+                      <Users className="h-6 w-6 text-blue-400" />
                     </div>
-                    <CardTitle>Smart Team Matching</CardTitle>
+                    <CardTitle className="text-white">Smart Team Matching</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>
+                  <CardDescription className="text-slate-300">
                     Our AI-powered algorithm matches you with teammates based on skills, interests, and competition goals.
                   </CardDescription>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow">
+              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-green-100 rounded-lg">
-                      <MessageSquare className="h-6 w-6 text-green-600" />
+                    <div className="p-2 bg-green-900/50 rounded-lg">
+                      <MessageSquare className="h-6 w-6 text-green-400" />
                     </div>
-                    <CardTitle>Real-time Collaboration</CardTitle>
+                    <CardTitle className="text-white">Real-time Collaboration</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>
+                  <CardDescription className="text-slate-300">
                     Built-in chat, file sharing, and project management tools to keep your team organized and productive.
                   </CardDescription>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow">
+              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <Trophy className="h-6 w-6 text-purple-600" />
+                    <div className="p-2 bg-purple-900/50 rounded-lg">
+                      <Trophy className="h-6 w-6 text-purple-400" />
                     </div>
-                    <CardTitle>Competition Support</CardTitle>
+                    <CardTitle className="text-white">Competition Support</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>
+                  <CardDescription className="text-slate-300">
                     Access resources, deadlines, and guidelines for 25+ prestigious academic competitions.
                   </CardDescription>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow">
+              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-yellow-100 rounded-lg">
-                      <Code className="h-6 w-6 text-yellow-600" />
+                    <div className="p-2 bg-yellow-900/50 rounded-lg">
+                      <Code className="h-6 w-6 text-yellow-400" />
                     </div>
-                    <CardTitle>Skill Development</CardTitle>
+                    <CardTitle className="text-white">Skill Development</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>
+                  <CardDescription className="text-slate-300">
                     Learn from peers, share knowledge, and develop technical and soft skills through collaborative projects.
                   </CardDescription>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow">
+              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-red-100 rounded-lg">
-                      <Target className="h-6 w-6 text-red-600" />
+                    <div className="p-2 bg-red-900/50 rounded-lg">
+                      <Target className="h-6 w-6 text-red-400" />
                     </div>
-                    <CardTitle>Project Management</CardTitle>
+                    <CardTitle className="text-white">Project Management</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>
+                  <CardDescription className="text-slate-300">
                     Track progress, set milestones, and manage deadlines with integrated project management tools.
                   </CardDescription>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow">
+              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-indigo-100 rounded-lg">
-                      <Star className="h-6 w-6 text-indigo-600" />
+                    <div className="p-2 bg-indigo-900/50 rounded-lg">
+                      <Star className="h-6 w-6 text-indigo-400" />
                     </div>
-                    <CardTitle>Portfolio Building</CardTitle>
+                    <CardTitle className="text-white">Portfolio Building</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>
+                  <CardDescription className="text-slate-300">
                     Showcase your projects, achievements, and skills to build an impressive academic and professional
                     portfolio.
                   </CardDescription>
@@ -316,7 +316,7 @@ export default function LandingPage() {
         </section>
 
         {/* Featured Projects */}
-        <section id="projects" className="container mx-auto px-4 py-16 bg-white/50 relative">
+        <section id="projects" className="container mx-auto px-4 py-16 bg-slate-900/30 relative">
           <BackgroundGradient 
             startColor="from-purple-50/40" 
             endColor="to-pink-50/40" 
@@ -325,25 +325,25 @@ export default function LandingPage() {
           />
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Featured Projects</h2>
-              <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Featured Projects</h2>
+              <p className="text-xl text-slate-300 max-w-2xl mx-auto">
                 Discover exciting projects looking for talented team members
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredProjects.map((project, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+                <Card key={index} className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
-                      <Badge variant="secondary">{project.competition}</Badge>
+                      <Badge variant="secondary" className="bg-slate-800 text-slate-300">{project.competition}</Badge>
                       <div className="flex items-center space-x-1">
-                        <Zap className="h-4 w-4 text-green-600" />
-                        <span className="text-sm font-medium text-green-600">{project.matchScore}% match</span>
+                        <Zap className="h-4 w-4 text-green-400" />
+                        <span className="text-sm font-medium text-green-400">{project.matchScore}% match</span>
                       </div>
                     </div>
-                    <CardTitle className="text-lg">{project.title}</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="text-lg text-white">{project.title}</CardTitle>
+                    <CardDescription className="text-slate-300">
                       Looking for talented teammates to join this {project.category} project
                     </CardDescription>
                   </CardHeader>
@@ -354,12 +354,12 @@ export default function LandingPage() {
                         <AvatarFallback>{project.leader.name[0]}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium">{project.leader.name}</p>
-                        <p className="text-xs text-slate-500">{project.leader.school}</p>
+                        <p className="text-sm font-medium text-white">{project.leader.name}</p>
+                        <p className="text-xs text-slate-400">{project.leader.school}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between text-sm text-slate-600">
+                    <div className="flex items-center justify-between text-sm text-slate-300">
                       <div className="flex items-center space-x-1">
                         <Users className="h-4 w-4" />
                         <span>
@@ -369,10 +369,10 @@ export default function LandingPage() {
                     </div>
 
                     <div>
-                      <p className="text-sm text-slate-600 mb-2">Tech Stack:</p>
+                      <p className="text-sm text-slate-300 mb-2">Tech Stack:</p>
                       <div className="flex flex-wrap gap-1">
                         {project.techStack.map((tech) => (
-                          <Badge key={tech} variant="outline" className="text-xs">
+                          <Badge key={tech} variant="outline" className="text-xs border-slate-700 text-slate-300">
                             {tech}
                           </Badge>
                         ))}
@@ -390,7 +390,7 @@ export default function LandingPage() {
 
             <div className="text-center mt-12">
               <Link href="/explore">
-                <Button size="lg" variant="outline">
+                <Button size="lg" variant="outline" className="border-slate-700 text-white hover:bg-slate-800">
                   View All Projects
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -403,18 +403,18 @@ export default function LandingPage() {
         <section id="competitions" className="container mx-auto px-4 py-16 relative">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Supported Competitions</h2>
-              <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Supported Competitions</h2>
+              <p className="text-xl text-slate-300 max-w-2xl mx-auto">
                 We support teams participating in prestigious academic competitions worldwide
               </p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {competitions.map((competition, index) => (
-                <Card key={index} className="hover:shadow-md transition-shadow">
+                <Card key={index} className="hover:shadow-md transition-shadow bg-slate-900/50 border-slate-800">
                   <CardContent className="p-4 text-center">
-                    <Trophy className="h-8 w-8 text-slate-600 mx-auto mb-2" />
-                    <p className="text-sm font-medium text-slate-800">{competition}</p>
+                    <Trophy className="h-8 w-8 text-blue-400 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-white">{competition}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -461,29 +461,29 @@ export default function LandingPage() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t bg-white/80 backdrop-blur-sm relative z-10">
+        <footer className="border-t border-slate-800 bg-black/80 backdrop-blur-sm relative z-10">
           <div className="container mx-auto px-4 py-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="flex items-center space-x-2 mb-4 md:mb-0">
-                <Trophy className="h-6 w-6 text-slate-600" />
+                <Trophy className="h-6 w-6 text-blue-400" />
                 <div>
-                  <span className="text-lg font-bold text-slate-800">ColabBoard</span>
-                  <p className="text-xs text-slate-500 -mt-1">built by Rikhin Kavuru</p>
+                  <span className="text-lg font-bold text-white">ColabBoard</span>
+                  <p className="text-xs text-slate-400 -mt-1">built by Rikhin Kavuru</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-6 text-sm text-slate-600">
-                <a href="#" className="hover:text-slate-800">
+              <div className="flex items-center space-x-6 text-sm text-slate-300">
+                <a href="#" className="hover:text-white transition-colors">
                   Privacy Policy
                 </a>
-                <a href="#" className="hover:text-slate-800">
+                <a href="#" className="hover:text-white transition-colors">
                   Terms of Service
                 </a>
-                <a href="#" className="hover:text-slate-800">
+                <a href="#" className="hover:text-white transition-colors">
                   Contact
                 </a>
               </div>
             </div>
-            <div className="border-t mt-8 pt-8 text-center text-sm text-slate-500">
+            <div className="border-t border-slate-800 mt-8 pt-8 text-center text-sm text-slate-400">
               <p>&copy; 2024 ColabBoard. All rights reserved. Empowering students to achieve excellence together.</p>
             </div>
           </div>
