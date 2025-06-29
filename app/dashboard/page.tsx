@@ -172,22 +172,20 @@ export default function DashboardPage() {
   return (
     <SidebarProvider>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex">
-        {/* Sidebar */}
-        <Sidebar className="bg-white/90 border-r border-gray-200 min-h-screen flex flex-col items-start px-6 py-8 w-64 shadow-md">
-          <div className="mb-8 w-full">
-            <span className="text-lg font-semibold text-gray-900 whitespace-nowrap block">
-              Welcome back, {firstName}! 👋
-            </span>
-          </div>
-        </Sidebar>
-        {/* Main Content Container */}
-        <div className="flex-1 flex justify-center items-start">
-          <div className="w-full max-w-3xl mx-auto mt-12 mb-12">
-            <div className="bg-white/95 rounded-2xl shadow-2xl px-8 py-10 md:px-12 md:py-14 space-y-8 border border-gray-100">
+        {/* Sidebar - fixed on the left */}
+        <div className="fixed top-0 left-0 h-full w-64 z-30 bg-white/90 border-r border-gray-200 shadow-md flex flex-col items-start px-6 py-8">
+          <span className="text-lg font-semibold text-gray-900 whitespace-nowrap block mb-8">
+            Welcome back, {firstName}! 👋
+          </span>
+        </div>
+        {/* Main Content Container - full width, centered, with left margin for sidebar */}
+        <div className="flex-1 ml-64">
+          <div className="w-full max-w-7xl mx-auto mt-12 mb-12 px-4 md:px-8">
+            <div className="bg-white/95 rounded-2xl shadow-2xl px-8 py-10 md:px-12 md:py-14 space-y-12 border border-gray-100">
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
                 {stats.map((stat, index) => (
-                  <div key={index} className="rounded-xl bg-white/90 shadow-sm flex flex-col items-center justify-center py-6">
+                  <div key={index} className="rounded-xl bg-white/90 shadow-sm flex flex-col items-center justify-center py-6 w-full">
                     <div className={`mb-2 flex items-center justify-center w-10 h-10 rounded-full ${stat.color} bg-gray-100`}>{<stat.icon className="h-6 w-6" />}</div>
                     <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
                     <div className="text-base text-gray-700 font-semibold mt-1">{stat.label}</div>
@@ -198,10 +196,10 @@ export default function DashboardPage() {
               {/* Quick Actions */}
               <div className="space-y-4">
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Quick Actions</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
                   {quickActions.map((action, index) => (
                     <Link key={index} href={action.href}>
-                      <div className="rounded-xl bg-white/90 shadow-sm hover:shadow-lg hover:scale-[1.03] transition-all duration-200 flex flex-col items-center justify-center h-32 cursor-pointer border border-gray-100">
+                      <div className="rounded-xl bg-white/90 shadow-sm hover:shadow-lg hover:scale-[1.03] transition-all duration-200 flex flex-col items-center justify-center h-32 cursor-pointer border border-gray-100 w-full">
                         <div className="mb-2 flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 text-indigo-600">{<action.icon className="h-6 w-6" />}</div>
                         <div className="text-base font-semibold text-gray-900">{action.title}</div>
                         <div className="text-xs text-gray-500 mt-1 text-center">{action.description}</div>
@@ -214,7 +212,7 @@ export default function DashboardPage() {
               {/* Profile Overview */}
               <div className="space-y-4">
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Profile Overview</h2>
-                <div className="rounded-xl bg-white/90 shadow-sm p-8 flex flex-col md:flex-row gap-8 items-center border border-gray-100">
+                <div className="rounded-xl bg-white/90 shadow-sm p-8 flex flex-col md:flex-row gap-8 items-center border border-gray-100 w-full">
                   <div className="flex-1 w-full">
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-lg font-semibold text-gray-900">{profile.full_name || user?.fullName}</span>
@@ -267,9 +265,9 @@ export default function DashboardPage() {
               {/* Recent Activity */}
               <div className="space-y-4">
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Recent Activity</h2>
-                <div className="space-y-4">
+                <div className="space-y-4 w-full">
                   {recentActivity.map((activity, index) => (
-                    <div key={index} className="rounded-xl bg-white/90 shadow-sm p-4 flex items-center gap-4 border border-gray-100">
+                    <div key={index} className="rounded-xl bg-white/90 shadow-sm p-4 flex items-center gap-4 border border-gray-100 w-full">
                       <div className="p-2 bg-gray-100 rounded-lg">
                         <activity.icon className="h-5 w-5 text-indigo-500" />
                       </div>
@@ -286,9 +284,9 @@ export default function DashboardPage() {
               {/* Recommendations (swap Projects and Competitions, add View All) */}
               <div className="space-y-4">
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Recommended for You</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                   {/* Competitions card first */}
-                  <div className="rounded-xl bg-white/90 shadow-sm p-6 flex flex-col h-full border border-gray-100">
+                  <div className="rounded-xl bg-white/90 shadow-sm p-6 flex flex-col h-full border border-gray-100 w-full">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="p-2 bg-green-100 rounded-lg">
                         <Trophy className="h-5 w-5 text-green-600" />
@@ -309,7 +307,7 @@ export default function DashboardPage() {
                     </Link>
                   </div>
                   {/* Projects card second */}
-                  <div className="rounded-xl bg-white/90 shadow-sm p-6 border border-gray-100">
+                  <div className="rounded-xl bg-white/90 shadow-sm p-6 border border-gray-100 w-full">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="p-2 bg-blue-100 rounded-lg">
                         <Code className="h-5 w-5 text-blue-600" />
@@ -327,7 +325,7 @@ export default function DashboardPage() {
                     </Button>
                   </div>
                   {/* Team Building card remains last */}
-                  <div className="rounded-xl bg-white/90 shadow-sm p-6 border border-gray-100">
+                  <div className="rounded-xl bg-white/90 shadow-sm p-6 border border-gray-100 w-full">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="p-2 bg-purple-100 rounded-lg">
                         <Users className="h-5 w-5 text-purple-600" />
