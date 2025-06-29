@@ -4,9 +4,8 @@ export default clerkMiddleware();
 
 export const config = {
   matcher: [
-    "/dashboard(.*)",
-    "/explore(.*)",
-    "/chat(.*)",
-    "/projects(.*)",
+    "/((?!.+\\.[\\w]+$|_next).*)",
+    "/",
+    "/(api|trpc)(.*)",
   ],
 };

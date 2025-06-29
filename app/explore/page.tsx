@@ -150,38 +150,6 @@ export default function ExplorePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Link href="/" className="flex items-center space-x-2">
-              <Trophy className="h-8 w-8 text-slate-600" />
-              <div>
-                <span className="text-2xl font-bold text-slate-800">ColabBoard</span>
-                <p className="text-xs text-slate-500 -mt-1">built by Rikhin Kavuru</p>
-              </div>
-            </Link>
-          </div>
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/dashboard" className="text-slate-600 hover:text-slate-800">
-              Dashboard
-            </Link>
-            <Link href="/explore" className="text-slate-600 hover:text-slate-800 font-medium">
-              Explore
-            </Link>
-            <Link href="/chat" className="text-slate-600 hover:text-slate-800">
-              Messages
-            </Link>
-          </nav>
-          <div className="flex items-center space-x-4">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={mockUser.imageUrl || "/placeholder.svg"} alt={mockUser.firstName} />
-              <AvatarFallback>{mockUser.firstName?.[0] || "U"}</AvatarFallback>
-            </Avatar>
-          </div>
-        </div>
-      </header>
-
       <div className="container mx-auto px-4 py-8">
         {/* Header Section */}
         <div className="mb-8">

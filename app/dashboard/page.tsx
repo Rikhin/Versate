@@ -1,376 +1,298 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useUser } from "@clerk/nextjs"
+import { redirect } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  Trophy,
-  Users,
-  MessageSquare,
-  Search,
-  Plus,
-  Calendar,
-  Clock,
-  Star,
-  TrendingUp,
-  Target,
+import { 
+  Trophy, 
+  Users, 
+  Target, 
+  Star, 
+  ArrowRight, 
+  Code, 
+  Award, 
   Zap,
+  Calendar,
+  MapPin,
+  BookOpen,
+  Settings,
+  BarChart3,
+  FolderOpen,
+  UserCheck,
+  TrendingUp
 } from "lucide-react"
 import Link from "next/link"
-import { useUser, UserButton } from "@clerk/nextjs"
-import { redirect } from "next/navigation"
+import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
+
+interface Profile {
+  id: string
+  first_name: string
+  last_name: string
+  school: string
+  grade_level: string
+  skills: string[]
+  roles: string[]
+  experience_level: string
+  bio: string
+  location: string
+}
 
 export default function DashboardPage() {
-  const { isSignedIn, user, isLoaded } = useUser()
-  const [activeTab, setActiveTab] = useState("overview")
+  const { user, isLoaded } = useUser()
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  // Redirect if not signed in
-  if (isLoaded && !isSignedIn) {
-    redirect("/")
-  }
+  useEffect(() => {
+    if (!isLoaded) return
 
-  // Show loading while Clerk is loading
-  if (!isLoaded) {
+    if (!user) {
+      redirect("/sign-in")
+    }
+
+    // Fetch user profile
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch("/api/profiles/check")
+        if (response.ok) {
+          const data = await response.json()
+          if (data.profile) {
+            setProfile(data.profile)
+          } else {
+            redirect("/onboarding")
+          }
+        } else {
+          redirect("/onboarding")
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error)
+        redirect("/onboarding")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProfile()
+  }, [user, isLoaded])
+
+  if (loading || !profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-slate-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your dashboard...</p>
         </div>
       </div>
     )
   }
 
-  const mockProjects = [
+  const stats = [
+    { label: "Projects Joined", value: "3", icon: FolderOpen, color: "text-blue-600" },
+    { label: "Teams Created", value: "1", icon: Users, color: "text-green-600" },
+    { label: "Competitions", value: "2", icon: Trophy, color: "text-purple-600" },
+    { label: "Match Score", value: "94%", icon: Star, color: "text-yellow-600" },
+  ]
+
+  const recentActivity = [
     {
-      id: 1,
+      type: "project",
       title: "AI-Powered Study Assistant",
-      competition: "Congressional App Challenge",
-      category: "Computer Science",
-      deadline: "2024-03-15",
-      progress: 65,
-      teamSize: 3,
-      maxTeamSize: 5,
-      status: "In Progress",
-      techStack: ["React", "Python", "Machine Learning"],
-      members: [
-        { name: "You", avatar: "/placeholder-user.jpg" },
-        { name: "Sarah Chen", avatar: "/placeholder-user.jpg" },
-        { name: "Mike Johnson", avatar: "/placeholder-user.jpg" },
-      ],
+      description: "Joined as Developer",
+      time: "2 hours ago",
+      icon: Code,
     },
     {
-      id: 2,
+      type: "competition",
+      title: "Congressional App Challenge",
+      description: "Application submitted",
+      time: "1 day ago",
+      icon: Trophy,
+    },
+    {
+      type: "team",
       title: "Sustainable Energy Monitor",
-      competition: "Regeneron ISEF",
-      category: "STEM",
-      deadline: "2024-04-20",
-      progress: 30,
-      teamSize: 2,
-      maxTeamSize: 4,
-      status: "Looking for Members",
-      techStack: ["Arduino", "IoT", "Data Analysis"],
-      members: [
-        { name: "You", avatar: "/placeholder-user.jpg" },
-        { name: "Alex Rivera", avatar: "/placeholder-user.jpg" },
-      ],
+      description: "Team invitation accepted",
+      time: "3 days ago",
+      icon: Users,
     },
   ]
 
-  const mockRecommendations = [
+  const quickActions = [
     {
-      id: 3,
-      title: "Blockchain Voting System",
-      competition: "Diamond Challenge",
-      category: "Innovation & Design",
-      match: 92,
-      lookingFor: ["Developer", "Designer"],
-      techStack: ["Blockchain", "React", "Node.js"],
+      title: "Explore Projects",
+      description: "Find your next team",
+      icon: Target,
+      href: "/explore",
+      color: "bg-black hover:bg-gray-800",
     },
     {
-      id: 4,
-      title: "Mental Health Chatbot",
-      competition: "Technovation Girls",
-      category: "Computer Science",
-      match: 87,
-      lookingFor: ["AI Researcher", "UX Designer"],
-      techStack: ["Python", "NLP", "Flutter"],
+      title: "View Profiles",
+      description: "Connect with students",
+      icon: UserCheck,
+      href: "/profiles",
+      color: "border-2 border-black text-black hover:bg-black hover:text-white",
+    },
+    {
+      title: "Competitions",
+      description: "Browse opportunities",
+      icon: Award,
+      href: "/competitions",
+      color: "border-2 border-black text-black hover:bg-black hover:text-white",
+    },
+    {
+      title: "Settings",
+      description: "Manage your account",
+      icon: Settings,
+      href: "/settings",
+      color: "border-2 border-black text-black hover:bg-black hover:text-white",
     },
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Link href="/" className="flex items-center space-x-2">
-              <Trophy className="h-8 w-8 text-slate-600" />
-              <div>
-                <span className="text-2xl font-bold text-slate-800">ColabBoard</span>
-                <p className="text-xs text-slate-500 -mt-1">built by Rikhin Kavuru</p>
+    <div className="min-h-screen bg-white relative overflow-hidden">
+      {/* Background Animations */}
+      <BackgroundGradient 
+        startColor="from-gray-50/50" 
+        endColor="to-gray-100/50" 
+        triggerStart="top center"
+        triggerEnd="center center"
+      />
+      <FloatingShapes 
+        count={3} 
+        triggerStart="top center"
+        triggerEnd="bottom center"
+      />
+      
+      {/* Main Content Container */}
+      <div className="relative z-10">
+        {/* Header */}
+        <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+          <div className="container mx-auto px-8 py-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <Trophy className="h-8 w-8 text-black" />
+                <div>
+                  <span className="text-2xl font-black text-black">ColabBoard</span>
+                  <p className="text-sm text-gray-600">Dashboard</p>
+                </div>
               </div>
-            </Link>
+              <div className="flex items-center space-x-6">
+                <div className="flex items-center space-x-4">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={user?.imageUrl} alt={profile.first_name} />
+                    <AvatarFallback className="bg-black text-white font-bold">
+                      {profile.first_name[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="hidden md:block">
+                    <p className="font-bold text-black">{profile.first_name} {profile.last_name}</p>
+                    <p className="text-sm text-gray-600">{profile.school}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/dashboard" className="text-slate-600 hover:text-slate-800 font-medium">
-              Dashboard
-            </Link>
-            <Link href="/explore" className="text-slate-600 hover:text-slate-800">
-              Explore
-            </Link>
-            <Link href="/chat" className="text-slate-600 hover:text-slate-800">
-              Messages
-            </Link>
-          </nav>
-          <div className="flex items-center space-x-4">
-            <UserButton afterSignOutUrl="/" />
-          </div>
-        </div>
-      </header>
-
-      <div className="container mx-auto px-4 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">
-            Welcome back, {user?.firstName || user?.username || "there"}!
-          </h1>
-          <p className="text-slate-600">Here's what's happening with your projects and team collaborations.</p>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">Active Projects</p>
-                  <p className="text-2xl font-bold text-slate-800">2</p>
-                </div>
-                <Trophy className="h-8 w-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">Team Members</p>
-                  <p className="text-2xl font-bold text-slate-800">5</p>
-                </div>
-                <Users className="h-8 w-8 text-green-600" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">Messages</p>
-                  <p className="text-2xl font-bold text-slate-800">12</p>
-                </div>
-                <MessageSquare className="h-8 w-8 text-purple-600" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">Match Score</p>
-                  <p className="text-2xl font-bold text-slate-800">94%</p>
-                </div>
-                <Star className="h-8 w-8 text-yellow-600" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        </header>
 
         {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="projects">My Projects</TabsTrigger>
-            <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Recent Activity */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <TrendingUp className="h-5 w-5" />
-                    <span>Recent Activity</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
-                    <div>
-                      <p className="text-sm font-medium">Sarah Chen joined your AI Study Assistant project</p>
-                      <p className="text-xs text-slate-500">2 hours ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
-                    <div>
-                      <p className="text-sm font-medium">Completed milestone: Data Collection Phase</p>
-                      <p className="text-xs text-slate-500">1 day ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <div className="w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
-                    <div>
-                      <p className="text-sm font-medium">New message from Mike Johnson</p>
-                      <p className="text-xs text-slate-500">2 days ago</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Upcoming Deadlines */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Calendar className="h-5 w-5" />
-                    <span>Upcoming Deadlines</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-red-800">AI Study Assistant</p>
-                      <p className="text-sm text-red-600">Congressional App Challenge</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-red-800">Mar 15</p>
-                      <p className="text-xs text-red-600">23 days left</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-yellow-800">Energy Monitor</p>
-                      <p className="text-sm text-yellow-600">Regeneron ISEF</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-yellow-800">Apr 20</p>
-                      <p className="text-xs text-yellow-600">59 days left</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="projects" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-slate-800">My Projects</h2>
-              <Link href="/projects/new">
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Project
-                </Button>
-              </Link>
+        <div className="container mx-auto px-8 py-16">
+          <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
+            {/* Welcome Section */}
+            <div className="mb-16">
+              <h1 className="text-6xl md:text-7xl font-black text-black mb-8 leading-none">
+                Welcome back,
+                <br />
+                <span className="text-gray-400">{profile.first_name}</span>
+              </h1>
+              <p className="text-2xl text-gray-600 max-w-3xl leading-relaxed">
+                Ready to build something amazing? Here's what's happening in your world.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {mockProjects.map((project) => (
-                <Card key={project.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-lg">{project.title}</CardTitle>
-                        <CardDescription>{project.competition}</CardDescription>
-                      </div>
-                      <Badge variant={project.status === "In Progress" ? "default" : "secondary"}>
-                        {project.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Progress</span>
-                        <span>{project.progress}%</span>
-                      </div>
-                      <Progress value={project.progress} className="h-2" />
-                    </div>
-
-                    <div className="flex items-center justify-between text-sm text-slate-600">
-                      <div className="flex items-center space-x-1">
-                        <Users className="h-4 w-4" />
-                        <span>
-                          {project.teamSize}/{project.maxTeamSize} members
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Clock className="h-4 w-4" />
-                        <span>{project.deadline}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-1">
-                      {project.techStack.map((tech) => (
-                        <Badge key={tech} variant="outline" className="text-xs">
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-slate-600">Team:</span>
-                      <div className="flex -space-x-2">
-                        {project.members.map((member, index) => (
-                          <Avatar key={index} className="h-6 w-6 border-2 border-white">
-                            <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
-                            <AvatarFallback className="text-xs">{member.name[0]}</AvatarFallback>
-                          </Avatar>
-                        ))}
-                      </div>
-                    </div>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+              {stats.map((stat, index) => (
+                <Card key={index} className="border-0 shadow-none bg-transparent">
+                  <CardContent className="p-6 text-center">
+                    <stat.icon className={`h-8 w-8 mx-auto mb-4 ${stat.color}`} />
+                    <div className="text-3xl font-black text-black mb-2">{stat.value}</div>
+                    <div className="text-sm text-gray-600 uppercase tracking-widest">{stat.label}</div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          </TabsContent>
 
-          <TabsContent value="recommendations" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-slate-800">Recommended Projects</h2>
-              <Link href="/explore">
-                <Button variant="outline">
-                  <Search className="h-4 w-4 mr-2" />
-                  Explore More
-                </Button>
-              </Link>
+            {/* Quick Actions */}
+            <div className="mb-16">
+              <div className="text-center mb-12">
+                <div className="text-4xl font-black text-black mb-4">Quick Actions</div>
+                <p className="text-xl text-gray-600">Get started with these common tasks</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {quickActions.map((action, index) => (
+                  <Link key={index} href={action.href}>
+                    <Card className="border-0 shadow-none bg-transparent hover:scale-105 transition-transform cursor-pointer">
+                      <CardContent className="p-8 text-center">
+                        <action.icon className="h-12 w-12 text-black mx-auto mb-4" />
+                        <CardTitle className="text-xl font-black text-black mb-2">{action.title}</CardTitle>
+                        <CardDescription className="text-gray-600">{action.description}</CardDescription>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {mockRecommendations.map((project) => (
-                <Card key={project.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
+            {/* Profile Overview & Recent Activity */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+              {/* Profile Overview */}
+              <div>
+                <div className="text-center mb-8">
+                  <div className="text-3xl font-black text-black mb-4">Your Profile</div>
+                </div>
+                <Card className="border-0 shadow-none bg-transparent">
+                  <CardContent className="p-8 space-y-6">
+                    <div className="flex items-center space-x-4">
+                      <Avatar className="h-16 w-16">
+                        <AvatarImage src={user?.imageUrl} alt={profile.first_name} />
+                        <AvatarFallback className="bg-black text-white font-bold text-xl">
+                          {profile.first_name[0]}
+                        </AvatarFallback>
+                      </Avatar>
                       <div>
-                        <CardTitle className="text-lg">{project.title}</CardTitle>
-                        <CardDescription>{project.competition}</CardDescription>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Zap className="h-4 w-4 text-green-600" />
-                        <span className="text-sm font-medium text-green-600">{project.match}% match</span>
+                        <h3 className="text-2xl font-black text-black">{profile.first_name} {profile.last_name}</h3>
+                        <p className="text-gray-600">{profile.school} • {profile.grade_level}</p>
+                        <div className="flex items-center space-x-2 mt-2">
+                          <MapPin className="h-4 w-4 text-gray-500" />
+                          <span className="text-sm text-gray-600">{profile.location}</span>
+                        </div>
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+
                     <div>
-                      <p className="text-sm text-slate-600 mb-2">Looking for:</p>
-                      <div className="flex flex-wrap gap-1">
-                        {project.lookingFor.map((role) => (
-                          <Badge key={role} variant="secondary">
+                      <h4 className="text-lg font-bold text-black mb-3">Skills</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {profile.skills?.slice(0, 5).map((skill: string) => (
+                          <Badge key={skill} variant="outline" className="border-2 border-gray-300 text-gray-700 px-3 py-1 text-sm font-bold">
+                            {skill}
+                          </Badge>
+                        ))}
+                        {profile.skills?.length > 5 && (
+                          <Badge variant="outline" className="border-2 border-gray-300 text-gray-700 px-3 py-1 text-sm font-bold">
+                            +{profile.skills.length - 5} more
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-bold text-black mb-3">Preferred Roles</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {profile.roles?.map((role: string) => (
+                          <Badge key={role} variant="outline" className="border-2 border-black text-black px-3 py-1 text-sm font-bold">
                             {role}
                           </Badge>
                         ))}
@@ -378,26 +300,46 @@ export default function DashboardPage() {
                     </div>
 
                     <div>
-                      <p className="text-sm text-slate-600 mb-2">Tech Stack:</p>
-                      <div className="flex flex-wrap gap-1">
-                        {project.techStack.map((tech) => (
-                          <Badge key={tech} variant="outline" className="text-xs">
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
+                      <h4 className="text-lg font-bold text-black mb-3">Experience Level</h4>
+                      <Badge variant="outline" className="border-2 border-black text-black px-4 py-2 text-sm font-bold">
+                        {profile.experience_level}
+                      </Badge>
                     </div>
-
-                    <Button className="w-full">
-                      <Target className="h-4 w-4 mr-2" />
-                      Apply to Join
-                    </Button>
                   </CardContent>
                 </Card>
-              ))}
+              </div>
+
+              {/* Recent Activity */}
+              <div>
+                <div className="text-center mb-8">
+                  <div className="text-3xl font-black text-black mb-4">Recent Activity</div>
+                </div>
+                <Card className="border-0 shadow-none bg-transparent">
+                  <CardContent className="p-8 space-y-6">
+                    {recentActivity.map((activity, index) => (
+                      <div key={index} className="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                        <div className="flex-shrink-0">
+                          <activity.icon className="h-6 w-6 text-black" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-black">{activity.title}</h4>
+                          <p className="text-gray-600 text-sm">{activity.description}</p>
+                          <p className="text-gray-500 text-xs mt-1">{activity.time}</p>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="text-center pt-4">
+                      <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
+                        View All Activity
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
-          </TabsContent>
-        </Tabs>
+          </TextFade>
+        </div>
       </div>
     </div>
   )

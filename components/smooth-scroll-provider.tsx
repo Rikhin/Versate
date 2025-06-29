@@ -1,33 +1,45 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import Lenis from "lenis"
 
 interface SmoothScrollProviderProps {
   children: React.ReactNode
 }
 
 export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
-  const lenisRef = useRef<Lenis | null>(null)
+  const lenisRef = useRef<any>(null)
 
   useEffect(() => {
-    // Initialize Lenis smooth scrolling
-    lenisRef.current = new Lenis({
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    })
+    // Dynamically import Lenis to avoid SSR issues
+    const initLenis = async () => {
+      try {
+        const Lenis = (await import("lenis")).default
+        
+        // Initialize Lenis smooth scrolling
+        lenisRef.current = new Lenis({
+          duration: 1.2,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        })
 
-    // RAF for smooth scrolling
-    function raf(time: number) {
-      lenisRef.current?.raf(time)
-      requestAnimationFrame(raf)
+        // RAF for smooth scrolling
+        function raf(time: number) {
+          lenisRef.current?.raf(time)
+          requestAnimationFrame(raf)
+        }
+
+        requestAnimationFrame(raf)
+      } catch (error) {
+        console.warn("Failed to initialize Lenis smooth scrolling:", error)
+      }
     }
 
-    requestAnimationFrame(raf)
+    initLenis()
 
     // Cleanup
     return () => {
-      lenisRef.current?.destroy()
+      if (lenisRef.current?.destroy) {
+        lenisRef.current.destroy()
+      }
     }
   }, [])
 

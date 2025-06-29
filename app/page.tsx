@@ -76,11 +76,11 @@ export default function LandingPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Background Animations */}
       <BackgroundGradient 
-        startColor="from-blue-50/50" 
-        endColor="to-purple-50/50" 
+        startColor="from-gray-50/50" 
+        endColor="to-gray-100/50" 
         triggerStart="top center"
         triggerEnd="center center"
       />
@@ -92,85 +92,40 @@ export default function LandingPage() {
       
       {/* Main Content Container */}
       <div className="relative z-10">
-        {/* Header */}
-        <header className="border-b border-slate-800 bg-black/80 backdrop-blur-sm">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Trophy className="h-8 w-8 text-blue-400" />
-              <div>
-                <span className="text-2xl font-bold text-white">ColabBoard</span>
-                <p className="text-xs text-slate-400 -mt-1">built by Rikhin Kavuru</p>
-              </div>
-            </div>
-            <nav className="hidden md:flex items-center space-x-6">
-              <a href="#features" className="text-slate-300 hover:text-white transition-colors">
-                Features
-              </a>
-              <a href="#competitions" className="text-slate-300 hover:text-white transition-colors">
-                Competitions
-              </a>
-              <a href="#projects" className="text-slate-300 hover:text-white transition-colors">
-                Projects
-              </a>
-              <Link href="/animations" className="text-slate-300 hover:text-white transition-colors">
-                Animations
-              </Link>
-            </nav>
-            <div className="flex items-center space-x-4">
-              {isSignedIn ? (
-                <>
-                  <Link href="/dashboard">
-                    <Button>Dashboard</Button>
-                  </Link>
-                  <UserButton afterSignOutUrl="/" />
-                </>
-              ) : (
-                <>
-                  <SignInButton mode="modal">
-                    <Button variant="outline">Sign In</Button>
-                  </SignInButton>
-                  <SignUpButton mode="modal">
-                    <Button>Sign Up</Button>
-                  </SignUpButton>
-                </>
-              )}
-            </div>
-          </div>
-        </header>
-
         {/* Hero Section */}
-        <section className="container mx-auto px-4 py-16 text-center relative">
+        <section id="home" className="container mx-auto px-8 py-32 text-left">
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.2}>
-            <div className="max-w-4xl mx-auto">
-              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-                Find Your Perfect
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                  {" "}
-                  Competition Team
-                </span>
-              </h1>
-              <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-8xl md:text-9xl font-black text-black mb-8 leading-none">
+                Find Your
+                <br />
+                Perfect
+                <br />
+                <span className="text-gray-400">Team</span>
+              </div>
+              <p className="text-2xl text-gray-600 mb-12 max-w-3xl leading-relaxed">
                 Connect with talented students, join exciting projects, and compete in prestigious academic competitions.
+                <br />
                 Build your portfolio while making lasting connections.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-6">
                 {isSignedIn ? (
                   <Link href="/dashboard">
-                    <Button size="lg" className="text-lg px-8 py-3">
+                    <Button size="lg" className="text-xl px-12 py-6 bg-black text-white hover:bg-gray-800">
                       Go to Dashboard
-                      <ArrowRight className="ml-2 h-5 w-5" />
+                      <ArrowRight className="ml-4 h-6 w-6" />
                     </Button>
                   </Link>
                 ) : (
                   <>
                     <SignUpButton mode="modal">
-                      <Button size="lg" className="text-lg px-8 py-3">
+                      <Button size="lg" className="text-xl px-12 py-6 bg-black text-white hover:bg-gray-800">
                         Start Building Teams
-                        <ArrowRight className="ml-2 h-5 w-5" />
+                        <ArrowRight className="ml-4 h-6 w-6" />
                       </Button>
                     </SignUpButton>
                     <Link href="/explore">
-                      <Button size="lg" variant="outline" className="text-lg px-8 py-3 bg-transparent">
+                      <Button size="lg" variant="outline" className="text-xl px-12 py-6 border-2 border-black text-black hover:bg-black hover:text-white">
                         Explore Projects
                       </Button>
                     </Link>
@@ -182,16 +137,13 @@ export default function LandingPage() {
         </section>
 
         {/* Stats Section */}
-        <section className="container mx-auto px-4 py-16 relative">
+        <section className="container mx-auto px-8 py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-16">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
-                  <div className="flex justify-center mb-4">
-                    <stat.icon className="h-12 w-12 text-blue-400" />
-                  </div>
-                  <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
-                  <div className="text-slate-300">{stat.label}</div>
+                  <div className="text-6xl font-black text-black mb-4">{stat.value}</div>
+                  <div className="text-lg text-gray-600 uppercase tracking-widest">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -199,115 +151,59 @@ export default function LandingPage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="container mx-auto px-4 py-16 relative">
-          <BackgroundGradient 
-            startColor="from-green-50/30" 
-            endColor="to-blue-50/30" 
-            triggerStart="top center"
-            triggerEnd="bottom center"
-          />
+        <section id="works" className="container mx-auto px-8 py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.15}>
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Everything You Need to Succeed</h2>
-              <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+            <div className="text-center mb-24">
+              <div className="text-9xl font-black text-black mb-8">01</div>
+              <h2 className="text-6xl md:text-7xl font-black text-black mb-8 leading-none">
+                Everything You
+                <br />
+                Need to Succeed
+              </h2>
+              <p className="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 Our platform provides all the tools and connections you need to excel in academic competitions
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-blue-900/50 rounded-lg">
-                      <Users className="h-6 w-6 text-blue-400" />
-                    </div>
-                    <CardTitle className="text-white">Smart Team Matching</CardTitle>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+              <Card className="border-0 shadow-none bg-transparent">
+                <CardHeader className="pb-8">
+                  <div className="flex items-center space-x-6">
+                    <div className="text-4xl font-black text-black">01</div>
+                    <CardTitle className="text-3xl font-black text-black">Smart Team Matching</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-slate-300">
+                  <CardDescription className="text-xl text-gray-600 leading-relaxed">
                     Our AI-powered algorithm matches you with teammates based on skills, interests, and competition goals.
                   </CardDescription>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-green-900/50 rounded-lg">
-                      <MessageSquare className="h-6 w-6 text-green-400" />
-                    </div>
-                    <CardTitle className="text-white">Real-time Collaboration</CardTitle>
+              <Card className="border-0 shadow-none bg-transparent">
+                <CardHeader className="pb-8">
+                  <div className="flex items-center space-x-6">
+                    <div className="text-4xl font-black text-black">02</div>
+                    <CardTitle className="text-3xl font-black text-black">Real-time Collaboration</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-slate-300">
+                  <CardDescription className="text-xl text-gray-600 leading-relaxed">
                     Built-in chat, file sharing, and project management tools to keep your team organized and productive.
                   </CardDescription>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-purple-900/50 rounded-lg">
-                      <Trophy className="h-6 w-6 text-purple-400" />
-                    </div>
-                    <CardTitle className="text-white">Competition Support</CardTitle>
+              <Card className="border-0 shadow-none bg-transparent">
+                <CardHeader className="pb-8">
+                  <div className="flex items-center space-x-6">
+                    <div className="text-4xl font-black text-black">03</div>
+                    <CardTitle className="text-3xl font-black text-black">Competition Support</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-slate-300">
+                  <CardDescription className="text-xl text-gray-600 leading-relaxed">
                     Access resources, deadlines, and guidelines for 25+ prestigious academic competitions.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-yellow-900/50 rounded-lg">
-                      <Code className="h-6 w-6 text-yellow-400" />
-                    </div>
-                    <CardTitle className="text-white">Skill Development</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-slate-300">
-                    Learn from peers, share knowledge, and develop technical and soft skills through collaborative projects.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-red-900/50 rounded-lg">
-                      <Target className="h-6 w-6 text-red-400" />
-                    </div>
-                    <CardTitle className="text-white">Project Management</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-slate-300">
-                    Track progress, set milestones, and manage deadlines with integrated project management tools.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-indigo-900/50 rounded-lg">
-                      <Star className="h-6 w-6 text-indigo-400" />
-                    </div>
-                    <CardTitle className="text-white">Portfolio Building</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-slate-300">
-                    Showcase your projects, achievements, and skills to build an impressive academic and professional
-                    portfolio.
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -316,52 +212,51 @@ export default function LandingPage() {
         </section>
 
         {/* Featured Projects */}
-        <section id="projects" className="container mx-auto px-4 py-16 bg-slate-900/30 relative">
-          <BackgroundGradient 
-            startColor="from-purple-50/40" 
-            endColor="to-pink-50/40" 
-            triggerStart="top center"
-            triggerEnd="bottom center"
-          />
+        <section id="about" className="container mx-auto px-8 py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Featured Projects</h2>
-              <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+            <div className="text-center mb-24">
+              <div className="text-9xl font-black text-black mb-8">02</div>
+              <h2 className="text-6xl md:text-7xl font-black text-black mb-8 leading-none">
+                Featured
+                <br />
+                Projects
+              </h2>
+              <p className="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 Discover exciting projects looking for talented team members
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
               {featuredProjects.map((project, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow bg-slate-900/50 border-slate-800">
-                  <CardHeader>
-                    <div className="flex justify-between items-start mb-2">
-                      <Badge variant="secondary" className="bg-slate-800 text-slate-300">{project.competition}</Badge>
-                      <div className="flex items-center space-x-1">
-                        <Zap className="h-4 w-4 text-green-400" />
-                        <span className="text-sm font-medium text-green-400">{project.matchScore}% match</span>
+                <Card key={index} className="border-0 shadow-none bg-transparent">
+                  <CardHeader className="pb-8">
+                    <div className="flex justify-between items-start mb-4">
+                      <Badge variant="outline" className="border-2 border-black text-black px-4 py-2 text-sm font-bold uppercase tracking-widest">{project.competition}</Badge>
+                      <div className="flex items-center space-x-2">
+                        <Zap className="h-5 w-5 text-black" />
+                        <span className="text-sm font-bold text-black">{project.matchScore}% match</span>
                       </div>
                     </div>
-                    <CardTitle className="text-lg text-white">{project.title}</CardTitle>
-                    <CardDescription className="text-slate-300">
+                    <CardTitle className="text-2xl font-black text-black">{project.title}</CardTitle>
+                    <CardDescription className="text-lg text-gray-600">
                       Looking for talented teammates to join this {project.category} project
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="h-8 w-8">
+                  <CardContent className="space-y-6">
+                    <div className="flex items-center space-x-4">
+                      <Avatar className="h-12 w-12">
                         <AvatarImage src={project.leader.avatar || "/placeholder.svg"} alt={project.leader.name} />
-                        <AvatarFallback>{project.leader.name[0]}</AvatarFallback>
+                        <AvatarFallback className="bg-black text-white font-bold">{project.leader.name[0]}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium text-white">{project.leader.name}</p>
-                        <p className="text-xs text-slate-400">{project.leader.school}</p>
+                        <p className="text-lg font-bold text-black">{project.leader.name}</p>
+                        <p className="text-sm text-gray-600">{project.leader.school}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between text-sm text-slate-300">
-                      <div className="flex items-center space-x-1">
-                        <Users className="h-4 w-4" />
+                    <div className="flex items-center justify-between text-lg text-gray-600">
+                      <div className="flex items-center space-x-2">
+                        <Users className="h-5 w-5" />
                         <span>
                           {project.teamSize}/{project.maxTeamSize} members
                         </span>
@@ -369,18 +264,18 @@ export default function LandingPage() {
                     </div>
 
                     <div>
-                      <p className="text-sm text-slate-300 mb-2">Tech Stack:</p>
-                      <div className="flex flex-wrap gap-1">
+                      <p className="text-lg text-gray-600 mb-3">Tech Stack:</p>
+                      <div className="flex flex-wrap gap-2">
                         {project.techStack.map((tech) => (
-                          <Badge key={tech} variant="outline" className="text-xs border-slate-700 text-slate-300">
+                          <Badge key={tech} variant="outline" className="border-2 border-gray-300 text-gray-700 px-3 py-1 text-sm font-bold">
                             {tech}
                           </Badge>
                         ))}
                       </div>
                     </div>
 
-                    <Button className="w-full">
-                      <Target className="h-4 w-4 mr-2" />
+                    <Button className="w-full bg-black text-white hover:bg-gray-800 py-4 text-lg font-bold">
+                      <Target className="h-5 w-5 mr-3" />
                       Apply to Join
                     </Button>
                   </CardContent>
@@ -388,11 +283,11 @@ export default function LandingPage() {
               ))}
             </div>
 
-            <div className="text-center mt-12">
+            <div className="text-center mt-24">
               <Link href="/explore">
-                <Button size="lg" variant="outline" className="border-slate-700 text-white hover:bg-slate-800">
+                <Button size="lg" variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white text-xl px-12 py-6 font-bold">
                   View All Projects
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-4 h-6 w-6" />
                 </Button>
               </Link>
             </div>
@@ -400,21 +295,26 @@ export default function LandingPage() {
         </section>
 
         {/* Competitions Section */}
-        <section id="competitions" className="container mx-auto px-4 py-16 relative">
+        <section id="competitions" className="container mx-auto px-8 py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Supported Competitions</h2>
-              <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+            <div className="text-center mb-24">
+              <div className="text-9xl font-black text-black mb-8">03</div>
+              <h2 className="text-6xl md:text-7xl font-black text-black mb-8 leading-none">
+                Supported
+                <br />
+                Competitions
+              </h2>
+              <p className="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 We support teams participating in prestigious academic competitions worldwide
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {competitions.map((competition, index) => (
-                <Card key={index} className="hover:shadow-md transition-shadow bg-slate-900/50 border-slate-800">
-                  <CardContent className="p-4 text-center">
-                    <Trophy className="h-8 w-8 text-blue-400 mx-auto mb-2" />
-                    <p className="text-sm font-medium text-white">{competition}</p>
+                <Card key={index} className="border-0 shadow-none bg-transparent text-center">
+                  <CardContent className="p-8">
+                    <Trophy className="h-12 w-12 text-black mx-auto mb-4" />
+                    <p className="text-lg font-bold text-black leading-tight">{competition}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -423,33 +323,27 @@ export default function LandingPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="container mx-auto px-4 py-16 relative">
-          <BackgroundGradient 
-            startColor="from-blue-600/10" 
-            endColor="to-purple-600/10" 
-            triggerStart="top center"
-            triggerEnd="bottom center"
-          />
+        <section id="contacts" className="container mx-auto px-8 py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.2}>
-            <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-              <CardContent className="p-12 text-center">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Build Your Dream Team?</h2>
-                <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+            <Card className="bg-black text-white border-0">
+              <CardContent className="p-24 text-center">
+                <h2 className="text-6xl md:text-7xl font-black mb-8 leading-none">Ready to Build Your Dream Team?</h2>
+                <p className="text-2xl mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed">
                   Join thousands of students who are already collaborating on amazing projects and winning competitions
                   together.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-6 justify-center">
                   <Link href="/dashboard">
-                    <Button size="lg" variant="secondary" className="text-lg px-8 py-3">
+                    <Button size="lg" variant="secondary" className="text-xl px-12 py-6 bg-white text-black hover:bg-gray-100 font-bold">
                       Get Started Now
-                      <ArrowRight className="ml-2 h-5 w-5" />
+                      <ArrowRight className="ml-4 h-6 w-6" />
                     </Button>
                   </Link>
                   <Link href="/explore">
                     <Button
                       size="lg"
                       variant="outline"
-                      className="text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-slate-800 bg-transparent"
+                      className="text-xl px-12 py-6 border-2 border-white text-white hover:bg-white hover:text-black bg-transparent font-bold"
                     >
                       Explore Projects
                     </Button>
@@ -461,29 +355,29 @@ export default function LandingPage() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-slate-800 bg-black/80 backdrop-blur-sm relative z-10">
-          <div className="container mx-auto px-4 py-8">
+        <footer className="border-t border-gray-200 bg-white py-16">
+          <div className="container mx-auto px-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
-              <div className="flex items-center space-x-2 mb-4 md:mb-0">
-                <Trophy className="h-6 w-6 text-blue-400" />
+              <div className="flex items-center space-x-4 mb-8 md:mb-0">
+                <Trophy className="h-8 w-8 text-black" />
                 <div>
-                  <span className="text-lg font-bold text-white">ColabBoard</span>
-                  <p className="text-xs text-slate-400 -mt-1">built by Rikhin Kavuru</p>
+                  <span className="text-2xl font-black text-black">ColabBoard</span>
+                  <p className="text-sm text-gray-600">built by Rikhin Kavuru</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-6 text-sm text-slate-300">
-                <a href="#" className="hover:text-white transition-colors">
+              <div className="flex items-center space-x-8 text-sm text-gray-600">
+                <a href="#" className="hover:text-black transition-colors font-bold uppercase tracking-widest">
                   Privacy Policy
                 </a>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="hover:text-black transition-colors font-bold uppercase tracking-widest">
                   Terms of Service
                 </a>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="hover:text-black transition-colors font-bold uppercase tracking-widest">
                   Contact
                 </a>
               </div>
             </div>
-            <div className="border-t border-slate-800 mt-8 pt-8 text-center text-sm text-slate-400">
+            <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
               <p>&copy; 2024 ColabBoard. All rights reserved. Empowering students to achieve excellence together.</p>
             </div>
           </div>

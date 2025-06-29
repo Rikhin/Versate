@@ -89,24 +89,35 @@ export function BackgroundDesign({ className = "" }: BackgroundDesignProps) {
       className={`fixed inset-0 pointer-events-none overflow-hidden z-0 ${className}`}
       aria-hidden="true"
     >
-      {/* Top-left organic blob */}
-      <div className="bg-shape floating absolute -top-20 -left-20 w-80 h-80 opacity-10">
-        <svg
-          viewBox="0 0 200 200"
-          className="w-full h-full"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <linearGradient id="blob1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#fff" />
-              <stop offset="100%" stopColor="#bbb" />
-            </linearGradient>
-          </defs>
-          <path
-            d="M35.2,-48.8C46.8,-42.1,58.4,-33.2,64.8,-21.8C71.2,-10.4,72.4,3.5,71.2,16.8C70,30.1,66.4,42.8,58.8,52.2C51.2,61.6,39.6,67.7,27.2,71.8C14.8,75.9,1.6,78,-10.8,76.8C-23.2,75.6,-35.6,71.1,-45.2,63.2C-54.8,55.3,-61.6,44,-66.4,31.8C-71.2,19.6,-74,6.5,-72.8,-6.2C-71.6,-18.9,-66.4,-31.2,-59.2,-41.2C-52,-51.2,-42.8,-58.8,-32.4,-64.4C-22,-70,-11,-73.6,0.2,-73.9C11.4,-74.2,22.8,-71.2,35.2,-48.8Z"
-            fill="url(#blob1)"
-            className="transition-colors duration-1000"
-          />
+      {/* Top-left thin line */}
+      <div className="bg-shape absolute top-0 left-0 w-1/2 h-24 opacity-10">
+        <svg viewBox="0 0 400 24" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="12" x2="400" y2="12" stroke="#bbb" strokeWidth="2" />
+        </svg>
+      </div>
+      {/* Top-right circle */}
+      <div className="bg-shape absolute top-0 right-0 w-40 h-40 opacity-10">
+        <svg viewBox="0 0 100 100" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="40" fill="#eee" />
+        </svg>
+      </div>
+      {/* Bottom-left blob */}
+      <div className="bg-shape absolute bottom-0 left-0 w-64 h-64 opacity-10">
+        <svg viewBox="0 0 200 200" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <path d="M35.2,-48.8C46.8,-42.1,58.4,-33.2,64.8,-21.8C71.2,-10.4,72.4,3.5,71.2,16.8C70,30.1,66.4,42.8,58.8,52.2C51.2,61.6,39.6,67.7,27.2,71.8C14.8,75.9,1.6,78,-10.8,76.8C-23.2,75.6,-35.6,71.1,-45.2,63.2C-54.8,55.3,-61.6,44,-66.4,31.8C-71.2,19.6,-74,6.5,-72.8,-6.2C-71.6,-18.9,-66.4,-31.2,-59.2,-41.2C-52,-51.2,-42.8,-58.8,-32.4,-64.4C-22,-70,-11,-73.6,0.2,-73.9C11.4,-74.2,22.8,-71.2,35.2,-48.8Z" fill="#f5f5f5" />
+        </svg>
+      </div>
+      {/* Center vertical line */}
+      <div className="bg-shape absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-full opacity-5">
+        <svg viewBox="0 0 1 1000" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0.5" y1="0" x2="0.5" y2="1000" stroke="#eee" strokeWidth="1" />
+        </svg>
+      </div>
+      {/* Bottom-right overlapping circles */}
+      <div className="bg-shape absolute bottom-0 right-0 w-64 h-64 opacity-10">
+        <svg viewBox="0 0 200 200" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="60" cy="140" r="60" fill="#fafafa" />
+          <circle cx="140" cy="140" r="40" fill="#eaeaea" />
         </svg>
       </div>
 
