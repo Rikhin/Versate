@@ -175,229 +175,231 @@ export default function DashboardPage() {
         </Sidebar>
         {/* Main Content Container */}
         <div className="flex-1 flex justify-center items-start">
-          <div className="w-full max-w-4xl px-4 py-12 md:py-16 space-y-12">
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => (
-                <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white/90">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                        <p className="text-sm text-gray-600">{stat.label}</p>
-                      </div>
-                      <stat.icon className={`h-8 w-8 ${stat.color}`} />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Quick Actions */}
-            <div>
-              <TextFade 
-                className="text-2xl font-bold text-gray-900 mb-6"
-                triggerStart="top center"
-              >
-                Quick Actions
-              </TextFade>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {quickActions.map((action, index) => (
-                  <Link key={index} href={action.href}>
-                    <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 cursor-pointer bg-white/90">
-                      <CardContent className="p-6">
-                        <div className="flex items-center space-x-4">
-                          <div className={`p-3 rounded-lg ${action.color} transition-colors`}>
-                            <action.icon className="h-6 w-6" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-gray-900">{action.title}</h3>
-                            <p className="text-sm text-gray-600">{action.description}</p>
-                          </div>
+          <div className="w-full max-w-3xl mx-auto mt-12 mb-12">
+            <div className="bg-white/95 rounded-2xl shadow-2xl px-8 py-10 md:px-12 md:py-14 space-y-12 border border-gray-100">
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {stats.map((stat, index) => (
+                  <Card key={index} className="border-0 shadow-none bg-transparent">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                          <p className="text-sm text-gray-600">{stat.label}</p>
                         </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* Profile Overview */}
-            <div>
-              <TextFade 
-                className="text-2xl font-bold text-gray-900 mb-6"
-                triggerStart="top center"
-              >
-                Profile Overview
-              </TextFade>
-              <Card className="border-0 shadow-sm bg-white/90">
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{profile.full_name || user?.fullName}</h3>
-                      <p className="text-gray-600 mb-4">{profile.bio || 'No bio added yet. Add one to help others get to know you!'}</p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        {profile.location && (
-                          <div className="flex items-center space-x-2">
-                            <MapPin className="h-4 w-4 text-gray-500" />
-                            <span className="text-sm text-gray-600">{profile.location}</span>
-                          </div>
-                        )}
-                        {profile.experience_level && (
-                          <div className="flex items-center space-x-2">
-                            <BookOpen className="h-4 w-4 text-gray-500" />
-                            <span className="text-sm text-gray-600">{profile.experience_level}</span>
-                          </div>
-                        )}
-                      </div>
-                      {profile.skills && profile.skills.length > 0 && (
-                        <div className="mb-4">
-                          <h4 className="text-sm font-medium text-gray-900 mb-2">Skills</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {profile.skills.slice(0, 5).map((skill, index) => (
-                              <Badge key={index} variant="secondary" className="text-xs">
-                                {skill}
-                              </Badge>
-                            ))}
-                            {profile.skills.length > 5 && (
-                              <Badge variant="outline" className="text-xs">
-                                +{profile.skills.length - 5} more
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex flex-col space-y-4">
-                      <Link href="/profile">
-                        <Button className="w-full bg-black hover:bg-gray-800">
-                          Edit Profile
-                        </Button>
-                      </Link>
-                      <div className="text-center">
-                        <p className="text-sm text-gray-600">Profile completion</p>
-                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                          <div 
-                            className="bg-black h-2 rounded-full transition-all duration-300"
-                            style={{ 
-                              width: `${Math.min(100, (Object.keys(profile).filter(key => 
-                                profile[key as keyof Profile] && 
-                                profile[key as keyof Profile] !== '' && 
-                                key !== 'id' && 
-                                key !== 'user_id' && 
-                                key !== 'created_at' && 
-                                key !== 'updated_at'
-                              ).length / 10) * 100)}%` 
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Recent Activity */}
-            <div>
-              <TextFade 
-                className="text-2xl font-bold text-gray-900 mb-6"
-                triggerStart="top center"
-              >
-                Recent Activity
-              </TextFade>
-              <div className="space-y-4">
-                {recentActivity.map((activity, index) => (
-                  <Card key={index} className="border-0 shadow-sm bg-white/90">
-                    <CardContent className="p-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="p-2 bg-gray-100 rounded-lg">
-                          <activity.icon className="h-5 w-5 text-gray-600" />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-medium text-gray-900">{activity.title}</h3>
-                          <p className="text-sm text-gray-600">{activity.description}</p>
-                        </div>
-                        <span className="text-sm text-gray-500">{activity.time}</span>
+                        <stat.icon className={`h-8 w-8 ${stat.color}`} />
                       </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
-            </div>
 
-            {/* Recommendations (swap Projects and Competitions, add View All) */}
-            <div>
-              <TextFade 
-                className="text-2xl font-bold text-gray-900 mb-6"
-                triggerStart="top center"
-              >
-                Recommended for You
-              </TextFade>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Competitions card first */}
-                <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white/90">
-                  <CardContent className="p-6 flex flex-col h-full">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="p-2 bg-green-100 rounded-lg">
-                        <Trophy className="h-5 w-5 text-green-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">Hackathons</h3>
-                        <p className="text-sm text-gray-600">Perfect timing</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Several hackathons are starting soon. Ready to compete?
-                    </p>
-                    <Button variant="outline" className="w-full mb-2">
-                      View Competitions
-                    </Button>
-                    <Link href="/competitions" className="w-full">
-                      <Button variant="secondary" className="w-full mt-auto">View All</Button>
+              {/* Quick Actions */}
+              <div className="space-y-6">
+                <TextFade 
+                  className="text-2xl font-bold text-gray-900"
+                  triggerStart="top center"
+                >
+                  Quick Actions
+                </TextFade>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {quickActions.map((action, index) => (
+                    <Link key={index} href={action.href}>
+                      <Card className="border-0 shadow-none bg-gray-50 hover:shadow-md transition-all duration-200 hover:scale-105 cursor-pointer">
+                        <CardContent className="p-6">
+                          <div className="flex items-center space-x-4">
+                            <div className={`p-3 rounded-lg ${action.color} transition-colors`}>
+                              <action.icon className="h-6 w-6" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-gray-900">{action.title}</h3>
+                              <p className="text-sm text-gray-600">{action.description}</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     </Link>
-                  </CardContent>
-                </Card>
-                {/* Projects card second */}
-                <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white/90">
+                  ))}
+                </div>
+              </div>
+
+              {/* Profile Overview */}
+              <div className="space-y-6">
+                <TextFade 
+                  className="text-2xl font-bold text-gray-900"
+                  triggerStart="top center"
+                >
+                  Profile Overview
+                </TextFade>
+                <Card className="border-0 shadow-none bg-gray-50">
                   <CardContent className="p-6">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="p-2 bg-blue-100 rounded-lg">
-                        <Code className="h-5 w-5 text-blue-600" />
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      <div className="lg:col-span-2">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">{profile.full_name || user?.fullName}</h3>
+                        <p className="text-gray-600 mb-4">{profile.bio || 'No bio added yet. Add one to help others get to know you!'}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          {profile.location && (
+                            <div className="flex items-center space-x-2">
+                              <MapPin className="h-4 w-4 text-gray-500" />
+                              <span className="text-sm text-gray-600">{profile.location}</span>
+                            </div>
+                          )}
+                          {profile.experience_level && (
+                            <div className="flex items-center space-x-2">
+                              <BookOpen className="h-4 w-4 text-gray-500" />
+                              <span className="text-sm text-gray-600">{profile.experience_level}</span>
+                            </div>
+                          )}
+                        </div>
+                        {profile.skills && profile.skills.length > 0 && (
+                          <div className="mb-4">
+                            <h4 className="text-sm font-medium text-gray-900 mb-2">Skills</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {profile.skills.slice(0, 5).map((skill, index) => (
+                                <Badge key={index} variant="secondary" className="text-xs">
+                                  {skill}
+                                </Badge>
+                              ))}
+                              {profile.skills.length > 5 && (
+                                <Badge variant="outline" className="text-xs">
+                                  +{profile.skills.length - 5} more
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">Web Development</h3>
-                        <p className="text-sm text-gray-600">Based on your skills</p>
+                      <div className="flex flex-col space-y-4">
+                        <Link href="/profile">
+                          <Button className="w-full bg-black hover:bg-gray-800">
+                            Edit Profile
+                          </Button>
+                        </Link>
+                        <div className="text-center">
+                          <p className="text-sm text-gray-600">Profile completion</p>
+                          <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                            <div 
+                              className="bg-black h-2 rounded-full transition-all duration-300"
+                              style={{ 
+                                width: `${Math.min(100, (Object.keys(profile).filter(key => 
+                                  profile[key as keyof Profile] && 
+                                  profile[key as keyof Profile] !== '' && 
+                                  key !== 'id' && 
+                                  key !== 'user_id' && 
+                                  key !== 'created_at' && 
+                                  key !== 'updated_at'
+                                ).length / 10) * 100)}%` 
+                              }}
+                            ></div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Join teams working on web applications and improve your frontend skills.
-                    </p>
-                    <Button variant="outline" className="w-full">
-                      Explore Projects
-                    </Button>
                   </CardContent>
                 </Card>
-                {/* Team Building card remains last */}
-                <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white/90">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="p-2 bg-purple-100 rounded-lg">
-                        <Users className="h-5 w-5 text-purple-600" />
+              </div>
+
+              {/* Recent Activity */}
+              <div className="space-y-6">
+                <TextFade 
+                  className="text-2xl font-bold text-gray-900"
+                  triggerStart="top center"
+                >
+                  Recent Activity
+                </TextFade>
+                <div className="space-y-4">
+                  {recentActivity.map((activity, index) => (
+                    <Card key={index} className="border-0 shadow-none bg-gray-50">
+                      <CardContent className="p-4">
+                        <div className="flex items-center space-x-4">
+                          <div className="p-2 bg-gray-100 rounded-lg">
+                            <activity.icon className="h-5 w-5 text-gray-600" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-medium text-gray-900">{activity.title}</h3>
+                            <p className="text-sm text-gray-600">{activity.description}</p>
+                          </div>
+                          <span className="text-sm text-gray-500">{activity.time}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recommendations (swap Projects and Competitions, add View All) */}
+              <div className="space-y-6">
+                <TextFade 
+                  className="text-2xl font-bold text-gray-900"
+                  triggerStart="top center"
+                >
+                  Recommended for You
+                </TextFade>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* Competitions card first */}
+                  <Card className="border-0 shadow-none bg-gray-50">
+                    <CardContent className="p-6 flex flex-col h-full">
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="p-2 bg-green-100 rounded-lg">
+                          <Trophy className="h-5 w-5 text-green-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">Hackathons</h3>
+                          <p className="text-sm text-gray-600">Perfect timing</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">Team Building</h3>
-                        <p className="text-sm text-gray-600">Network expansion</p>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Several hackathons are starting soon. Ready to compete?
+                      </p>
+                      <Button variant="outline" className="w-full mb-2">
+                        View Competitions
+                      </Button>
+                      <Link href="/competitions" className="w-full">
+                        <Button variant="secondary" className="w-full mt-auto">View All</Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                  {/* Projects card second */}
+                  <Card className="border-0 shadow-none bg-gray-50">
+                    <CardContent className="p-6">
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                          <Code className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">Web Development</h3>
+                          <p className="text-sm text-gray-600">Based on your skills</p>
+                        </div>
                       </div>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Connect with other students who share your interests and goals.
-                    </p>
-                    <Button variant="outline" className="w-full">
-                      Browse Profiles
-                    </Button>
-                  </CardContent>
-                </Card>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Join teams working on web applications and improve your frontend skills.
+                      </p>
+                      <Button variant="outline" className="w-full">
+                        Explore Projects
+                      </Button>
+                    </CardContent>
+                  </Card>
+                  {/* Team Building card remains last */}
+                  <Card className="border-0 shadow-none bg-gray-50">
+                    <CardContent className="p-6">
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="p-2 bg-purple-100 rounded-lg">
+                          <Users className="h-5 w-5 text-purple-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">Team Building</h3>
+                          <p className="text-sm text-gray-600">Network expansion</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Connect with other students who share your interests and goals.
+                      </p>
+                      <Button variant="outline" className="w-full">
+                        Browse Profiles
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </div>
           </div>
