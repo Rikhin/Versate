@@ -30,15 +30,22 @@ import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scrol
 
 interface Profile {
   id: string
-  first_name: string
-  last_name: string
-  school: string
-  grade_level: string
-  skills: string[]
-  roles: string[]
-  experience_level: string
+  user_id: string
+  full_name: string
   bio: string
   location: string
+  website: string
+  github: string
+  linkedin: string
+  twitter: string
+  experience_level: string
+  interests: string[]
+  skills: string[]
+  goals: string[]
+  availability: string
+  preferred_collaboration: string
+  created_at: string
+  updated_at: string
 }
 
 export default function DashboardPage() {
@@ -56,15 +63,15 @@ export default function DashboardPage() {
     // Fetch user profile
     const fetchProfile = async () => {
       try {
-        const response = await fetch("/api/profiles/check")
+        const response = await fetch(`/api/profiles/${user.id}`)
         if (response.ok) {
           const data = await response.json()
-          if (data.profile) {
-            setProfile(data.profile)
-          } else {
-            redirect("/onboarding")
-          }
+          setProfile(data)
+        } else if (response.status === 404) {
+          // No profile found, redirect to onboarding
+          redirect("/onboarding")
         } else {
+          console.error("Error fetching profile:", response.statusText)
           redirect("/onboarding")
         }
       } catch (error) {
@@ -143,13 +150,16 @@ export default function DashboardPage() {
       color: "border-2 border-black text-black hover:bg-black hover:text-white",
     },
     {
-      title: "Settings",
-      description: "Manage your account",
+      title: "My Profile",
+      description: "Edit your profile",
       icon: Settings,
-      href: "/settings",
+      href: "/profile",
       color: "border-2 border-black text-black hover:bg-black hover:text-white",
     },
   ]
+
+  // Extract first name from full_name or use user's first name
+  const firstName = profile.full_name?.split(' ')[0] || user?.firstName || 'User'
 
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
@@ -182,14 +192,14 @@ export default function DashboardPage() {
               <div className="flex items-center space-x-6">
                 <div className="flex items-center space-x-4">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={user?.imageUrl} alt={profile.first_name} />
+                    <AvatarImage src={user?.imageUrl} alt={profile.full_name} />
                     <AvatarFallback className="bg-black text-white font-bold">
-                      {profile.first_name[0]}
+                      {firstName[0]}
                     </AvatarFallback>
                   </Avatar>
                   <div className="hidden md:block">
-                    <p className="font-bold text-black">{profile.first_name} {profile.last_name}</p>
-                    <p className="text-sm text-gray-600">{profile.school}</p>
+                    <p className="font-bold text-black">{profile.full_name || user?.fullName}</p>
+                    <p className="text-sm text-gray-600">{profile.location || 'Location not set'}</p>
                   </div>
                 </div>
               </div>
@@ -198,147 +208,246 @@ export default function DashboardPage() {
         </header>
 
         {/* Main Content */}
-        <div className="container mx-auto px-8 py-16">
-          <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
-            {/* Welcome Section */}
-            <div className="mb-16">
-              <h1 className="text-6xl md:text-7xl font-black text-black mb-8 leading-none">
-                Welcome back,
-                <br />
-                <span className="text-gray-400">{profile.first_name}</span>
-              </h1>
-              <p className="text-2xl text-gray-600 max-w-3xl leading-relaxed">
-                Ready to build something amazing? Here's what's happening in your world.
-              </p>
-            </div>
+        <div className="container mx-auto px-8 py-8">
+          {/* Welcome Section */}
+          <div className="mb-8">
+            <TextFade 
+              className="text-4xl font-bold text-gray-900 mb-2"
+              triggerStart="top center"
+            >
+              Welcome back, {firstName}! 👋
+            </TextFade>
+            <TextFade 
+              className="text-lg text-gray-600"
+              triggerStart="top center"
+            >
+              Ready to build something amazing? Here's what's happening in your world.
+            </TextFade>
+          </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-              {stats.map((stat, index) => (
-                <Card key={index} className="border-0 shadow-none bg-transparent">
-                  <CardContent className="p-6 text-center">
-                    <stat.icon className={`h-8 w-8 mx-auto mb-4 ${stat.color}`} />
-                    <div className="text-3xl font-black text-black mb-2">{stat.value}</div>
-                    <div className="text-sm text-gray-600 uppercase tracking-widest">{stat.label}</div>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {stats.map((stat, index) => (
+              <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-sm text-gray-600">{stat.label}</p>
+                    </div>
+                    <stat.icon className={`h-8 w-8 ${stat.color}`} />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Quick Actions */}
+          <div className="mb-8">
+            <TextFade 
+              className="text-2xl font-bold text-gray-900 mb-6"
+              triggerStart="top center"
+            >
+              Quick Actions
+            </TextFade>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {quickActions.map((action, index) => (
+                <Link key={index} href={action.href}>
+                  <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 cursor-pointer">
+                    <CardContent className="p-6">
+                      <div className="flex items-center space-x-4">
+                        <div className={`p-3 rounded-lg ${action.color} transition-colors`}>
+                          <action.icon className="h-6 w-6" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">{action.title}</h3>
+                          <p className="text-sm text-gray-600">{action.description}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Profile Overview */}
+          <div className="mb-8">
+            <TextFade 
+              className="text-2xl font-bold text-gray-900 mb-6"
+              triggerStart="top center"
+            >
+              Profile Overview
+            </TextFade>
+            <Card className="border-0 shadow-sm">
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{profile.full_name || user?.fullName}</h3>
+                    <p className="text-gray-600 mb-4">{profile.bio || 'No bio added yet. Add one to help others get to know you!'}</p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      {profile.location && (
+                        <div className="flex items-center space-x-2">
+                          <MapPin className="h-4 w-4 text-gray-500" />
+                          <span className="text-sm text-gray-600">{profile.location}</span>
+                        </div>
+                      )}
+                      {profile.experience_level && (
+                        <div className="flex items-center space-x-2">
+                          <BookOpen className="h-4 w-4 text-gray-500" />
+                          <span className="text-sm text-gray-600">{profile.experience_level}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {profile.skills && profile.skills.length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="text-sm font-medium text-gray-900 mb-2">Skills</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {profile.skills.slice(0, 5).map((skill, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {skill}
+                            </Badge>
+                          ))}
+                          {profile.skills.length > 5 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{profile.skills.length - 5} more
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex flex-col space-y-4">
+                    <Link href="/profile">
+                      <Button className="w-full bg-black hover:bg-gray-800">
+                        Edit Profile
+                      </Button>
+                    </Link>
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600">Profile completion</p>
+                      <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                        <div 
+                          className="bg-black h-2 rounded-full transition-all duration-300"
+                          style={{ 
+                            width: `${Math.min(100, (Object.keys(profile).filter(key => 
+                              profile[key as keyof Profile] && 
+                              profile[key as keyof Profile] !== '' && 
+                              key !== 'id' && 
+                              key !== 'user_id' && 
+                              key !== 'created_at' && 
+                              key !== 'updated_at'
+                            ).length / 10) * 100)}%` 
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Recent Activity */}
+          <div className="mb-8">
+            <TextFade 
+              className="text-2xl font-bold text-gray-900 mb-6"
+              triggerStart="top center"
+            >
+              Recent Activity
+            </TextFade>
+            <div className="space-y-4">
+              {recentActivity.map((activity, index) => (
+                <Card key={index} className="border-0 shadow-sm">
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="p-2 bg-gray-100 rounded-lg">
+                        <activity.icon className="h-5 w-5 text-gray-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-medium text-gray-900">{activity.title}</h3>
+                        <p className="text-sm text-gray-600">{activity.description}</p>
+                      </div>
+                      <span className="text-sm text-gray-500">{activity.time}</span>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
+          </div>
 
-            {/* Quick Actions */}
-            <div className="mb-16">
-              <div className="text-center mb-12">
-                <div className="text-4xl font-black text-black mb-4">Quick Actions</div>
-                <p className="text-xl text-gray-600">Get started with these common tasks</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {quickActions.map((action, index) => (
-                  <Link key={index} href={action.href}>
-                    <Card className="border-0 shadow-none bg-transparent hover:scale-105 transition-transform cursor-pointer">
-                      <CardContent className="p-8 text-center">
-                        <action.icon className="h-12 w-12 text-black mx-auto mb-4" />
-                        <CardTitle className="text-xl font-black text-black mb-2">{action.title}</CardTitle>
-                        <CardDescription className="text-gray-600">{action.description}</CardDescription>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
+          {/* Recommendations */}
+          <div>
+            <TextFade 
+              className="text-2xl font-bold text-gray-900 mb-6"
+              triggerStart="top center"
+            >
+              Recommended for You
+            </TextFade>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Code className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">Web Development</h3>
+                      <p className="text-sm text-gray-600">Based on your skills</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Join teams working on web applications and improve your frontend skills.
+                  </p>
+                  <Button variant="outline" className="w-full">
+                    Explore Projects
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="p-2 bg-green-100 rounded-lg">
+                      <Trophy className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">Hackathons</h3>
+                      <p className="text-sm text-gray-600">Perfect timing</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Several hackathons are starting soon. Ready to compete?
+                  </p>
+                  <Button variant="outline" className="w-full">
+                    View Competitions
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <Users className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">Team Building</h3>
+                      <p className="text-sm text-gray-600">Network expansion</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Connect with other students who share your interests and goals.
+                  </p>
+                  <Button variant="outline" className="w-full">
+                    Browse Profiles
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
-
-            {/* Profile Overview & Recent Activity */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-              {/* Profile Overview */}
-              <div>
-                <div className="text-center mb-8">
-                  <div className="text-3xl font-black text-black mb-4">Your Profile</div>
-                </div>
-                <Card className="border-0 shadow-none bg-transparent">
-                  <CardContent className="p-8 space-y-6">
-                    <div className="flex items-center space-x-4">
-                      <Avatar className="h-16 w-16">
-                        <AvatarImage src={user?.imageUrl} alt={profile.first_name} />
-                        <AvatarFallback className="bg-black text-white font-bold text-xl">
-                          {profile.first_name[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <h3 className="text-2xl font-black text-black">{profile.first_name} {profile.last_name}</h3>
-                        <p className="text-gray-600">{profile.school} • {profile.grade_level}</p>
-                        <div className="flex items-center space-x-2 mt-2">
-                          <MapPin className="h-4 w-4 text-gray-500" />
-                          <span className="text-sm text-gray-600">{profile.location}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="text-lg font-bold text-black mb-3">Skills</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {profile.skills?.slice(0, 5).map((skill: string) => (
-                          <Badge key={skill} variant="outline" className="border-2 border-gray-300 text-gray-700 px-3 py-1 text-sm font-bold">
-                            {skill}
-                          </Badge>
-                        ))}
-                        {profile.skills?.length > 5 && (
-                          <Badge variant="outline" className="border-2 border-gray-300 text-gray-700 px-3 py-1 text-sm font-bold">
-                            +{profile.skills.length - 5} more
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="text-lg font-bold text-black mb-3">Preferred Roles</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {profile.roles?.map((role: string) => (
-                          <Badge key={role} variant="outline" className="border-2 border-black text-black px-3 py-1 text-sm font-bold">
-                            {role}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="text-lg font-bold text-black mb-3">Experience Level</h4>
-                      <Badge variant="outline" className="border-2 border-black text-black px-4 py-2 text-sm font-bold">
-                        {profile.experience_level}
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Recent Activity */}
-              <div>
-                <div className="text-center mb-8">
-                  <div className="text-3xl font-black text-black mb-4">Recent Activity</div>
-                </div>
-                <Card className="border-0 shadow-none bg-transparent">
-                  <CardContent className="p-8 space-y-6">
-                    {recentActivity.map((activity, index) => (
-                      <div key={index} className="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
-                        <div className="flex-shrink-0">
-                          <activity.icon className="h-6 w-6 text-black" />
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-bold text-black">{activity.title}</h4>
-                          <p className="text-gray-600 text-sm">{activity.description}</p>
-                          <p className="text-gray-500 text-xs mt-1">{activity.time}</p>
-                        </div>
-                      </div>
-                    ))}
-                    <div className="text-center pt-4">
-                      <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
-                        View All Activity
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </TextFade>
+          </div>
         </div>
       </div>
     </div>
