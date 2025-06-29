@@ -41,6 +41,7 @@ export function Header() {
           <Link href="/#works" className="hover:opacity-60 transition">Features</Link>
           <Link href="/#about" className="hover:opacity-60 transition">Projects</Link>
           <Link href="/#competitions" className="hover:opacity-60 transition">Competitions</Link>
+          <Link href="/dashboard/plans" className="hover:opacity-60 transition">Plans</Link>
         </nav>
         {/* Auth buttons or user */}
         <div className="flex items-center gap-3">
