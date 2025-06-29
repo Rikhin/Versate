@@ -39,8 +39,8 @@ export function Header() {
         {/* Nav links */}
         <nav className="hidden md:flex items-center gap-12 text-lg font-bold uppercase tracking-widest">
           <Link href="/#works" className="hover:opacity-60 transition">Features</Link>
-          <Link href="/#competitions" className="hover:opacity-60 transition">Competitions</Link>
           <Link href="/#about" className="hover:opacity-60 transition">Projects</Link>
+          <Link href="/#competitions" className="hover:opacity-60 transition">Competitions</Link>
         </nav>
         {/* Auth buttons or user */}
         <div className="flex items-center gap-3">

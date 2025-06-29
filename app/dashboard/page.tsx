@@ -164,24 +164,22 @@ export default function DashboardPage() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-white relative overflow-hidden flex">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex">
         {/* Sidebar */}
-        <Sidebar className="bg-white border-r border-gray-200 min-h-screen flex flex-col items-start px-6 py-8 w-64">
+        <Sidebar className="bg-white/90 border-r border-gray-200 min-h-screen flex flex-col items-start px-6 py-8 w-64 shadow-md">
           <div className="mb-8 w-full">
             <span className="text-lg font-semibold text-gray-900 whitespace-nowrap block">
               Welcome back, {firstName}! 👋
             </span>
           </div>
-          {/* You can add sidebar navigation here if needed */}
         </Sidebar>
         {/* Main Content Container */}
-        <div className="flex-1 relative z-10">
-          {/* Main Content */}
-          <div className="container mx-auto px-8 py-8">
+        <div className="flex-1 flex justify-center items-start">
+          <div className="w-full max-w-4xl px-4 py-12 md:py-16 space-y-12">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {stats.map((stat, index) => (
-                <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white/90">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
@@ -196,7 +194,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Quick Actions */}
-            <div className="mb-8">
+            <div>
               <TextFade 
                 className="text-2xl font-bold text-gray-900 mb-6"
                 triggerStart="top center"
@@ -206,7 +204,7 @@ export default function DashboardPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {quickActions.map((action, index) => (
                   <Link key={index} href={action.href}>
-                    <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 cursor-pointer">
+                    <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 cursor-pointer bg-white/90">
                       <CardContent className="p-6">
                         <div className="flex items-center space-x-4">
                           <div className={`p-3 rounded-lg ${action.color} transition-colors`}>
@@ -225,20 +223,19 @@ export default function DashboardPage() {
             </div>
 
             {/* Profile Overview */}
-            <div className="mb-8">
+            <div>
               <TextFade 
                 className="text-2xl font-bold text-gray-900 mb-6"
                 triggerStart="top center"
               >
                 Profile Overview
               </TextFade>
-              <Card className="border-0 shadow-sm">
+              <Card className="border-0 shadow-sm bg-white/90">
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4">{profile.full_name || user?.fullName}</h3>
                       <p className="text-gray-600 mb-4">{profile.bio || 'No bio added yet. Add one to help others get to know you!'}</p>
-                      
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         {profile.location && (
                           <div className="flex items-center space-x-2">
@@ -253,7 +250,6 @@ export default function DashboardPage() {
                           </div>
                         )}
                       </div>
-
                       {profile.skills && profile.skills.length > 0 && (
                         <div className="mb-4">
                           <h4 className="text-sm font-medium text-gray-900 mb-2">Skills</h4>
@@ -272,7 +268,6 @@ export default function DashboardPage() {
                         </div>
                       )}
                     </div>
-                    
                     <div className="flex flex-col space-y-4">
                       <Link href="/profile">
                         <Button className="w-full bg-black hover:bg-gray-800">
@@ -304,7 +299,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Recent Activity */}
-            <div className="mb-8">
+            <div>
               <TextFade 
                 className="text-2xl font-bold text-gray-900 mb-6"
                 triggerStart="top center"
@@ -313,7 +308,7 @@ export default function DashboardPage() {
               </TextFade>
               <div className="space-y-4">
                 {recentActivity.map((activity, index) => (
-                  <Card key={index} className="border-0 shadow-sm">
+                  <Card key={index} className="border-0 shadow-sm bg-white/90">
                     <CardContent className="p-4">
                       <div className="flex items-center space-x-4">
                         <div className="p-2 bg-gray-100 rounded-lg">
@@ -341,7 +336,7 @@ export default function DashboardPage() {
               </TextFade>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Competitions card first */}
-                <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white/90">
                   <CardContent className="p-6 flex flex-col h-full">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="p-2 bg-green-100 rounded-lg">
@@ -364,7 +359,7 @@ export default function DashboardPage() {
                   </CardContent>
                 </Card>
                 {/* Projects card second */}
-                <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white/90">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="p-2 bg-blue-100 rounded-lg">
@@ -384,7 +379,7 @@ export default function DashboardPage() {
                   </CardContent>
                 </Card>
                 {/* Team Building card remains last */}
-                <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white/90">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="p-2 bg-purple-100 rounded-lg">

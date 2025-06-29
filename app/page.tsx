@@ -319,6 +319,12 @@ export default function LandingPage() {
                 </Card>
               ))}
             </div>
+
+            <div className="flex justify-center mt-8">
+              <Link href="/competitions">
+                <button className="px-8 py-3 rounded-lg bg-black text-white font-bold text-lg hover:bg-gray-900 transition">View All Competitions</button>
+              </Link>
+            </div>
           </TextFade>
         </section>
 
