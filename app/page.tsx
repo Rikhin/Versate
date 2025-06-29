@@ -8,6 +8,7 @@ import { Trophy, Users, MessageSquare, Target, Star, ArrowRight, Code, Award, Za
 import Link from "next/link"
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
+import { competitions } from "@/lib/competitions-data"
 
 export default function LandingPage() {
   const { isSignedIn } = useUser()
@@ -55,17 +56,6 @@ export default function LandingPage() {
       },
       matchScore: 91,
     },
-  ]
-
-  const competitions = [
-    "Congressional App Challenge",
-    "Technovation Girls",
-    "Regeneron ISEF",
-    "Conrad Challenge",
-    "Diamond Challenge",
-    "DECA Competition",
-    "RoboCupJunior",
-    "eCYBERMISSION",
   ]
 
   const stats = [
@@ -300,26 +290,29 @@ export default function LandingPage() {
             <div className="text-center mb-24">
               <div className="text-9xl font-black text-black mb-8">03</div>
               <h2 className="text-6xl md:text-7xl font-black text-black mb-8 leading-none">
-                Supported
-                <br />
-                Competitions
+                Supported<br />Competitions
               </h2>
               <p className="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 We support teams participating in prestigious academic competitions worldwide
               </p>
             </div>
-
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {competitions.map((competition, index) => (
-                <Card key={index} className="border-0 shadow-none bg-transparent text-center">
-                  <CardContent className="p-8">
-                    <Trophy className="h-12 w-12 text-black mx-auto mb-4" />
-                    <p className="text-lg font-bold text-black leading-tight">{competition}</p>
-                  </CardContent>
-                </Card>
+              {competitions.slice(0, 8).map((competition) => (
+                <Link
+                  key={competition.id}
+                  href={`/competitions/${competition.id}`}
+                  className="focus:outline-none focus:ring-4 focus:ring-black/30 rounded-xl"
+                >
+                  <button
+                    className="w-full h-40 flex flex-col items-center justify-center bg-white border-2 border-black rounded-xl shadow-md hover:bg-black hover:text-white transition-colors duration-200 text-center p-6"
+                    aria-label={`View details for ${competition.name}`}
+                  >
+                    <span className="text-4xl mb-3">{competition.icon}</span>
+                    <span className="text-lg font-bold leading-tight">{competition.name}</span>
+                  </button>
+                </Link>
               ))}
             </div>
-
             <div className="flex justify-center mt-8">
               <Link href="/competitions">
                 <button className="px-8 py-3 rounded-lg bg-black text-white font-bold text-lg hover:bg-gray-900 transition">View All Competitions</button>
