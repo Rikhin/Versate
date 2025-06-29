@@ -171,7 +171,7 @@ export default function DashboardPage() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex">
+      <div className="min-h-screen bg-white flex">
         {/* Sidebar - fixed on the left */}
         <div className="fixed top-0 left-0 h-full w-64 z-30 bg-white/90 border-r border-gray-200 shadow-md flex flex-col items-start px-6 py-8">
           <span className="text-lg font-semibold text-gray-900 whitespace-nowrap block mb-8">
