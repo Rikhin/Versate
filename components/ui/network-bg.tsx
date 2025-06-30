@@ -70,8 +70,8 @@ export const NetworkBG: React.FC<NetworkBGProps> = (props) => {
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
             ctx.strokeStyle = "#d1d5db"; // Tailwind gray-300
-            ctx.lineWidth = 1.1;
-            ctx.globalAlpha = 0.18; // slightly bolder
+            ctx.lineWidth = 1.2;
+            ctx.globalAlpha = 0.28; // slightly more visible
             ctx.stroke();
             ctx.globalAlpha = 1;
           }
