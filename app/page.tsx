@@ -20,6 +20,8 @@ const playfair = Playfair_Display({ subsets: ['latin'], style: ['italic'], weigh
 export default function LandingPage() {
   const { isSignedIn } = useUser()
   const [featuredProjects, setFeaturedProjects] = useState<any[]>([])
+  const [projectsError, setProjectsError] = useState<string | null>(null)
+  const [loadingProjects, setLoadingProjects] = useState(true)
 
   const stats = [
     { label: "Active Projects", value: "500+", icon: Trophy },
@@ -56,14 +58,25 @@ export default function LandingPage() {
 
   useEffect(() => {
     async function fetchProjects() {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from("projects")
-        .select("id, title, authors, category, description, awards, created_at")
-      if (data && data.length > 0) {
-        // Pick 3 random projects
-        const shuffled = data.sort(() => 0.5 - Math.random())
-        setFeaturedProjects(shuffled.slice(0, 3))
+      setLoadingProjects(true)
+      setProjectsError(null)
+      try {
+        const supabase = createClient()
+        const { data, error } = await supabase
+          .from("projects")
+          .select("id, title, authors, category, description, awards, created_at")
+        if (error) {
+          setProjectsError(error.message)
+        } else if (data && data.length > 0) {
+          const shuffled = data.sort(() => 0.5 - Math.random())
+          setFeaturedProjects(shuffled.slice(0, 3))
+        } else {
+          setFeaturedProjects([])
+        }
+      } catch (err: any) {
+        setProjectsError(err.message || 'Unknown error')
+      } finally {
+        setLoadingProjects(false)
       }
     }
     fetchProjects()
@@ -217,60 +230,45 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-16">
-              {featuredProjects.map((project, index) => (
-                <Card key={index} className="border-0 shadow-none bg-transparent">
-                  <CardHeader className="pb-8">
-                    <div className="flex justify-between items-start mb-4">
-                      <Badge variant="outline" className="border-2 border-black text-black px-4 py-2 text-sm font-bold uppercase tracking-widest">{project.competition}</Badge>
-                      <div className="flex items-center space-x-2">
-                        <Zap className="h-5 w-5 text-black" />
-                        <span className="text-sm font-bold text-black">{project.matchScore}% match</span>
+              {loadingProjects ? (
+                <div className="col-span-3 text-center text-gray-500 py-12">Loading featured projects...</div>
+              ) : projectsError ? (
+                <div className="col-span-3 text-center text-red-500 py-12">Error loading projects: {projectsError}</div>
+              ) : featuredProjects.length === 0 ? (
+                <div className="col-span-3 text-center text-gray-500 py-12">No projects found.</div>
+              ) : (
+                featuredProjects.map((project, index) => (
+                  <Card key={project.id || index} className="border-0 shadow-none bg-transparent">
+                    <CardHeader className="pb-8">
+                      <div className="flex justify-between items-start mb-4">
+                        <Badge variant="outline" className="border-2 border-black text-black px-4 py-2 text-sm font-bold uppercase tracking-widest">{project.category || 'Project'}</Badge>
+                        {project.awards && (
+                          <div className="flex items-center space-x-2">
+                            <Zap className="h-5 w-5 text-black" />
+                            <span className="text-sm font-bold text-black">{project.awards}</span>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    <CardTitle className="text-2xl font-black text-black">{project.title}</CardTitle>
-                    <CardDescription className="text-lg text-gray-600">
-                      Looking for talented teammates to join this {project.category} project
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex items-center space-x-4">
-                      <Avatar className="h-12 w-12">
-                        <AvatarImage src={project.leader.avatar || "/placeholder.svg"} alt={project.leader.name} />
-                        <AvatarFallback className="bg-black text-white font-bold">{project.leader.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-lg font-bold text-black">{project.leader.name}</p>
-                        <p className="text-sm text-gray-600">{project.leader.school}</p>
+                      <CardTitle className="text-2xl font-black text-black">{project.title || 'Untitled Project'}</CardTitle>
+                      <CardDescription className="text-lg text-gray-600">
+                        {project.description || 'No description available.'}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="flex items-center space-x-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={"/placeholder-user.jpg"} alt={project.authors?.[0] || "?"} />
+                          <AvatarFallback className="bg-black text-white font-bold">{project.authors?.[0] || "?"}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-lg font-bold text-black">{project.authors || 'Unknown Author'}</p>
+                          <p className="text-sm text-gray-600">{project.created_at ? new Date(project.created_at).toLocaleDateString() : ''}</p>
+                        </div>
                       </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-lg text-gray-600">
-                      <div className="flex items-center space-x-2">
-                        <Users className="h-5 w-5" />
-                        <span>
-                          {project.teamSize}/{project.maxTeamSize} members
-                        </span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className="text-lg text-gray-600 mb-3">Tech Stack:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {project.techStack.map((tech) => (
-                          <Badge key={tech} variant="outline" className="border-2 border-gray-300 text-gray-700 px-3 py-1 text-sm font-bold">
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    <Button className="w-full bg-black text-white hover:bg-gray-800 py-4 text-lg font-bold">
-                      <Target className="h-5 w-5 mr-3" />
-                      Apply to Join
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))
+              )}
             </div>
             <div className="text-center mt-12 md:mt-24">
               <Link href="/explore">
