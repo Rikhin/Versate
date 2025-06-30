@@ -9,7 +9,7 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "brately - Competition Team Formation Platform",
+  title: "Versa - Competition Team Formation Platform",
   description: "Find teammates for academic competitions and collaborative projects",
   generator: 'v0.dev'
 }

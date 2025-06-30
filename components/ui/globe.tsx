@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface GlobeProps {
   className?: string;
@@ -8,7 +8,6 @@ interface GlobeProps {
 
 export function Globe({ className = "" }: GlobeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
   const animationRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
@@ -18,13 +17,13 @@ export function Globe({ className = "" }: GlobeProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size
-    const size = 120;
+    // Set canvas size - larger
+    const size = 200;
     canvas.width = size;
     canvas.height = size;
     const centerX = size / 2;
     const centerY = size / 2;
-    const radius = 45;
+    const radius = 75;
 
     // Animation variables
     let rotation = 0;
@@ -33,6 +32,8 @@ export function Globe({ className = "" }: GlobeProps) {
       end: { lat: number; lng: number };
       progress: number;
       speed: number;
+      opacity: number;
+      trail: Array<{ x: number; y: number; opacity: number }>;
     }> = [];
 
     // Generate random connection lines
@@ -46,12 +47,14 @@ export function Globe({ className = "" }: GlobeProps) {
         start: { lat: startLat, lng: startLng },
         end: { lat: endLat, lng: endLng },
         progress: 0,
-        speed: 0.02 + Math.random() * 0.03
+        speed: 0.005 + Math.random() * 0.01, // Much slower
+        opacity: 1,
+        trail: []
       });
     };
 
     // Initialize some connections
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       generateConnection();
     }
 
@@ -79,9 +82,9 @@ export function Globe({ className = "" }: GlobeProps) {
 
       // Create gradient background for globe
       const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
-      gradient.addColorStop(0, 'rgba(59, 130, 246, 0.1)'); // Blue center
-      gradient.addColorStop(0.7, 'rgba(34, 197, 94, 0.05)'); // Green middle
-      gradient.addColorStop(1, 'rgba(147, 51, 234, 0.1)'); // Purple edge
+      gradient.addColorStop(0, 'rgba(59, 130, 246, 0.15)'); // Blue center
+      gradient.addColorStop(0.7, 'rgba(34, 197, 94, 0.08)'); // Green middle
+      gradient.addColorStop(1, 'rgba(147, 51, 234, 0.15)'); // Purple edge
 
       // Draw globe base
       ctx.beginPath();
@@ -90,8 +93,8 @@ export function Globe({ className = "" }: GlobeProps) {
       ctx.fill();
 
       // Draw globe outline
-      ctx.strokeStyle = isHovered ? 'rgba(59, 130, 246, 0.3)' : 'rgba(59, 130, 246, 0.2)';
-      ctx.lineWidth = isHovered ? 2 : 1;
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.3)';
+      ctx.lineWidth = 2;
       ctx.stroke();
 
       // Draw latitude lines
@@ -112,8 +115,8 @@ export function Globe({ className = "" }: GlobeProps) {
           for (let k = 1; k < points.length; k++) {
             ctx.lineTo(points[k].x, points[k].y);
           }
-          ctx.strokeStyle = 'rgba(59, 130, 246, 0.1)';
-          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = 'rgba(59, 130, 246, 0.15)';
+          ctx.lineWidth = 1;
           ctx.stroke();
         }
       }
@@ -136,13 +139,13 @@ export function Globe({ className = "" }: GlobeProps) {
           for (let k = 1; k < points.length; k++) {
             ctx.lineTo(points[k].x, points[k].y);
           }
-          ctx.strokeStyle = 'rgba(59, 130, 246, 0.1)';
-          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = 'rgba(59, 130, 246, 0.15)';
+          ctx.lineWidth = 1;
           ctx.stroke();
         }
       }
 
-      // Draw connection lines
+      // Draw connection lines with trails
       connectionLines.forEach((line, index) => {
         const start3D = latLngTo3D(line.start.lat, line.start.lng);
         const end3D = latLngTo3D(line.end.lat, line.end.lng);
@@ -150,54 +153,95 @@ export function Globe({ className = "" }: GlobeProps) {
         const start2D = project3DTo2D(start3D.x, start3D.y, start3D.z);
         const end2D = project3DTo2D(end3D.x, end3D.y, end3D.z);
 
-        // Calculate intermediate point based on progress
+        // Calculate current position based on progress
         const progress = line.progress;
-        const midX = start2D.x + (end2D.x - start2D.x) * progress;
-        const midY = start2D.y + (end2D.y - start2D.y) * progress;
+        const currentX = start2D.x + (end2D.x - start2D.x) * progress;
+        const currentY = start2D.y + (end2D.y - start2D.y) * progress;
 
-        // Draw the connection line
+        // Add current position to trail
+        line.trail.push({ x: currentX, y: currentY, opacity: 1 });
+
+        // Limit trail length
+        if (line.trail.length > 20) {
+          line.trail.shift();
+        }
+
+        // Draw trail with fading opacity
+        line.trail.forEach((point, trailIndex) => {
+          const trailOpacity = (trailIndex / line.trail.length) * line.opacity;
+          
+          // Create gradient for trail segment
+          const trailGradient = ctx.createRadialGradient(
+            point.x, point.y, 0,
+            point.x, point.y, 8
+          );
+          trailGradient.addColorStop(0, `rgba(59, 130, 246, ${trailOpacity * 0.8})`); // Blue
+          trailGradient.addColorStop(0.5, `rgba(34, 197, 94, ${trailOpacity * 0.6})`); // Green
+          trailGradient.addColorStop(1, `rgba(147, 51, 234, ${trailOpacity * 0.8})`); // Purple
+
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+          ctx.fillStyle = trailGradient;
+          ctx.fill();
+        });
+
+        // Draw main connection line
         ctx.beginPath();
         ctx.moveTo(start2D.x, start2D.y);
-        ctx.lineTo(midX, midY);
+        ctx.lineTo(currentX, currentY);
         
-        // Create gradient for the line
-        const lineGradient = ctx.createLinearGradient(start2D.x, start2D.y, midX, midY);
-        lineGradient.addColorStop(0, 'rgba(59, 130, 246, 0.8)'); // Blue
-        lineGradient.addColorStop(0.5, 'rgba(34, 197, 94, 0.6)'); // Green
-        lineGradient.addColorStop(1, 'rgba(147, 51, 234, 0.8)'); // Purple
+        // Create gradient for the main line
+        const lineGradient = ctx.createLinearGradient(start2D.x, start2D.y, currentX, currentY);
+        lineGradient.addColorStop(0, `rgba(59, 130, 246, ${line.opacity * 0.9})`); // Blue
+        lineGradient.addColorStop(0.5, `rgba(34, 197, 94, ${line.opacity * 0.7})`); // Green
+        lineGradient.addColorStop(1, `rgba(147, 51, 234, ${line.opacity * 0.9})`); // Purple
         
         ctx.strokeStyle = lineGradient;
-        ctx.lineWidth = isHovered ? 3 : 2;
+        ctx.lineWidth = 4;
         ctx.lineCap = 'round';
         ctx.stroke();
 
-        // Update progress
-        line.progress += line.speed * (isHovered ? 1.5 : 1);
+        // Draw pinpoints at start and end
+        ctx.beginPath();
+        ctx.arc(start2D.x, start2D.y, 6, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(59, 130, 246, ${line.opacity * 0.9})`;
+        ctx.fill();
+        
+        ctx.beginPath();
+        ctx.arc(end2D.x, end2D.y, 6, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(147, 51, 234, ${line.opacity * 0.9})`;
+        ctx.fill();
+
+        // Update progress and opacity
+        line.progress += line.speed;
+        if (line.progress >= 1) {
+          line.opacity -= 0.02; // Fade out
+        }
         
         // Remove completed lines and generate new ones
-        if (line.progress >= 1) {
+        if (line.opacity <= 0) {
           connectionLines.splice(index, 1);
-          if (Math.random() < 0.3) {
+          if (Math.random() < 0.4) {
             generateConnection();
           }
         }
       });
 
-      // Draw some connection points
-      for (let i = 0; i < 8; i++) {
+      // Draw some additional connection points
+      for (let i = 0; i < 12; i++) {
         const lat = (Math.random() - 0.5) * Math.PI;
         const lng = Math.random() * 2 * Math.PI;
         const { x, y, z } = latLngTo3D(lat, lng);
         const projected = project3DTo2D(x, y, z);
         
         ctx.beginPath();
-        ctx.arc(projected.x, projected.y, isHovered ? 3 : 2, 0, 2 * Math.PI);
-        ctx.fillStyle = isHovered ? 'rgba(59, 130, 246, 0.8)' : 'rgba(59, 130, 246, 0.6)';
+        ctx.arc(projected.x, projected.y, 4, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(59, 130, 246, 0.7)';
         ctx.fill();
       }
 
-      // Update rotation
-      rotation += (isHovered ? 0.02 : 0.01);
+      // Update rotation - much slower
+      rotation += 0.003;
     };
 
     // Animation loop
@@ -214,28 +258,14 @@ export function Globe({ className = "" }: GlobeProps) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isHovered]);
+  }, []);
 
   return (
-    <div 
-      className={`relative ${className}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className={`relative ${className}`}>
       <canvas
         ref={canvasRef}
         className="transition-all duration-300 ease-in-out"
-        style={{
-          filter: isHovered ? 'drop-shadow(0 0 10px rgba(59, 130, 246, 0.3))' : 'none'
-        }}
       />
-      {isHovered && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-black/80 text-white text-xs px-2 py-1 rounded-full opacity-0 animate-in fade-in duration-200">
-            Global Connections
-          </div>
-        </div>
-      )}
     </div>
   );
 } 

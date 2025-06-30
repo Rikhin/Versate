@@ -89,7 +89,7 @@ export default function LandingPage() {
             <div className="max-w-6xl mx-auto relative">
               {/* Globe positioned in top-right corner */}
               <div className="absolute top-0 right-0 z-10">
-                <Globe className="w-24 h-24 md:w-32 md:h-32" />
+                <Globe className="w-32 h-32 md:w-48 md:h-48" />
               </div>
               
               <div className="text-5xl md:text-8xl font-black text-black mb-6 md:mb-8 leading-none">
@@ -352,7 +352,7 @@ export default function LandingPage() {
               <div className="flex items-center space-x-4 mb-8 md:mb-0">
                 <Trophy className="h-8 w-8 text-black" />
                 <div>
-                  <span className="text-2xl font-black text-black">brately</span>
+                  <span className="text-2xl font-black text-black">Versa</span>
                   <p className="text-sm text-gray-600">built by Rikhin Kavuru</p>
                 </div>
               </div>
@@ -369,7 +369,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
-              <p>&copy; 2024 brately. All rights reserved. Empowering students to achieve excellence together.</p>
+              <p>&copy; 2024 Versa. All rights reserved. Empowering students to achieve excellence together.</p>
             </div>
           </div>
         </footer>
