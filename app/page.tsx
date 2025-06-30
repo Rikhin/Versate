@@ -12,6 +12,7 @@ import { competitions } from "@/lib/competitions-data"
 import { NetworkBG } from "@/components/ui/network-bg"
 import { Playfair_Display } from 'next/font/google'
 import React, { useState, useEffect } from 'react'
+import styles from './connect-highlight.module.css';
 
 const playfair = Playfair_Display({ subsets: ['latin'], style: ['italic'], weight: ['400', '700'] })
 
@@ -73,12 +74,16 @@ export default function LandingPage() {
   // Typewriter effect for hero paragraph
   const fullParagraph = ` with talented students, join exciting projects, and compete in prestigious academic competitions.\nBuild your portfolio while making lasting connections.`;
   const [typed, setTyped] = useState('');
+  const [typingDone, setTypingDone] = useState(false);
   useEffect(() => {
     let i = 0;
     const interval = setInterval(() => {
       setTyped(fullParagraph.slice(0, i));
       i++;
-      if (i > fullParagraph.length) clearInterval(interval);
+      if (i > fullParagraph.length) {
+        clearInterval(interval);
+        setTypingDone(true);
+      }
     }, 14);
     return () => clearInterval(interval);
   }, []);
@@ -109,7 +114,10 @@ export default function LandingPage() {
                 Find Your<br />Perfect<br /><span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent">Team</span>
               </div>
               <p className="text-base md:text-2xl font-normal text-black mb-10 md:mb-16 max-w-3xl leading-relaxed md:leading-loose" style={{ letterSpacing: '0.01em' }}>
-                <span className={playfair.className + ' italic text-black'}>Connect</span>
+                <span className={playfair.className + ' italic text-black font-bold text-2xl md:text-4xl relative'} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+                  <span className={styles.highlight + (!typingDone ? ' ' + styles.animate : '')}></span>
+                  Connect
+                </span>
                 <span aria-label="hero-typewriter" style={{ whiteSpace: 'pre-line' }}>{typed}</span>
               </p>
               <div className="flex flex-col sm:flex-row gap-4 md:gap-6">

@@ -1,0 +1,25 @@
+.highlight {
+  position: absolute;
+  left: 0;
+  top: 60%;
+  width: 0%;
+  height: 55%;
+  background: linear-gradient(90deg, #fffbe6 60%, #ffe066 100%);
+  border-radius: 0.4em 0.4em 0.7em 0.7em;
+  z-index: 0;
+  transition: width 0.2s;
+  pointer-events: none;
+}
+
+.animate {
+  animation: highlight-swipe 0.7s cubic-bezier(0.7,0,0.3,1) forwards;
+}
+
+@keyframes highlight-swipe {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+} 
