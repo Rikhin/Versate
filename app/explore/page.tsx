@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -8,21 +8,36 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Trophy, Search, Users, Calendar, MapPin, Star, Target, Zap, TrendingUp } from "lucide-react"
+import { Trophy, Search, Users, Calendar, MapPin, Star, Target, Zap, TrendingUp, Filter } from "lucide-react"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
 import { fakeProfiles, Profile } from "../profiles/page"
+import { useRouter } from "next/navigation"
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCompetition, setSelectedCompetition] = useState("all")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [activeTab, setActiveTab] = useState("projects")
+  const [showFilters, setShowFilters] = useState(true)
 
   // ISEF projects state
   const [isefProjects, setIsefProjects] = useState<any[]>([])
   const [loadingProjects, setLoadingProjects] = useState(false)
   const [projectsError, setProjectsError] = useState<string | null>(null)
+
+  const [selectedYear, setSelectedYear] = useState("all")
+  const [selectedCountry, setSelectedCountry] = useState("all")
+  const [selectedState, setSelectedState] = useState("all")
+  const [selectedCity, setSelectedCity] = useState("all")
+  const [selectedAward, setSelectedAward] = useState("all")
+
+  // Extract unique years, countries, states, cities, and awards from projects
+  const years = useMemo(() => ["all", ...Array.from(new Set(isefProjects.map(p => new Date(p.created_at).getFullYear().toString()))).sort()], [isefProjects])
+  const countries = useMemo(() => ["all", ...Array.from(new Set(isefProjects.map(p => p.country).filter(Boolean)))], [isefProjects])
+  const states = useMemo(() => ["all", ...Array.from(new Set(isefProjects.map(p => p.state).filter(Boolean)))], [isefProjects])
+  const cities = useMemo(() => ["all", ...Array.from(new Set(isefProjects.map(p => p.city).filter(Boolean)))], [isefProjects])
+  const awards = useMemo(() => ["all", ...Array.from(new Set(isefProjects.map(p => p.awards).filter(Boolean)))], [isefProjects])
 
   useEffect(() => {
     if (activeTab === "projects" && isefProjects.length === 0 && !loadingProjects) {
@@ -44,14 +59,15 @@ export default function ExplorePage() {
   // Filter students from fakeProfiles
   const students = fakeProfiles
 
-  // Filter ISEF projects by search/category/competition
+  // Filter projects by search and filters
   const filteredProjects = isefProjects.filter((project) => {
-    const matchesSearch =
-      project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.description?.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCompetition = selectedCompetition === "all" || project.competition === selectedCompetition
-    const matchesCategory = selectedCategory === "all" || project.category === selectedCategory
-    return matchesSearch && matchesCompetition && matchesCategory
+    const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesYear = selectedYear === "all" || new Date(project.created_at).getFullYear().toString() === selectedYear
+    const matchesCountry = selectedCountry === "all" || project.country === selectedCountry
+    const matchesState = selectedState === "all" || project.state === selectedState
+    const matchesCity = selectedCity === "all" || project.city === selectedCity
+    const matchesAward = selectedAward === "all" || project.awards === selectedAward
+    return matchesSearch && matchesYear && matchesCountry && matchesState && matchesCity && matchesAward
   })
 
   const competitions = [
@@ -78,45 +94,80 @@ export default function ExplorePage() {
 
         {/* Search and Filters */}
         <div className="mb-8 space-y-4">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
               <Input
-                placeholder="Search projects, competitions, or skills..."
+                placeholder="Search projects by title..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
               />
             </div>
-            <div className="flex gap-2">
-              <Select value={selectedCompetition} onValueChange={setSelectedCompetition}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="All Competitions" />
+            <Button
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={() => setShowFilters((v) => !v)}
+              aria-label="Toggle filters"
+            >
+              <Filter className="h-4 w-4" />
+              Filter
+            </Button>
+          </div>
+          {showFilters && (
+            <div className="flex flex-wrap gap-2 items-center">
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="All Years" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Competitions</SelectItem>
-                  {competitions.map((comp) => (
-                    <SelectItem key={comp} value={comp}>
-                      {comp}
-                    </SelectItem>
+                  {years.map((year) => (
+                    <SelectItem key={year} value={year}>{year === "all" ? "All Years" : year}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="All Categories" />
+              <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All Countries" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
-                    </SelectItem>
+                  {countries.map((country) => (
+                    <SelectItem key={country} value={country}>{country === "all" ? "All Countries" : country}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={selectedState} onValueChange={setSelectedState}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All States" />
+                </SelectTrigger>
+                <SelectContent>
+                  {states.map((state) => (
+                    <SelectItem key={state} value={state}>{state === "all" ? "All States" : state}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={selectedCity} onValueChange={setSelectedCity}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All Cities" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cities.map((city) => (
+                    <SelectItem key={city} value={city}>{city === "all" ? "All Cities" : city}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={selectedAward} onValueChange={setSelectedAward}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All Awards" />
+                </SelectTrigger>
+                <SelectContent>
+                  {awards.map((award) => (
+                    <SelectItem key={award} value={award}>{award === "all" ? "All Awards" : award}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Main Content */}
@@ -134,45 +185,47 @@ export default function ExplorePage() {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredProjects.map((project) => (
-                  <Card key={project.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex justify-between items-start mb-2">
-                        <Badge variant="secondary">ISEF</Badge>
-                        <div className="flex items-center space-x-1">
-                          <Zap className="h-4 w-4 text-green-600" />
-                        </div>
-                      </div>
-                      <CardTitle className="text-lg">{project.title}</CardTitle>
-                      <CardDescription className="line-clamp-2">{project.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-center space-x-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={"/placeholder-user.jpg"} alt={project.authors?.[0] || "?"} />
-                          <AvatarFallback>{project.authors?.[0] || "?"}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-sm font-medium">{project.authors}</p>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-sm text-slate-600">
+                  <Link key={project.id} href={`/explore/projects/${project.id}`} className="block group">
+                    <Card className="hover:shadow-lg transition-shadow group-hover:border-blue-600">
+                      <CardHeader>
+                        <div className="flex justify-between items-start mb-2">
+                          <Badge variant="secondary">ISEF</Badge>
                           <div className="flex items-center space-x-1">
-                            <Users className="h-4 w-4" />
-                            <span>ISEF Project</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Calendar className="h-4 w-4" />
-                            <span>{new Date(project.created_at).toLocaleDateString()}</span>
+                            <Zap className="h-4 w-4 text-green-600" />
                           </div>
                         </div>
-                        <div className="flex items-center space-x-1 text-sm text-slate-600">
-                          <TrendingUp className="h-4 w-4" />
-                          <span>{project.awards || "No awards"}</span>
+                        <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">{project.title}</CardTitle>
+                        <CardDescription className="line-clamp-2">{project.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex items-center space-x-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={"/placeholder-user.jpg"} alt={project.authors?.[0] || "?"} />
+                            <AvatarFallback>{project.authors?.[0] || "?"}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="text-sm font-medium">{project.authors}</p>
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-sm text-slate-600">
+                            <div className="flex items-center space-x-1">
+                              <Users className="h-4 w-4" />
+                              <span>ISEF Project</span>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                              <Calendar className="h-4 w-4" />
+                              <span>{new Date(project.created_at).toLocaleDateString()}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-1 text-sm text-slate-600">
+                            <TrendingUp className="h-4 w-4" />
+                            <span>{project.awards || "No awards"}</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             )}
