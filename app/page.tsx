@@ -79,7 +79,6 @@ export default function LandingPage() {
   useEffect(() => {
     let i = 0;
     const connectLength = 7; // 'Connect'.length
-    // Slow down typewriter by 4x for highlight sync
     const interval = setInterval(() => {
       setTyped(fullParagraph.slice(0, i));
       if (i <= connectLength) {
@@ -92,7 +91,7 @@ export default function LandingPage() {
         clearInterval(interval);
         setTypingDone(true);
       }
-    }, 56); // was 14, now 4x slower
+    }, 26); // now ~1.8s for 'Connect'
     return () => clearInterval(interval);
   }, []);
 
