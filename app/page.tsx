@@ -87,7 +87,7 @@ export default function LandingPage() {
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.2}>
             <div className="max-w-6xl mx-auto">
               <div className="text-5xl md:text-8xl font-black text-black mb-6 md:mb-8 leading-none">
-                Find Your<br />Perfect<br /><span className="text-gray-400">Team</span>
+                Find Your<br />Perfect<br /><span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent">Team</span>
               </div>
               <p className="text-base md:text-2xl text-gray-600 mb-8 md:mb-12 max-w-3xl leading-relaxed">
                 Connect with talented students, join exciting projects, and compete in prestigious academic competitions.<br />Build your portfolio while making lasting connections.
