@@ -113,12 +113,18 @@ export default function LandingPage() {
               <div className="text-5xl md:text-8xl font-black text-black mb-6 md:mb-8 leading-none">
                 Find Your<br />Perfect<br /><span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent">Team</span>
               </div>
-              <p className="text-base md:text-2xl font-normal text-black mb-10 md:mb-16 max-w-3xl leading-relaxed md:leading-loose" style={{ letterSpacing: '0.01em' }}>
+              <p className="mb-10 md:mb-16 max-w-3xl leading-relaxed md:leading-loose" style={{ letterSpacing: '0.01em', color: 'black' }}>
                 <span className={playfair.className + ' italic text-black font-bold text-2xl md:text-4xl relative'} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
                   <span className={styles.highlight + (!typingDone ? ' ' + styles.animate : '')}></span>
                   Connect
                 </span>
-                <span aria-label="hero-typewriter" style={{ whiteSpace: 'pre-line' }}>{typed}</span>
+                <span
+                  aria-label="hero-typewriter"
+                  className={playfair.className + ' font-medium text-2xl md:text-4xl'}
+                  style={{ whiteSpace: 'pre-line', color: 'black', fontWeight: 500 }}
+                >
+                  {typed}
+                </span>
               </p>
               <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
                 {isSignedIn ? (
