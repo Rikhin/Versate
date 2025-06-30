@@ -229,25 +229,19 @@ export default function LandingPage() {
                 Discover exciting projects looking for talented team members
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-16">
+            <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 md:gap-8">
               {loadingProjects ? (
-                <div className="col-span-3 text-center text-gray-500 py-12">Loading featured projects...</div>
+                <div className="md:col-span-3 text-center text-gray-500 py-12">Loading featured projects...</div>
               ) : projectsError ? (
-                <div className="col-span-3 text-center text-red-500 py-12">Error loading projects: {projectsError}</div>
+                <div className="md:col-span-3 text-center text-red-500 py-12">Error loading projects: {projectsError}</div>
               ) : featuredProjects.length === 0 ? (
-                <div className="col-span-3 text-center text-gray-500 py-12">No projects found.</div>
+                <div className="md:col-span-3 text-center text-gray-500 py-12">No projects found.</div>
               ) : (
                 featuredProjects.map((project, index) => (
-                  <Card key={project.id || index} className="border-0 shadow-none bg-transparent">
+                  <Card key={project.id || index} className="border-0 shadow-none bg-transparent flex-1 max-w-md mx-auto">
                     <CardHeader className="pb-8">
                       <div className="flex justify-between items-start mb-4">
                         <Badge variant="outline" className="border-2 border-black text-black px-4 py-2 text-sm font-bold uppercase tracking-widest">{project.category || 'Project'}</Badge>
-                        {project.awards && (
-                          <div className="flex items-center space-x-2">
-                            <Zap className="h-5 w-5 text-black" />
-                            <span className="text-sm font-bold text-black">{project.awards}</span>
-                          </div>
-                        )}
                       </div>
                       <CardTitle className="text-2xl font-black text-black">{project.title || 'Untitled Project'}</CardTitle>
                       <CardDescription className="text-lg text-gray-600">
