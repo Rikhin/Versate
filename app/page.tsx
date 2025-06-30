@@ -72,13 +72,20 @@ export default function LandingPage() {
   ]
 
   // Typewriter effect for hero paragraph
-  const fullParagraph = ` with talented students, join exciting projects, and compete in prestigious academic competitions.\nBuild your portfolio while making lasting connections.`;
+  const fullParagraph = ` with talented students, join exciting projects, and compete in prestigious academic competitions. Build your portfolio while making lasting connections.`;
   const [typed, setTyped] = useState('');
   const [typingDone, setTypingDone] = useState(false);
+  const [highlightWidth, setHighlightWidth] = useState(0);
   useEffect(() => {
     let i = 0;
+    const connectLength = 7; // 'Connect'.length
     const interval = setInterval(() => {
       setTyped(fullParagraph.slice(0, i));
+      if (i <= connectLength) {
+        setHighlightWidth((i / connectLength) * 100);
+      } else {
+        setHighlightWidth(100);
+      }
       i++;
       if (i > fullParagraph.length) {
         clearInterval(interval);
@@ -113,18 +120,15 @@ export default function LandingPage() {
               <div className="text-5xl md:text-8xl font-black text-black mb-6 md:mb-8 leading-none">
                 Find Your<br />Perfect<br /><span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent">Team</span>
               </div>
-              <p className="mb-10 md:mb-16 max-w-3xl leading-relaxed md:leading-loose" style={{ letterSpacing: '0.01em', color: 'black' }}>
-                <span className={playfair.className + ' italic text-black font-bold text-2xl md:text-4xl relative'} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-                  <span className={styles.highlight + (!typingDone ? ' ' + styles.animate : '')}></span>
+              <p className={playfair.className + " mb-8 md:mb-12 max-w-3xl leading-relaxed md:leading-loose text-black font-medium text-lg md:text-2xl"} style={{ letterSpacing: '0.01em' }}>
+                <span className={playfair.className + ' italic text-black font-bold text-xl md:text-3xl relative'} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+                  <span
+                    className={styles.highlight}
+                    style={{ width: highlightWidth + '%', opacity: 0.28, height: '100%' }}
+                  ></span>
                   Connect
                 </span>
-                <span
-                  aria-label="hero-typewriter"
-                  className={playfair.className + ' font-medium text-2xl md:text-4xl'}
-                  style={{ whiteSpace: 'pre-line', color: 'black', fontWeight: 500 }}
-                >
-                  {typed}
-                </span>
+                {typed}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
                 {isSignedIn ? (
