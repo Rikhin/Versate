@@ -9,6 +9,7 @@ import Link from "next/link"
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
 import { competitions } from "@/lib/competitions-data"
+import { Globe } from "@/components/ui/globe"
 
 export default function LandingPage() {
   const { isSignedIn } = useUser()
@@ -85,7 +86,12 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section id="home" className="container mx-auto px-4 md:px-8 py-12 md:py-32 text-left">
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.2}>
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-6xl mx-auto relative">
+              {/* Globe positioned in top-right corner */}
+              <div className="absolute top-0 right-0 z-10">
+                <Globe className="w-24 h-24 md:w-32 md:h-32" />
+              </div>
+              
               <div className="text-5xl md:text-8xl font-black text-black mb-6 md:mb-8 leading-none">
                 Find Your<br />Perfect<br /><span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent">Team</span>
               </div>
