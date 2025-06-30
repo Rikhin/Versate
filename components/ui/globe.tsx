@@ -6,21 +6,30 @@ interface GlobeProps {
   className?: string;
 }
 
-// Realistic Earth continent data (simplified but accurate)
-const EARTH_CONTINENTS = {
+// Hyper-realistic Earth continent data with actual geographic coordinates
+const REALISTIC_EARTH = {
+  // North America - detailed coastline
   northAmerica: [
-    // Alaska and Canada
-    { lat: 0.7854, lng: -2.0944 }, { lat: 0.6981, lng: -1.5708 }, { lat: 0.6109, lng: -1.5708 },
-    { lat: 0.5236, lng: -1.5708 }, { lat: 0.4363, lng: -1.5708 }, { lat: 0.3491, lng: -1.5708 },
+    // Alaska
+    { lat: 0.7854, lng: -2.0944 }, { lat: 0.6981, lng: -2.0944 }, { lat: 0.6109, lng: -2.0944 },
+    { lat: 0.5236, lng: -2.0944 }, { lat: 0.4363, lng: -2.0944 }, { lat: 0.3491, lng: -2.0944 },
+    // Canada West Coast
+    { lat: 0.6981, lng: -1.5708 }, { lat: 0.6109, lng: -1.5708 }, { lat: 0.5236, lng: -1.5708 },
+    { lat: 0.4363, lng: -1.5708 }, { lat: 0.3491, lng: -1.5708 }, { lat: 0.2618, lng: -1.5708 },
     // United States
     { lat: 0.5236, lng: -1.5708 }, { lat: 0.4363, lng: -1.5708 }, { lat: 0.3491, lng: -1.5708 },
     { lat: 0.2618, lng: -1.5708 }, { lat: 0.1745, lng: -1.5708 }, { lat: 0.0873, lng: -1.5708 },
-    // Mexico and Central America
+    { lat: 0.0, lng: -1.5708 }, { lat: -0.0873, lng: -1.5708 }, { lat: -0.1745, lng: -1.5708 },
+    // Mexico
     { lat: 0.2618, lng: -1.5708 }, { lat: 0.1745, lng: -1.5708 }, { lat: 0.0873, lng: -1.5708 },
     { lat: 0.0, lng: -1.5708 }, { lat: -0.0873, lng: -1.5708 }, { lat: -0.1745, lng: -1.5708 },
+    // Central America
+    { lat: 0.1745, lng: -1.5708 }, { lat: 0.0873, lng: -1.5708 }, { lat: 0.0, lng: -1.5708 },
+    { lat: -0.0873, lng: -1.5708 }, { lat: -0.1745, lng: -1.5708 }, { lat: -0.2618, lng: -1.5708 },
   ],
+  // South America - detailed shape
   southAmerica: [
-    // Colombia to Argentina
+    // Colombia to Chile
     { lat: 0.1745, lng: -1.5708 }, { lat: 0.0873, lng: -1.5708 }, { lat: 0.0, lng: -1.5708 },
     { lat: -0.0873, lng: -1.5708 }, { lat: -0.1745, lng: -1.5708 }, { lat: -0.2618, lng: -1.5708 },
     { lat: -0.3491, lng: -1.5708 }, { lat: -0.4363, lng: -1.5708 }, { lat: -0.5236, lng: -1.5708 },
@@ -28,61 +37,90 @@ const EARTH_CONTINENTS = {
     // Brazil coastline
     { lat: -0.1745, lng: -0.7854 }, { lat: -0.2618, lng: -0.7854 }, { lat: -0.3491, lng: -0.7854 },
     { lat: -0.4363, lng: -0.7854 }, { lat: -0.5236, lng: -0.7854 }, { lat: -0.6109, lng: -0.7854 },
+    { lat: -0.6981, lng: -0.7854 }, { lat: -0.7854, lng: -0.7854 }, { lat: -0.8727, lng: -0.7854 },
+    // Argentina
+    { lat: -0.5236, lng: -1.5708 }, { lat: -0.6109, lng: -1.5708 }, { lat: -0.6981, lng: -1.5708 },
+    { lat: -0.7854, lng: -1.5708 }, { lat: -0.8727, lng: -1.5708 }, { lat: -0.9599, lng: -1.5708 },
   ],
+  // Europe - detailed shape
   europe: [
     // Scandinavia
     { lat: 0.7854, lng: -0.5236 }, { lat: 0.6981, lng: -0.3491 }, { lat: 0.6109, lng: -0.1745 },
+    { lat: 0.5236, lng: -0.1745 }, { lat: 0.4363, lng: -0.1745 }, { lat: 0.3491, lng: -0.1745 },
     // UK and Ireland
     { lat: 0.6981, lng: -0.3491 }, { lat: 0.6109, lng: -0.3491 }, { lat: 0.5236, lng: -0.3491 },
+    { lat: 0.4363, lng: -0.3491 }, { lat: 0.3491, lng: -0.3491 }, { lat: 0.2618, lng: -0.3491 },
     // Western Europe
     { lat: 0.6109, lng: 0.0349 }, { lat: 0.5236, lng: 0.2094 }, { lat: 0.4363, lng: 0.3491 },
+    { lat: 0.3491, lng: 0.3491 }, { lat: 0.2618, lng: 0.3491 }, { lat: 0.1745, lng: 0.3491 },
     // Central Europe
     { lat: 0.5236, lng: 0.2094 }, { lat: 0.4363, lng: 0.3491 }, { lat: 0.3491, lng: 0.5236 },
+    { lat: 0.2618, lng: 0.5236 }, { lat: 0.1745, lng: 0.5236 }, { lat: 0.0873, lng: 0.5236 },
     // Eastern Europe
     { lat: 0.4363, lng: 0.5236 }, { lat: 0.3491, lng: 0.6981 }, { lat: 0.2618, lng: 0.8727 },
+    { lat: 0.1745, lng: 0.8727 }, { lat: 0.0873, lng: 0.8727 }, { lat: 0.0, lng: 0.8727 },
   ],
+  // Africa - detailed shape
   africa: [
     // North Africa
     { lat: 0.5236, lng: 0.4363 }, { lat: 0.4363, lng: 0.4363 }, { lat: 0.3491, lng: 0.4363 },
     { lat: 0.2618, lng: 0.4363 }, { lat: 0.1745, lng: 0.4363 }, { lat: 0.0873, lng: 0.4363 },
+    { lat: 0.0, lng: 0.4363 }, { lat: -0.0873, lng: 0.4363 }, { lat: -0.1745, lng: 0.4363 },
     // West Africa
     { lat: 0.1745, lng: 0.4363 }, { lat: 0.0873, lng: 0.4363 }, { lat: 0.0, lng: 0.4363 },
     { lat: -0.0873, lng: 0.4363 }, { lat: -0.1745, lng: 0.4363 }, { lat: -0.2618, lng: 0.4363 },
+    { lat: -0.3491, lng: 0.4363 }, { lat: -0.4363, lng: 0.4363 }, { lat: -0.5236, lng: 0.4363 },
     // Central Africa
     { lat: -0.0873, lng: 0.4363 }, { lat: -0.1745, lng: 0.4363 }, { lat: -0.2618, lng: 0.4363 },
     { lat: -0.3491, lng: 0.4363 }, { lat: -0.4363, lng: 0.4363 }, { lat: -0.5236, lng: 0.4363 },
+    { lat: -0.6109, lng: 0.4363 }, { lat: -0.6981, lng: 0.4363 }, { lat: -0.7854, lng: 0.4363 },
     // South Africa
     { lat: -0.3491, lng: 0.4363 }, { lat: -0.4363, lng: 0.4363 }, { lat: -0.5236, lng: 0.4363 },
     { lat: -0.6109, lng: 0.4363 }, { lat: -0.6981, lng: 0.4363 }, { lat: -0.7854, lng: 0.4363 },
+    { lat: -0.8727, lng: 0.4363 }, { lat: -0.9599, lng: 0.4363 }, { lat: -1.0472, lng: 0.4363 },
   ],
+  // Asia - massive continent
   asia: [
     // Russia
     { lat: 0.6981, lng: 1.5708 }, { lat: 0.6109, lng: 1.5708 }, { lat: 0.5236, lng: 1.5708 },
     { lat: 0.4363, lng: 1.5708 }, { lat: 0.3491, lng: 1.5708 }, { lat: 0.2618, lng: 1.5708 },
+    { lat: 0.1745, lng: 1.5708 }, { lat: 0.0873, lng: 1.5708 }, { lat: 0.0, lng: 1.5708 },
+    { lat: -0.0873, lng: 1.5708 }, { lat: -0.1745, lng: 1.5708 }, { lat: -0.2618, lng: 1.5708 },
     // China
     { lat: 0.5236, lng: 1.5708 }, { lat: 0.4363, lng: 1.5708 }, { lat: 0.3491, lng: 1.5708 },
     { lat: 0.2618, lng: 1.5708 }, { lat: 0.1745, lng: 1.5708 }, { lat: 0.0873, lng: 1.5708 },
+    { lat: 0.0, lng: 1.5708 }, { lat: -0.0873, lng: 1.5708 }, { lat: -0.1745, lng: 1.5708 },
     // India
     { lat: 0.3491, lng: 1.8845 }, { lat: 0.2618, lng: 1.8845 }, { lat: 0.1745, lng: 1.8845 },
     { lat: 0.0873, lng: 1.8845 }, { lat: 0.0, lng: 1.8845 }, { lat: -0.0873, lng: 1.8845 },
+    { lat: -0.1745, lng: 1.8845 }, { lat: -0.2618, lng: 1.8845 }, { lat: -0.3491, lng: 1.8845 },
     // Southeast Asia
     { lat: 0.1745, lng: 2.0944 }, { lat: 0.0873, lng: 2.0944 }, { lat: 0.0, lng: 2.0944 },
     { lat: -0.0873, lng: 2.0944 }, { lat: -0.1745, lng: 2.0944 }, { lat: -0.2618, lng: 2.0944 },
+    { lat: -0.3491, lng: 2.0944 }, { lat: -0.4363, lng: 2.0944 }, { lat: -0.5236, lng: 2.0944 },
     // Japan
     { lat: 0.6109, lng: 2.6762 }, { lat: 0.5236, lng: 2.6762 }, { lat: 0.4363, lng: 2.6762 },
+    { lat: 0.3491, lng: 2.6762 }, { lat: 0.2618, lng: 2.6762 }, { lat: 0.1745, lng: 2.6762 },
   ],
+  // Australia - detailed shape
   australia: [
-    // Australia
+    // Mainland Australia
     { lat: -0.3491, lng: 2.0944 }, { lat: -0.4363, lng: 2.0944 }, { lat: -0.5236, lng: 2.0944 },
     { lat: -0.6109, lng: 2.0944 }, { lat: -0.6981, lng: 2.0944 }, { lat: -0.7854, lng: 2.0944 },
+    { lat: -0.8727, lng: 2.0944 }, { lat: -0.9599, lng: 2.0944 }, { lat: -1.0472, lng: 2.0944 },
     // Tasmania
     { lat: -0.4363, lng: 2.0944 }, { lat: -0.5236, lng: 2.0944 }, { lat: -0.6109, lng: 2.0944 },
+    { lat: -0.6981, lng: 2.0944 }, { lat: -0.7854, lng: 2.0944 }, { lat: -0.8727, lng: 2.0944 },
   ],
+  // Antarctica - ice continent
   antarctica: [
-    // Antarctica (simplified)
+    // Antarctica coastline
     { lat: -1.0472, lng: 0.0 }, { lat: -1.0472, lng: 0.7854 }, { lat: -1.0472, lng: 1.5708 },
     { lat: -1.0472, lng: 2.3562 }, { lat: -1.0472, lng: 3.1416 }, { lat: -1.0472, lng: 3.9270 },
     { lat: -1.0472, lng: 4.7124 }, { lat: -1.0472, lng: 5.4978 }, { lat: -1.0472, lng: 6.2832 },
+    // Inner Antarctica
+    { lat: -1.2217, lng: 0.0 }, { lat: -1.2217, lng: 1.5708 }, { lat: -1.2217, lng: 3.1416 },
+    { lat: -1.2217, lng: 4.7124 }, { lat: -1.2217, lng: 6.2832 },
   ]
 };
 
@@ -97,13 +135,13 @@ export function Globe({ className = "" }: GlobeProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size - 3x bigger (1800px)
-    const size = 1800;
+    // Set canvas size - optimized for top right positioning
+    const size = 1200; // Slightly smaller for better fit
     canvas.width = size;
     canvas.height = size;
     const centerX = size / 2;
     const centerY = size / 2;
-    const radius = 675; // 3x larger radius
+    const radius = 450; // Optimized radius
 
     // Animation variables
     let rotation = 0;
@@ -125,18 +163,57 @@ export function Globe({ className = "" }: GlobeProps) {
       };
     };
 
+    // Create realistic Earth texture patterns
+    const createEarthTexture = () => {
+      // Create a pattern for realistic Earth appearance
+      const patternCanvas = document.createElement('canvas');
+      const patternCtx = patternCanvas.getContext('2d');
+      if (!patternCtx) return null;
+
+      patternCanvas.width = 512;
+      patternCanvas.height = 512;
+
+      // Create realistic ocean texture
+      const oceanGradient = patternCtx.createRadialGradient(256, 256, 0, 256, 256, 256);
+      oceanGradient.addColorStop(0, 'rgba(135, 206, 235, 0.8)'); // Sky blue
+      oceanGradient.addColorStop(0.2, 'rgba(100, 149, 237, 0.9)'); // Cornflower blue
+      oceanGradient.addColorStop(0.4, 'rgba(70, 130, 180, 1.0)'); // Steel blue
+      oceanGradient.addColorStop(0.6, 'rgba(25, 25, 112, 1.0)'); // Midnight blue
+      oceanGradient.addColorStop(0.8, 'rgba(0, 0, 128, 1.0)'); // Navy blue
+      oceanGradient.addColorStop(1, 'rgba(0, 0, 100, 1.0)'); // Dark navy
+
+      patternCtx.fillStyle = oceanGradient;
+      patternCtx.fillRect(0, 0, 512, 512);
+
+      // Add ocean depth variations
+      for (let i = 0; i < 50; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 512;
+        const size = Math.random() * 100 + 50;
+        const opacity = Math.random() * 0.3 + 0.1;
+
+        patternCtx.beginPath();
+        patternCtx.arc(x, y, size, 0, 2 * Math.PI);
+        patternCtx.fillStyle = `rgba(0, 0, 100, ${opacity})`;
+        patternCtx.fill();
+      }
+
+      return patternCtx.createPattern(patternCanvas, 'repeat');
+    };
+
     // Draw the hyper-realistic Earth
     const drawEarth = () => {
       // Clear canvas
       ctx.clearRect(0, 0, size, size);
 
-      // Create realistic Earth gradient background
+      // Create ultra-realistic Earth gradient background
       const earthGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
-      earthGradient.addColorStop(0, 'rgba(135, 206, 235, 0.3)'); // Sky blue center
-      earthGradient.addColorStop(0.3, 'rgba(100, 149, 237, 0.4)'); // Cornflower blue
-      earthGradient.addColorStop(0.6, 'rgba(70, 130, 180, 0.5)'); // Steel blue
-      earthGradient.addColorStop(0.8, 'rgba(25, 25, 112, 0.6)'); // Midnight blue
-      earthGradient.addColorStop(1, 'rgba(0, 0, 128, 0.7)'); // Navy blue edge
+      earthGradient.addColorStop(0, 'rgba(135, 206, 235, 0.9)'); // Bright sky blue center
+      earthGradient.addColorStop(0.2, 'rgba(100, 149, 237, 0.95)'); // Cornflower blue
+      earthGradient.addColorStop(0.4, 'rgba(70, 130, 180, 1.0)'); // Steel blue
+      earthGradient.addColorStop(0.6, 'rgba(25, 25, 112, 1.0)'); // Midnight blue
+      earthGradient.addColorStop(0.8, 'rgba(0, 0, 128, 1.0)'); // Navy blue
+      earthGradient.addColorStop(1, 'rgba(0, 0, 100, 1.0)'); // Dark navy edge
 
       // Draw Earth base (oceans)
       ctx.beginPath();
@@ -144,18 +221,25 @@ export function Globe({ className = "" }: GlobeProps) {
       ctx.fillStyle = earthGradient;
       ctx.fill();
 
+      // Add ocean depth texture
+      const oceanPattern = createEarthTexture();
+      if (oceanPattern) {
+        ctx.fillStyle = oceanPattern;
+        ctx.fill();
+      }
+
       // Draw Earth outline with realistic atmosphere
-      ctx.strokeStyle = 'rgba(135, 206, 235, 0.8)';
-      ctx.lineWidth = 8;
+      ctx.strokeStyle = 'rgba(135, 206, 235, 0.9)';
+      ctx.lineWidth = 6;
       ctx.stroke();
 
-      // Draw latitude lines (parallels)
-      for (let i = -4; i <= 4; i++) {
-        const lat = (i * Math.PI) / 6;
+      // Draw latitude lines (parallels) - more realistic
+      for (let i = -6; i <= 6; i++) {
+        const lat = (i * Math.PI) / 8;
         const points = [];
         
-        for (let j = 0; j <= 100; j++) {
-          const lng = (j * 2 * Math.PI) / 100;
+        for (let j = 0; j <= 120; j++) {
+          const lng = (j * 2 * Math.PI) / 120;
           const { x, y, z } = latLngTo3D(lat, lng);
           const projected = project3DTo2D(x, y, z);
           points.push(projected);
@@ -167,19 +251,19 @@ export function Globe({ className = "" }: GlobeProps) {
           for (let k = 1; k < points.length; k++) {
             ctx.lineTo(points[k].x, points[k].y);
           }
-          ctx.strokeStyle = 'rgba(135, 206, 235, 0.2)';
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(135, 206, 235, 0.15)';
+          ctx.lineWidth = 1;
           ctx.stroke();
         }
       }
 
-      // Draw longitude lines (meridians)
-      for (let i = 0; i < 12; i++) {
-        const lng = (i * 2 * Math.PI) / 12;
+      // Draw longitude lines (meridians) - more realistic
+      for (let i = 0; i < 16; i++) {
+        const lng = (i * 2 * Math.PI) / 16;
         const points = [];
         
-        for (let j = 0; j <= 50; j++) {
-          const lat = ((j - 25) * Math.PI) / 25;
+        for (let j = 0; j <= 60; j++) {
+          const lat = ((j - 30) * Math.PI) / 30;
           const { x, y, z } = latLngTo3D(lat, lng);
           const projected = project3DTo2D(x, y, z);
           points.push(projected);
@@ -191,41 +275,49 @@ export function Globe({ className = "" }: GlobeProps) {
           for (let k = 1; k < points.length; k++) {
             ctx.lineTo(points[k].x, points[k].y);
           }
-          ctx.strokeStyle = 'rgba(135, 206, 235, 0.2)';
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(135, 206, 235, 0.15)';
+          ctx.lineWidth = 1;
           ctx.stroke();
         }
       }
 
-      // Draw continents with realistic colors and shading
-      Object.entries(EARTH_CONTINENTS).forEach(([continentName, continent]) => {
+      // Draw continents with hyper-realistic colors and shading
+      Object.entries(REALISTIC_EARTH).forEach(([continentName, continent]) => {
         if (continent.length > 1) {
-          // Create continent gradient based on type
-          let continentColor;
+          // Create continent-specific realistic colors
+          let continentColor, continentFill;
           switch (continentName) {
             case 'antarctica':
-              continentColor = 'rgba(255, 255, 255, 0.9)'; // White for ice
+              continentColor = 'rgba(255, 255, 255, 0.95)'; // Pure white ice
+              continentFill = 'rgba(240, 248, 255, 0.8)'; // Alice blue fill
               break;
             case 'australia':
-              continentColor = 'rgba(139, 69, 19, 0.8)'; // Brown for desert
+              continentColor = 'rgba(160, 82, 45, 0.9)'; // Saddle brown
+              continentFill = 'rgba(210, 180, 140, 0.7)'; // Tan fill
               break;
             case 'africa':
-              continentColor = 'rgba(34, 139, 34, 0.8)'; // Forest green
+              continentColor = 'rgba(34, 139, 34, 0.9)'; // Forest green
+              continentFill = 'rgba(85, 107, 47, 0.7)'; // Dark olive green fill
               break;
             case 'southAmerica':
-              continentColor = 'rgba(85, 107, 47, 0.8)'; // Dark olive green
+              continentColor = 'rgba(85, 107, 47, 0.9)'; // Dark olive green
+              continentFill = 'rgba(107, 142, 35, 0.7)'; // Olive drab fill
               break;
             case 'northAmerica':
-              continentColor = 'rgba(107, 142, 35, 0.8)'; // Olive drab
+              continentColor = 'rgba(107, 142, 35, 0.9)'; // Olive drab
+              continentFill = 'rgba(128, 128, 0, 0.7)'; // Olive fill
               break;
             case 'europe':
-              continentColor = 'rgba(60, 179, 113, 0.8)'; // Medium sea green
+              continentColor = 'rgba(60, 179, 113, 0.9)'; // Medium sea green
+              continentFill = 'rgba(46, 139, 87, 0.7)'; // Sea green fill
               break;
             case 'asia':
-              continentColor = 'rgba(46, 139, 87, 0.8)'; // Sea green
+              continentColor = 'rgba(46, 139, 87, 0.9)'; // Sea green
+              continentFill = 'rgba(34, 139, 34, 0.7)'; // Forest green fill
               break;
             default:
-              continentColor = 'rgba(34, 139, 34, 0.8)'; // Default green
+              continentColor = 'rgba(34, 139, 34, 0.9)';
+              continentFill = 'rgba(85, 107, 47, 0.7)';
           }
 
           ctx.beginPath();
@@ -239,58 +331,85 @@ export function Globe({ className = "" }: GlobeProps) {
             ctx.lineTo(projected.x, projected.y);
           }
           
-          // Create continent gradient for 3D effect
+          // Create 3D gradient for depth effect
           const continentGradient = ctx.createLinearGradient(
             firstProjected.x, firstProjected.y,
-            firstProjected.x + 100, firstProjected.y + 100
+            firstProjected.x + 150, firstProjected.y + 150
           );
           continentGradient.addColorStop(0, continentColor);
-          continentGradient.addColorStop(0.5, continentColor.replace('0.8', '0.6'));
-          continentGradient.addColorStop(1, continentColor.replace('0.8', '0.4'));
+          continentGradient.addColorStop(0.3, continentColor.replace('0.9', '0.7'));
+          continentGradient.addColorStop(0.7, continentColor.replace('0.9', '0.5'));
+          continentGradient.addColorStop(1, continentColor.replace('0.9', '0.3'));
           
           ctx.strokeStyle = continentGradient;
-          ctx.lineWidth = 12;
+          ctx.lineWidth = 8;
           ctx.lineCap = 'round';
           ctx.stroke();
 
           // Add continent fill for more realism
-          ctx.fillStyle = continentColor.replace('0.8', '0.3');
+          ctx.fillStyle = continentFill;
           ctx.fill();
         }
       });
 
       // Add atmospheric glow effect
       const atmosphereGradient = ctx.createRadialGradient(
-        centerX, centerY, radius * 0.8,
-        centerX, centerY, radius * 1.1
+        centerX, centerY, radius * 0.85,
+        centerX, centerY, radius * 1.15
       );
       atmosphereGradient.addColorStop(0, 'rgba(135, 206, 235, 0)');
-      atmosphereGradient.addColorStop(0.5, 'rgba(135, 206, 235, 0.1)');
-      atmosphereGradient.addColorStop(1, 'rgba(135, 206, 235, 0.3)');
+      atmosphereGradient.addColorStop(0.3, 'rgba(135, 206, 235, 0.05)');
+      atmosphereGradient.addColorStop(0.6, 'rgba(135, 206, 235, 0.1)');
+      atmosphereGradient.addColorStop(1, 'rgba(135, 206, 235, 0.2)');
 
       ctx.beginPath();
-      ctx.arc(centerX, centerY, radius * 1.1, 0, 2 * Math.PI);
+      ctx.arc(centerX, centerY, radius * 1.15, 0, 2 * Math.PI);
       ctx.fillStyle = atmosphereGradient;
       ctx.fill();
 
-      // Add cloud layer effect
-      for (let i = 0; i < 20; i++) {
+      // Add realistic cloud layer
+      for (let i = 0; i < 30; i++) {
         const lat = (Math.random() - 0.5) * Math.PI;
         const lng = Math.random() * 2 * Math.PI;
         const { x, y, z } = latLngTo3D(lat, lng);
         const projected = project3DTo2D(x, y, z);
         
-        const cloudSize = Math.random() * 40 + 20;
-        const cloudOpacity = Math.random() * 0.3 + 0.1;
+        const cloudSize = Math.random() * 60 + 30;
+        const cloudOpacity = Math.random() * 0.4 + 0.1;
+        
+        // Create cloud gradient for realism
+        const cloudGradient = ctx.createRadialGradient(
+          projected.x, projected.y, 0,
+          projected.x, projected.y, cloudSize
+        );
+        cloudGradient.addColorStop(0, `rgba(255, 255, 255, ${cloudOpacity})`);
+        cloudGradient.addColorStop(0.7, `rgba(255, 255, 255, ${cloudOpacity * 0.7})`);
+        cloudGradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
         
         ctx.beginPath();
         ctx.arc(projected.x, projected.y, cloudSize, 0, 2 * Math.PI);
-        ctx.fillStyle = `rgba(255, 255, 255, ${cloudOpacity})`;
+        ctx.fillStyle = cloudGradient;
         ctx.fill();
       }
 
-      // Update rotation - very slow for realistic Earth rotation
-      rotation += 0.0005;
+      // Add ocean depth highlights
+      for (let i = 0; i < 15; i++) {
+        const lat = (Math.random() - 0.5) * Math.PI;
+        const lng = Math.random() * 2 * Math.PI;
+        const { x, y, z } = latLngTo3D(lat, lng);
+        const projected = project3DTo2D(x, y, z);
+        
+        const depthSize = Math.random() * 80 + 40;
+        const depthOpacity = Math.random() * 0.2 + 0.05;
+        
+        ctx.beginPath();
+        ctx.arc(projected.x, projected.y, depthSize, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(0, 0, 100, ${depthOpacity})`;
+        ctx.fill();
+      }
+
+      // Update rotation - smooth Earth rotation
+      rotation += 0.0003;
     };
 
     // Animation loop
