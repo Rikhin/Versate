@@ -2,7 +2,7 @@
 
 import { SignInButton, SignUpButton, UserButton, useUser, SignOutButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { Trophy, User, Settings, LogOut, ChevronDown, Menu, X } from "lucide-react";
+import { Trophy, User, Settings, LogOut, ChevronDown, Menu, X, MessageSquare } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "./button";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
@@ -56,6 +56,9 @@ export function Header() {
           <Link href="/#about" className="hover:opacity-60 transition">Projects</Link>
           <Link href="/#competitions" className="hover:opacity-60 transition">Competitions</Link>
           <Link href="/dashboard/plans" className="hover:opacity-60 transition">Plans</Link>
+          {isSignedIn && (
+            <Link href="/messages" className="hover:opacity-60 transition">Messages</Link>
+          )}
         </nav>
 
         {/* Auth buttons or user */}
@@ -95,6 +98,15 @@ export function Header() {
                       >
                         <User className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
                         View Profile
+                      </Link>
+                      
+                      <Link
+                        href="/messages"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                      >
+                        <MessageSquare className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
+                        Messages
                       </Link>
                       
                       <Link
@@ -165,13 +177,22 @@ export function Header() {
               Plans
             </Link>
             {isSignedIn && (
-              <Link 
-                href="/dashboard" 
-                className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Dashboard
-              </Link>
+              <>
+                <Link 
+                  href="/dashboard" 
+                  className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                <Link 
+                  href="/messages" 
+                  className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Messages
+                </Link>
+              </>
             )}
           </nav>
         </div>

@@ -4,18 +4,18 @@ ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
 -- Create profiles table
 CREATE TABLE IF NOT EXISTS profiles (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id TEXT UNIQUE NOT NULL,
-  first_name TEXT NOT NULL,
-  last_name TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  first_name TEXT,
+  last_name TEXT,
+  email TEXT,
   school TEXT,
   grade_level TEXT,
   bio TEXT,
-  skills TEXT[] DEFAULT '{}',
-  roles TEXT[] DEFAULT '{}',
+  skills TEXT[],
+  roles TEXT[],
   experience_level TEXT,
   time_commitment TEXT,
-  collaboration_style TEXT[] DEFAULT '{}',
+  collaboration_style TEXT[],
   location TEXT,
   avatar_url TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -74,19 +74,15 @@ CREATE TABLE IF NOT EXISTS team_members (
   UNIQUE(team_id, user_id)
 );
 
--- Create messages table
+-- Create messages table for user-to-user messaging
 CREATE TABLE IF NOT EXISTS messages (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  sender_id TEXT NOT NULL,
-  recipient_id TEXT, -- for direct messages
-  team_id UUID REFERENCES teams(id) ON DELETE CASCADE, -- for team chats
+  sender_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  recipient_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
-  message_type TEXT DEFAULT 'text', -- 'text', 'file', 'image'
+  is_read BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  CHECK (
-    (recipient_id IS NOT NULL AND team_id IS NULL) OR 
-    (recipient_id IS NULL AND team_id IS NOT NULL)
-  )
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Create notifications table
@@ -142,7 +138,8 @@ CREATE INDEX IF NOT EXISTS idx_teams_category ON teams(category);
 CREATE INDEX IF NOT EXISTS idx_team_members_team_id ON team_members(team_id);
 CREATE INDEX IF NOT EXISTS idx_team_members_user_id ON team_members(user_id);
 CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON messages(sender_id);
-CREATE INDEX IF NOT EXISTS idx_messages_team_id ON messages(team_id);
+CREATE INDEX IF NOT EXISTS idx_messages_recipient_id ON messages(recipient_id);
+CREATE INDEX IF NOT EXISTS idx_messages_conversation ON messages(sender_id, recipient_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON notifications(user_id);
 
 -- Enable Row Level Security
@@ -153,9 +150,14 @@ ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for profiles
-CREATE POLICY "Users can view all profiles" ON profiles FOR SELECT USING (true);
-CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (user_id = current_setting('app.current_user_id'));
-CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (user_id = current_setting('app.current_user_id'));
+CREATE POLICY "Profiles are viewable by everyone" ON profiles
+  FOR SELECT USING (true);
+
+CREATE POLICY "Users can update their own profile" ON profiles
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own profile" ON profiles
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- RLS Policies for teams
 CREATE POLICY "Anyone can view public teams" ON teams FOR SELECT USING (is_public = true);
@@ -177,12 +179,16 @@ CREATE POLICY "Users can join teams" ON team_members FOR INSERT WITH CHECK (user
 CREATE POLICY "Users can update own membership" ON team_members FOR UPDATE USING (user_id = current_setting('app.current_user_id'));
 
 -- RLS Policies for messages
-CREATE POLICY "Users can view their messages" ON messages FOR SELECT USING (
-  sender_id = current_setting('app.current_user_id') OR
-  recipient_id = current_setting('app.current_user_id') OR
-  team_id IN (SELECT team_id FROM team_members WHERE user_id = current_setting('app.current_user_id') AND status = 'accepted')
-);
-CREATE POLICY "Users can send messages" ON messages FOR INSERT WITH CHECK (sender_id = current_setting('app.current_user_id'));
+CREATE POLICY "Users can view messages they sent or received" ON messages
+  FOR SELECT USING (
+    auth.uid() = sender_id OR auth.uid() = recipient_id
+  );
+
+CREATE POLICY "Users can insert messages" ON messages
+  FOR INSERT WITH CHECK (auth.uid() = sender_id);
+
+CREATE POLICY "Users can update their own messages" ON messages
+  FOR UPDATE USING (auth.uid() = sender_id);
 
 -- RLS Policies for notifications
 CREATE POLICY "Users can view own notifications" ON notifications FOR SELECT USING (user_id = current_setting('app.current_user_id'));
