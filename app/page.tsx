@@ -9,6 +9,7 @@ import Link from "next/link"
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
 import { competitions } from "@/lib/competitions-data"
+import { NetworkBG } from "@/components/ui/network-bg"
 
 export default function LandingPage() {
   const { isSignedIn } = useUser()
@@ -67,6 +68,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
+      <NetworkBG />
       {/* Background Animations */}
       <BackgroundGradient 
         startColor="from-gray-50/50" 
