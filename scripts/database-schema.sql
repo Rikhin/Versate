@@ -123,6 +123,18 @@ CREATE TABLE IF NOT EXISTS competition_interests (
   UNIQUE(user_id, competition_id)
 );
 
+-- Create projects table for ISEF and other competition projects
+CREATE TABLE IF NOT EXISTS projects (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  title text NOT NULL,
+  authors text,
+  category text,
+  description text,
+  awards text,
+  created_at timestamp with time zone DEFAULT now(),
+  competition_id text
+);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
 CREATE INDEX IF NOT EXISTS idx_teams_owner_id ON teams(owner_id);

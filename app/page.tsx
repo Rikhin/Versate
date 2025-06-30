@@ -83,22 +83,16 @@ export default function LandingPage() {
       {/* Main Content Container */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <section id="home" className="container mx-auto px-8 py-32 text-left">
+        <section id="home" className="container mx-auto px-4 md:px-8 py-12 md:py-32 text-left">
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.2}>
             <div className="max-w-6xl mx-auto">
-              <div className="text-8xl md:text-9xl font-black text-black mb-8 leading-none">
-                Find Your
-                <br />
-                Perfect
-                <br />
-                <span className="text-gray-400">Team</span>
+              <div className="text-5xl md:text-8xl font-black text-black mb-6 md:mb-8 leading-none">
+                Find Your<br />Perfect<br /><span className="text-gray-400">Team</span>
               </div>
-              <p className="text-2xl text-gray-600 mb-12 max-w-3xl leading-relaxed">
-                Connect with talented students, join exciting projects, and compete in prestigious academic competitions.
-                <br />
-                Build your portfolio while making lasting connections.
+              <p className="text-base md:text-2xl text-gray-600 mb-8 md:mb-12 max-w-3xl leading-relaxed">
+                Connect with talented students, join exciting projects, and compete in prestigious academic competitions.<br />Build your portfolio while making lasting connections.
               </p>
-              <div className="flex flex-col sm:flex-row gap-6">
+              <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
                 {isSignedIn ? (
                   <Link href="/dashboard">
                     <Button size="lg" className="text-xl px-12 py-6 bg-black text-white hover:bg-gray-800">
@@ -127,13 +121,13 @@ export default function LandingPage() {
         </section>
 
         {/* Stats Section */}
-        <section className="container mx-auto px-8 py-32">
+        <section className="container mx-auto px-4 md:px-8 py-12 md:py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-16">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-16">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
-                  <div className="text-6xl font-black text-black mb-4">{stat.value}</div>
-                  <div className="text-lg text-gray-600 uppercase tracking-widest">{stat.label}</div>
+                  <div className="text-3xl md:text-6xl font-black text-black mb-2 md:mb-4">{stat.value}</div>
+                  <div className="text-xs md:text-lg text-gray-600 uppercase tracking-widest">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -141,21 +135,18 @@ export default function LandingPage() {
         </section>
 
         {/* Features Section */}
-        <section id="works" className="container mx-auto px-8 py-32">
+        <section id="works" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.15}>
-            <div className="text-center mb-24">
-              <div className="text-9xl font-black text-black mb-8">01</div>
-              <h2 className="text-6xl md:text-7xl font-black text-black mb-8 leading-none">
-                Everything You
-                <br />
-                Need to Succeed
+            <div className="text-center mb-12 md:mb-24">
+              <div className="text-5xl md:text-9xl font-black text-black mb-6 md:mb-8">01</div>
+              <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black mb-6 md:mb-8 leading-none">
+                Everything You<br />Need to Succeed
               </h2>
-              <p className="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 Our platform provides all the tools and connections you need to excel in academic competitions
               </p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-16">
               <Card className="border-0 shadow-none bg-transparent">
                 <CardHeader className="pb-8">
                   <div className="flex items-center space-x-6">
@@ -202,21 +193,18 @@ export default function LandingPage() {
         </section>
 
         {/* Featured Projects */}
-        <section id="about" className="container mx-auto px-8 py-32">
+        <section id="about" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="text-center mb-24">
-              <div className="text-9xl font-black text-black mb-8">02</div>
-              <h2 className="text-6xl md:text-7xl font-black text-black mb-8 leading-none">
-                Featured
-                <br />
-                Projects
+            <div className="text-center mb-12 md:mb-24">
+              <div className="text-5xl md:text-9xl font-black text-black mb-6 md:mb-8">02</div>
+              <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black mb-6 md:mb-8 leading-none">
+                Featured<br />Projects
               </h2>
-              <p className="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 Discover exciting projects looking for talented team members
               </p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-16">
               {featuredProjects.map((project, index) => (
                 <Card key={index} className="border-0 shadow-none bg-transparent">
                   <CardHeader className="pb-8">
@@ -272,12 +260,11 @@ export default function LandingPage() {
                 </Card>
               ))}
             </div>
-
-            <div className="text-center mt-24">
+            <div className="text-center mt-12 md:mt-24">
               <Link href="/explore">
-                <Button size="lg" variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white text-xl px-12 py-6 font-bold">
+                <Button size="lg" variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white text-base md:text-xl px-6 md:px-12 py-3 md:py-6 font-bold">
                   View All Projects
-                  <ArrowRight className="ml-4 h-6 w-6" />
+                  <ArrowRight className="ml-2 md:ml-4 h-6 w-6" />
                 </Button>
               </Link>
             </div>
@@ -285,18 +272,18 @@ export default function LandingPage() {
         </section>
 
         {/* Competitions Section */}
-        <section id="competitions" className="container mx-auto px-8 py-32">
+        <section id="competitions" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="text-center mb-24">
-              <div className="text-9xl font-black text-black mb-8">03</div>
-              <h2 className="text-6xl md:text-7xl font-black text-black mb-8 leading-none">
+            <div className="text-center mb-12 md:mb-24">
+              <div className="text-5xl md:text-9xl font-black text-black mb-6 md:mb-8">03</div>
+              <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black mb-6 md:mb-8 leading-none">
                 Supported<br />Competitions
               </h2>
-              <p className="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 We support teams participating in prestigious academic competitions worldwide
               </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
               {competitions.slice(0, 8).map((competition) => (
                 <Link
                   key={competition.id}
@@ -313,25 +300,24 @@ export default function LandingPage() {
                 </Link>
               ))}
             </div>
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center mt-6 md:mt-8">
               <Link href="/competitions">
-                <button className="px-8 py-3 rounded-lg bg-black text-white font-bold text-lg hover:bg-gray-900 transition">View All Competitions</button>
+                <button className="px-6 md:px-8 py-2 md:py-3 rounded-lg bg-black text-white font-bold text-base md:text-lg hover:bg-gray-900 transition">View All Competitions</button>
               </Link>
             </div>
           </TextFade>
         </section>
 
         {/* CTA Section */}
-        <section id="contacts" className="container mx-auto px-8 py-32">
+        <section id="contacts" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.2}>
             <Card className="bg-black text-white border-0">
-              <CardContent className="p-24 text-center">
-                <h2 className="text-6xl md:text-7xl font-black mb-8 leading-none">Ready to Build Your Dream Team?</h2>
-                <p className="text-2xl mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed">
-                  Join thousands of students who are already collaborating on amazing projects and winning competitions
-                  together.
+              <CardContent className="p-8 md:p-24 text-center">
+                <h2 className="text-2xl md:text-6xl md:text-7xl font-black mb-6 md:mb-8 leading-none">Ready to Build Your Dream Team?</h2>
+                <p className="text-base md:text-2xl mb-8 md:mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed">
+                  Join thousands of students who are already collaborating on amazing projects and winning competitions together.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center">
                   <Link href="/dashboard">
                     <Button size="lg" variant="secondary" className="text-xl px-12 py-6 bg-white text-black hover:bg-gray-100 font-bold">
                       Get Started Now

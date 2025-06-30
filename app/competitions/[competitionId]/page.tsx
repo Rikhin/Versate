@@ -27,6 +27,14 @@ export default async function CompetitionPage({ params, searchParams }: Competit
           <span className="text-4xl">{competition.icon}</span>
           {competition.name}
         </h1>
+        <a
+          href={competition.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block mb-6 px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          Visit Official Website
+        </a>
         <div className="mb-8 grid md:grid-cols-2 gap-8">
           <section>
             <h2 className="text-2xl font-bold mb-2">Overview</h2>
