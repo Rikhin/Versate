@@ -124,7 +124,7 @@ export default function LandingPage() {
                 <span className={playfair.className + ' italic text-black font-bold text-base md:text-xl relative'}>
                   <span
                     className={styles.highlight}
-                    style={{ width: highlightWidth + '%', opacity: 0.55, height: '100%', background: 'linear-gradient(90deg, #ffe066 60%, #ffd600 100%)', verticalAlign: 'baseline' }}
+                    style={{ width: highlightWidth + '%', opacity: 0.32, height: '100%', background: 'linear-gradient(90deg, #ffe066 60%, #ffd600 100%)' }}
                   ></span>
                   Connect
                 </span>
