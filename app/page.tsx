@@ -13,56 +13,13 @@ import { NetworkBG } from "@/components/ui/network-bg"
 import { Playfair_Display } from 'next/font/google'
 import React, { useState, useEffect } from 'react'
 import styles from './connect-highlight.module.css';
+import { createClient } from "@/lib/supabase"
 
 const playfair = Playfair_Display({ subsets: ['latin'], style: ['italic'], weight: ['400', '700'] })
 
 export default function LandingPage() {
   const { isSignedIn } = useUser()
-
-  const featuredProjects = [
-    {
-      title: "AI-Powered Study Assistant",
-      competition: "Congressional App Challenge",
-      category: "Computer Science",
-      teamSize: 3,
-      maxTeamSize: 5,
-      techStack: ["React", "Python", "AI"],
-      leader: {
-        name: "Sarah Chen",
-        avatar: "/placeholder-user.jpg",
-        school: "Stanford University",
-      },
-      matchScore: 94,
-    },
-    {
-      title: "Sustainable Energy Monitor",
-      competition: "Regeneron ISEF",
-      category: "STEM",
-      teamSize: 2,
-      maxTeamSize: 4,
-      techStack: ["Arduino", "IoT", "Data Science"],
-      leader: {
-        name: "Alex Rivera",
-        avatar: "/placeholder-user.jpg",
-        school: "MIT",
-      },
-      matchScore: 89,
-    },
-    {
-      title: "Mental Health Chatbot",
-      competition: "Technovation Girls",
-      category: "Innovation",
-      teamSize: 4,
-      maxTeamSize: 6,
-      techStack: ["Flutter", "NLP", "Psychology"],
-      leader: {
-        name: "Priya Sharma",
-        avatar: "/placeholder-user.jpg",
-        school: "Harvard University",
-      },
-      matchScore: 91,
-    },
-  ]
+  const [featuredProjects, setFeaturedProjects] = useState<any[]>([])
 
   const stats = [
     { label: "Active Projects", value: "500+", icon: Trophy },
@@ -96,6 +53,21 @@ export default function LandingPage() {
     }, intervalTime);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    async function fetchProjects() {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from("projects")
+        .select("id, title, authors, category, description, awards, created_at")
+      if (data && data.length > 0) {
+        // Pick 3 random projects
+        const shuffled = data.sort(() => 0.5 - Math.random())
+        setFeaturedProjects(shuffled.slice(0, 3))
+      }
+    }
+    fetchProjects()
+  }, [])
 
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">

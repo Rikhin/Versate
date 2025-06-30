@@ -46,7 +46,7 @@ export default function ExplorePage() {
       const supabase = createClient()
       supabase
         .from("projects")
-        .select("id, title, authors, category, description, awards, created_at")
+        .select("id, title, authors, category, description, awards, created_at, country, state, city")
         .order("created_at", { ascending: false })
         .then(({ data, error }) => {
           if (error) setProjectsError(error.message)
