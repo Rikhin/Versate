@@ -181,7 +181,7 @@ export function OnboardingForm() {
               <div className="text-6xl md:text-7xl font-black text-black mb-8 leading-none">
                 Welcome to
                 <br />
-                <span className="text-gray-400">ColabBoard</span>
+                <span className="text-gray-400">brate</span>
               </div>
               <p className="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 Let's get to know you better so we can match you with the perfect teammates

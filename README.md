@@ -1,4 +1,4 @@
-# ColabBoard Platform
+# brate Platform
 
 *Automatically synced with your [v0.dev](https://v0.dev) deployments*
 
