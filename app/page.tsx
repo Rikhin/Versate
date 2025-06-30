@@ -251,7 +251,9 @@ export default function LandingPage() {
                       </div>
                       <CardTitle className="text-2xl font-black text-black">{project.title || 'Untitled Project'}</CardTitle>
                       <CardDescription className="text-lg text-gray-600">
-                        {project.description || 'No description available.'}
+                        {(project.description && project.description.length > 100)
+                          ? project.description.slice(0, 100) + '...'
+                          : (project.description || 'No description available.')}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
