@@ -33,7 +33,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2 md:gap-3 group">
           <Trophy className="h-6 w-6 md:h-8 md:w-8 text-black group-hover:scale-110 transition-transform" />
           <div>
-            <span className="text-lg md:text-2xl font-black text-black leading-tight">brate</span>
+            <span className="text-lg md:text-2xl font-black text-black leading-tight">brately</span>
             <p className="text-xs text-gray-500 -mt-1 font-medium hidden sm:block">built by Rikhin Kavuru</p>
           </div>
         </Link>

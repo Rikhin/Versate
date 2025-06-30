@@ -458,7 +458,7 @@ export default function ProfilesPage() {
               <div className="flex items-center space-x-4">
                 <Trophy className="h-8 w-8 text-black" />
                 <div>
-                  <span className="text-2xl font-black text-black">brate</span>
+                  <span className="text-2xl font-black text-black">brately</span>
                   <p className="text-sm text-gray-600">Student Profiles</p>
                 </div>
               </div>

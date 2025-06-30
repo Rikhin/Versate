@@ -346,7 +346,7 @@ export default function LandingPage() {
               <div className="flex items-center space-x-4 mb-8 md:mb-0">
                 <Trophy className="h-8 w-8 text-black" />
                 <div>
-                  <span className="text-2xl font-black text-black">brate</span>
+                  <span className="text-2xl font-black text-black">brately</span>
                   <p className="text-sm text-gray-600">built by Rikhin Kavuru</p>
                 </div>
               </div>
@@ -363,7 +363,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
-              <p>&copy; 2024 brate. All rights reserved. Empowering students to achieve excellence together.</p>
+              <p>&copy; 2024 brately. All rights reserved. Empowering students to achieve excellence together.</p>
             </div>
           </div>
         </footer>

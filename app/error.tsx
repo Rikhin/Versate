@@ -20,7 +20,7 @@ export default function Error({
       <div className="text-center">
         <div className="flex items-center justify-center space-x-2 mb-6">
           <Trophy className="h-8 w-8 text-slate-600" />
-          <span className="text-2xl font-bold text-slate-800">brate</span>
+          <span className="text-2xl font-bold text-slate-800">brately</span>
         </div>
         <h2 className="text-2xl font-bold text-slate-800 mb-4">Something went wrong!</h2>
         <p className="text-slate-600 mb-6">We encountered an error while loading the page.</p>
