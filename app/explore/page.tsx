@@ -11,8 +11,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Trophy, Search, Users, Calendar, MapPin, Star, Target, Zap, TrendingUp, Filter } from "lucide-react"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
-import { fakeProfiles, Profile } from "../profiles/page"
 import { useRouter } from "next/navigation"
+
+// Add Profile type for students
+interface Profile {
+  id: string
+  user_id: string
+  first_name: string
+  last_name: string
+  email: string
+  school: string
+  grade_level: string
+  bio: string
+  skills: string[]
+  roles: string[]
+  experience_level: string
+  time_commitment: string
+  collaboration_style: string[]
+  location: string
+  avatar_url?: string
+  created_at: string
+  updated_at: string
+}
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -39,6 +59,11 @@ export default function ExplorePage() {
   const cities = useMemo(() => ["all", ...Array.from(new Set(isefProjects.map(p => p.city).filter(Boolean)))], [isefProjects])
   const awards = useMemo(() => ["all", ...Array.from(new Set(isefProjects.map(p => p.awards).filter(Boolean)))], [isefProjects])
 
+  // Add state for students
+  const [students, setStudents] = useState<Profile[]>([])
+  const [loadingStudents, setLoadingStudents] = useState(false)
+  const [studentsError, setStudentsError] = useState<string | null>(null)
+
   useEffect(() => {
     if (activeTab === "projects" && isefProjects.length === 0 && !loadingProjects) {
       setLoadingProjects(true)
@@ -56,8 +81,18 @@ export default function ExplorePage() {
     }
   }, [activeTab])
 
-  // Filter students from fakeProfiles
-  const students = fakeProfiles
+  // Fetch students (profiles) when students tab is active
+  useEffect(() => {
+    if (activeTab === "students" && students.length === 0 && !loadingStudents) {
+      setLoadingStudents(true)
+      setStudentsError(null)
+      fetch("/api/profiles/search?limit=50")
+        .then(res => res.json())
+        .then(data => setStudents(data || []))
+        .catch(err => setStudentsError("Failed to load students"))
+        .finally(() => setLoadingStudents(false))
+    }
+  }, [activeTab])
 
   // Filter projects by search and filters
   const filteredProjects = isefProjects.filter((project) => {
@@ -232,75 +267,65 @@ export default function ExplorePage() {
           </TabsContent>
 
           <TabsContent value="students" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {students.map((student: Profile) => (
-                <Card key={student.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-center space-x-4">
-                      <Avatar className="h-12 w-12">
-                        <AvatarImage src={student.avatar || "/placeholder.svg"} alt={student.firstName} />
-                        <AvatarFallback>{student.firstName[0]}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <CardTitle className="text-lg">{student.firstName} {student.lastName}</CardTitle>
-                        <CardDescription>{student.gradeLevel}</CardDescription>
-                        <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-                          <MapPin className="h-3 w-3" />
-                          <span>{student.school}</span>
+            {loadingStudents ? (
+              <div className="text-center text-gray-500 py-12">Loading students...</div>
+            ) : studentsError ? (
+              <div className="text-center text-red-500 py-12">Error loading students: {studentsError}</div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {students.map((student: Profile) => (
+                  <Card key={student.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div className="flex items-center space-x-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={student.avatar_url || "/placeholder.svg"} alt={student.first_name} />
+                          <AvatarFallback>{student.first_name[0]}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <CardTitle className="text-lg">{student.first_name} {student.last_name}</CardTitle>
+                          <CardDescription>{student.grade_level}</CardDescription>
+                          <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
+                            <MapPin className="h-3 w-3" />
+                            <span>{student.school}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex justify-between text-sm">
-                      <div className="flex items-center space-x-1">
-                        <Star className="h-4 w-4 text-yellow-500" />
-                        <span>{student.matchScore} match</span>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <p className="text-sm text-slate-600 mb-2">Skills:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {student.skills.slice(0, 3).map((skill: string) => (
+                            <Badge key={skill} variant="secondary" className="text-xs">
+                              {skill}
+                            </Badge>
+                          ))}
+                          {student.skills.length > 3 && (
+                            <Badge variant="secondary" className="text-xs">
+                              +{student.skills.length - 3} more
+                            </Badge>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <Trophy className="h-4 w-4 text-blue-600" />
-                        <span>{student.projectsCompleted} projects</span>
+                      <div>
+                        <p className="text-sm text-slate-600 mb-2">Looking for:</p>
+                        <Badge variant="outline" className="text-xs">
+                          {student.roles.join(", ")}
+                        </Badge>
                       </div>
-                    </div>
-                    <div>
-                      <p className="text-sm text-slate-600 mb-2">Looking for:</p>
-                      <Badge variant="outline" className="text-xs">
-                        {student.roles.join(", ")}
-                      </Badge>
-                    </div>
-                    <div>
-                      <p className="text-sm text-slate-600 mb-2">Skills:</p>
-                      <div className="flex flex-wrap gap-1">
-                        {student.skills.slice(0, 3).map((skill: string) => (
-                          <Badge key={skill} variant="secondary" className="text-xs">
-                            {skill}
-                          </Badge>
-                        ))}
-                        {student.skills.length > 3 && (
-                          <Badge variant="secondary" className="text-xs">
-                            +{student.skills.length - 3} more
-                          </Badge>
-                        )}
+                      <div>
+                        <p className="text-sm text-slate-600 mb-2">Bio:</p>
+                        <p className="text-sm text-slate-600">{student.bio}</p>
                       </div>
-                    </div>
-                    <div>
-                      <p className="text-sm text-slate-600 mb-2">Competitions:</p>
-                      <div className="flex flex-wrap gap-1">
-                        {student.competitions.map((comp: string) => (
-                          <Badge key={comp} variant="outline" className="text-xs">
-                            {comp}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <Button className="w-full bg-transparent" variant="outline">
-                      <Users className="h-4 w-4 mr-2" />
-                      Connect
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                      <Button className="w-full bg-transparent" variant="outline">
+                        <Users className="h-4 w-4 mr-2" />
+                        Connect
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
