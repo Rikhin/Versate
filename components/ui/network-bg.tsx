@@ -59,7 +59,7 @@ export const NetworkBG: React.FC<NetworkBGProps> = (props) => {
     function draw() {
       if (!ctx) return;
       ctx.clearRect(0, 0, w, h);
-      // Draw lines
+      // Draw lines (subtle)
       for (let i = 0; i < dots.current.length; i++) {
         for (let j = i + 1; j < dots.current.length; j++) {
           const a = dots.current[i];
@@ -70,8 +70,8 @@ export const NetworkBG: React.FC<NetworkBGProps> = (props) => {
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
             ctx.strokeStyle = "#d1d5db"; // Tailwind gray-300
-            ctx.lineWidth = 1;
-            ctx.globalAlpha = 0.3;
+            ctx.lineWidth = 0.5;
+            ctx.globalAlpha = 0.10; // much subtler
             ctx.stroke();
             ctx.globalAlpha = 1;
           }
@@ -80,25 +80,33 @@ export const NetworkBG: React.FC<NetworkBGProps> = (props) => {
       // Draw dots
       for (let i = 0; i < dots.current.length; i++) {
         const { x, y } = dots.current[i];
-        ctx.beginPath();
-        ctx.arc(x, y, 6, 0, 2 * Math.PI);
         // Glowing dots
         if (glowIndices.current.includes(i)) {
           // Animate the glow
-          const glow = 0.5 + 0.5 * Math.sin(t / 20 + i);
-          const grad = ctx.createRadialGradient(x, y, 0, x, y, 18 + 8 * glow);
-          grad.addColorStop(0, `rgba(168,85,247,${0.7 + 0.3 * glow})`); // purple-500
-          grad.addColorStop(0.5, `rgba(34,197,94,${0.5 + 0.3 * glow})`); // green-500
+          const glow = 0.7 + 0.3 * Math.sin(t / 18 + i);
+          const dotRadius = 5 + 10 * glow; // much larger when glowing
+          const grad = ctx.createRadialGradient(x, y, 0, x, y, dotRadius * 2.2);
+          grad.addColorStop(0, `rgba(168,85,247,${0.85 * glow})`); // purple-500
+          grad.addColorStop(0.4, `rgba(34,197,94,${0.7 * glow})`); // green-500
           grad.addColorStop(1, "rgba(168,85,247,0)");
+          ctx.beginPath();
+          ctx.arc(x, y, dotRadius, 0, 2 * Math.PI);
           ctx.fillStyle = grad;
+          ctx.shadowColor = "rgba(168,85,247,0.7)";
+          ctx.shadowBlur = 32 * glow;
+          ctx.globalAlpha = 0.85;
           ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.globalAlpha = 1;
+        } else {
+          // Subtle gray dot
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, 2 * Math.PI);
+          ctx.fillStyle = "#6b7280"; // Tailwind gray-500
+          ctx.globalAlpha = 0.18; // much subtler
+          ctx.fill();
+          ctx.globalAlpha = 1;
         }
-        // Main dot
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, 2 * Math.PI);
-        ctx.fillStyle = "#6b7280"; // Tailwind gray-500
-        ctx.shadowBlur = 0;
-        ctx.fill();
       }
       t++;
       animationRef.current = requestAnimationFrame(draw);
