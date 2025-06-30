@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,12 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Trophy, Search, Users, Calendar, MapPin, Star, Target, Zap, TrendingUp } from "lucide-react"
 import Link from "next/link"
-
-// Mock user data
-const mockUser = {
-  firstName: "John",
-  imageUrl: "/placeholder-user.jpg",
-}
+import { createClient } from "@/lib/supabase"
+import { fakeProfiles, Profile } from "../profiles/page"
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -23,108 +19,41 @@ export default function ExplorePage() {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [activeTab, setActiveTab] = useState("projects")
 
-  const mockProjects = [
-    {
-      id: 1,
-      title: "Blockchain Voting System",
-      description:
-        "Developing a secure, transparent voting system using blockchain technology for student government elections.",
-      competition: "Diamond Challenge",
-      category: "Innovation & Design",
-      deadline: "2024-04-15",
-      teamSize: 3,
-      maxTeamSize: 5,
-      lookingFor: ["Blockchain Developer", "UI/UX Designer"],
-      techStack: ["Solidity", "React", "Node.js", "Web3"],
-      leader: {
-        name: "Emma Rodriguez",
-        avatar: "/placeholder-user.jpg",
-        school: "Stanford University",
-        rating: 4.9,
-      },
-      matchScore: 92,
-      applications: 12,
-    },
-    {
-      id: 2,
-      title: "Mental Health Chatbot",
-      description: "AI-powered chatbot to provide mental health support and resources for students.",
-      competition: "Technovation Girls",
-      category: "Computer Science",
-      deadline: "2024-03-30",
-      teamSize: 2,
-      maxTeamSize: 4,
-      lookingFor: ["AI/ML Engineer", "Psychology Researcher"],
-      techStack: ["Python", "TensorFlow", "NLP", "Flutter"],
-      leader: {
-        name: "Aisha Patel",
-        avatar: "/placeholder-user.jpg",
-        school: "MIT",
-        rating: 4.8,
-      },
-      matchScore: 87,
-      applications: 8,
-    },
-    {
-      id: 3,
-      title: "Smart Agriculture Monitor",
-      description: "IoT-based system to monitor soil conditions and optimize crop yields for sustainable farming.",
-      competition: "Regeneron ISEF",
-      category: "STEM",
-      deadline: "2024-05-20",
-      teamSize: 4,
-      maxTeamSize: 6,
-      lookingFor: ["Hardware Engineer", "Data Scientist"],
-      techStack: ["Arduino", "Python", "IoT", "Machine Learning"],
-      leader: {
-        name: "Carlos Martinez",
-        avatar: "/placeholder-user.jpg",
-        school: "UC Berkeley",
-        rating: 4.7,
-      },
-      matchScore: 78,
-      applications: 15,
-    },
-  ]
+  // ISEF projects state
+  const [isefProjects, setIsefProjects] = useState<any[]>([])
+  const [loadingProjects, setLoadingProjects] = useState(false)
+  const [projectsError, setProjectsError] = useState<string | null>(null)
 
-  const mockStudents = [
-    {
-      id: 1,
-      name: "Sarah Chen",
-      avatar: "/placeholder-user.jpg",
-      school: "Harvard University",
-      major: "Computer Science",
-      skills: ["React", "Python", "Machine Learning", "UI/UX Design"],
-      competitions: ["Congressional App Challenge", "Technovation Girls"],
-      rating: 4.9,
-      projects: 5,
-      lookingFor: "AI/ML Projects",
-    },
-    {
-      id: 2,
-      name: "Michael Johnson",
-      avatar: "/placeholder-user.jpg",
-      school: "Stanford University",
-      major: "Electrical Engineering",
-      skills: ["Arduino", "IoT", "C++", "Hardware Design"],
-      competitions: ["Regeneron ISEF", "Conrad Challenge"],
-      rating: 4.8,
-      projects: 3,
-      lookingFor: "Hardware Projects",
-    },
-    {
-      id: 3,
-      name: "Priya Sharma",
-      avatar: "/placeholder-user.jpg",
-      school: "MIT",
-      major: "Business & Computer Science",
-      skills: ["Business Strategy", "React", "Data Analysis", "Marketing"],
-      competitions: ["Diamond Challenge", "DECA Competition"],
-      rating: 4.7,
-      projects: 4,
-      lookingFor: "Business Innovation",
-    },
-  ]
+  useEffect(() => {
+    if (activeTab === "projects" && isefProjects.length === 0 && !loadingProjects) {
+      setLoadingProjects(true)
+      setProjectsError(null)
+      const supabase = createClient()
+      supabase
+        .from("projects")
+        .select("id, title, authors, category, description, awards, created_at")
+        .eq("competition_id", "2")
+        .order("created_at", { ascending: false })
+        .then(({ data, error }) => {
+          if (error) setProjectsError(error.message)
+          setIsefProjects(data || [])
+          setLoadingProjects(false)
+        })
+    }
+  }, [activeTab])
+
+  // Filter students from fakeProfiles
+  const students = fakeProfiles
+
+  // Filter ISEF projects by search/category/competition
+  const filteredProjects = isefProjects.filter((project) => {
+    const matchesSearch =
+      project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      project.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesCompetition = selectedCompetition === "all" || project.competition === selectedCompetition
+    const matchesCategory = selectedCategory === "all" || project.category === selectedCategory
+    return matchesSearch && matchesCompetition && matchesCategory
+  })
 
   const competitions = [
     "Congressional App Challenge",
@@ -138,15 +67,6 @@ export default function ExplorePage() {
   ]
 
   const categories = ["STEM", "Computer Science", "Business & Entrepreneurship", "Innovation & Design"]
-
-  const filteredProjects = mockProjects.filter((project) => {
-    const matchesSearch =
-      project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCompetition = selectedCompetition === "all" || project.competition === selectedCompetition
-    const matchesCategory = selectedCategory === "all" || project.category === selectedCategory
-    return matchesSearch && matchesCompetition && matchesCategory
-  })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -204,114 +124,74 @@ export default function ExplorePage() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="projects">Projects ({filteredProjects.length})</TabsTrigger>
-            <TabsTrigger value="students">Students ({mockStudents.length})</TabsTrigger>
+            <TabsTrigger value="students">Students ({students.length})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="projects" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredProjects.map((project) => (
-                <Card key={project.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex justify-between items-start mb-2">
-                      <Badge variant="secondary">{project.competition}</Badge>
-                      <div className="flex items-center space-x-1">
-                        <Zap className="h-4 w-4 text-green-600" />
-                        <span className="text-sm font-medium text-green-600">{project.matchScore}% match</span>
-                      </div>
-                    </div>
-                    <CardTitle className="text-lg">{project.title}</CardTitle>
-                    <CardDescription className="line-clamp-2">{project.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {/* Project Leader */}
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={project.leader.avatar || "/placeholder.svg"} alt={project.leader.name} />
-                        <AvatarFallback>{project.leader.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium">{project.leader.name}</p>
-                        <div className="flex items-center space-x-2 text-xs text-slate-500">
-                          <MapPin className="h-3 w-3" />
-                          <span>{project.leader.school}</span>
-                          <Star className="h-3 w-3 text-yellow-500" />
-                          <span>{project.leader.rating}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Project Details */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm text-slate-600">
+            {loadingProjects ? (
+              <div className="text-center text-gray-500 py-12">Loading ISEF projects...</div>
+            ) : projectsError ? (
+              <div className="text-center text-red-500 py-12">Error loading projects: {projectsError}</div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filteredProjects.map((project) => (
+                  <Card key={project.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div className="flex justify-between items-start mb-2">
+                        <Badge variant="secondary">ISEF</Badge>
                         <div className="flex items-center space-x-1">
-                          <Users className="h-4 w-4" />
-                          <span>
-                            {project.teamSize}/{project.maxTeamSize} members
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Calendar className="h-4 w-4" />
-                          <span>{project.deadline}</span>
+                          <Zap className="h-4 w-4 text-green-600" />
                         </div>
                       </div>
-                      <div className="flex items-center space-x-1 text-sm text-slate-600">
-                        <TrendingUp className="h-4 w-4" />
-                        <span>{project.applications} applications</span>
+                      <CardTitle className="text-lg">{project.title}</CardTitle>
+                      <CardDescription className="line-clamp-2">{project.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={"/placeholder-user.jpg"} alt={project.authors?.[0] || "?"} />
+                          <AvatarFallback>{project.authors?.[0] || "?"}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm font-medium">{project.authors}</p>
+                        </div>
                       </div>
-                    </div>
-
-                    {/* Looking For */}
-                    <div>
-                      <p className="text-sm text-slate-600 mb-2">Looking for:</p>
-                      <div className="flex flex-wrap gap-1">
-                        {project.lookingFor.map((role) => (
-                          <Badge key={role} variant="outline" className="text-xs">
-                            {role}
-                          </Badge>
-                        ))}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm text-slate-600">
+                          <div className="flex items-center space-x-1">
+                            <Users className="h-4 w-4" />
+                            <span>ISEF Project</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Calendar className="h-4 w-4" />
+                            <span>{new Date(project.created_at).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-1 text-sm text-slate-600">
+                          <TrendingUp className="h-4 w-4" />
+                          <span>{project.awards || "No awards"}</span>
+                        </div>
                       </div>
-                    </div>
-
-                    {/* Tech Stack */}
-                    <div>
-                      <p className="text-sm text-slate-600 mb-2">Tech Stack:</p>
-                      <div className="flex flex-wrap gap-1">
-                        {project.techStack.slice(0, 3).map((tech) => (
-                          <Badge key={tech} variant="secondary" className="text-xs">
-                            {tech}
-                          </Badge>
-                        ))}
-                        {project.techStack.length > 3 && (
-                          <Badge variant="secondary" className="text-xs">
-                            +{project.techStack.length - 3} more
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    <Button className="w-full">
-                      <Target className="h-4 w-4 mr-2" />
-                      Apply to Join
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="students" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {mockStudents.map((student) => (
+              {students.map((student: Profile) => (
                 <Card key={student.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <div className="flex items-center space-x-4">
                       <Avatar className="h-12 w-12">
-                        <AvatarImage src={student.avatar || "/placeholder.svg"} alt={student.name} />
-                        <AvatarFallback>{student.name[0]}</AvatarFallback>
+                        <AvatarImage src={student.avatar || "/placeholder.svg"} alt={student.firstName} />
+                        <AvatarFallback>{student.firstName[0]}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <CardTitle className="text-lg">{student.name}</CardTitle>
-                        <CardDescription>{student.major}</CardDescription>
+                        <CardTitle className="text-lg">{student.firstName} {student.lastName}</CardTitle>
+                        <CardDescription>{student.gradeLevel}</CardDescription>
                         <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
                           <MapPin className="h-3 w-3" />
                           <span>{student.school}</span>
@@ -320,31 +200,26 @@ export default function ExplorePage() {
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {/* Stats */}
                     <div className="flex justify-between text-sm">
                       <div className="flex items-center space-x-1">
                         <Star className="h-4 w-4 text-yellow-500" />
-                        <span>{student.rating} rating</span>
+                        <span>{student.matchScore} match</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Trophy className="h-4 w-4 text-blue-600" />
-                        <span>{student.projects} projects</span>
+                        <span>{student.projectsCompleted} projects</span>
                       </div>
                     </div>
-
-                    {/* Looking For */}
                     <div>
                       <p className="text-sm text-slate-600 mb-2">Looking for:</p>
                       <Badge variant="outline" className="text-xs">
-                        {student.lookingFor}
+                        {student.roles.join(", ")}
                       </Badge>
                     </div>
-
-                    {/* Skills */}
                     <div>
                       <p className="text-sm text-slate-600 mb-2">Skills:</p>
                       <div className="flex flex-wrap gap-1">
-                        {student.skills.slice(0, 3).map((skill) => (
+                        {student.skills.slice(0, 3).map((skill: string) => (
                           <Badge key={skill} variant="secondary" className="text-xs">
                             {skill}
                           </Badge>
@@ -356,19 +231,16 @@ export default function ExplorePage() {
                         )}
                       </div>
                     </div>
-
-                    {/* Competitions */}
                     <div>
                       <p className="text-sm text-slate-600 mb-2">Competitions:</p>
                       <div className="flex flex-wrap gap-1">
-                        {student.competitions.map((comp) => (
+                        {student.competitions.map((comp: string) => (
                           <Badge key={comp} variant="outline" className="text-xs">
                             {comp}
                           </Badge>
                         ))}
                       </div>
                     </div>
-
                     <Button className="w-full bg-transparent" variant="outline">
                       <Users className="h-4 w-4 mr-2" />
                       Connect

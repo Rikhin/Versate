@@ -659,3 +659,6 @@ export default function ProfilesPage() {
     </div>
   )
 }
+
+export type { Profile }
+export { fakeProfiles }
