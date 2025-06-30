@@ -120,11 +120,11 @@ export default function LandingPage() {
               <div className="text-5xl md:text-8xl font-black text-black mb-6 md:mb-8 leading-none">
                 Find Your<br />Perfect<br /><span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent">Team</span>
               </div>
-              <p className={playfair.className + " mb-8 md:mb-12 max-w-3xl leading-relaxed md:leading-loose text-black font-medium text-lg md:text-2xl"} style={{ letterSpacing: '0.01em' }}>
-                <span className={playfair.className + ' italic text-black font-bold text-xl md:text-3xl relative'} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+              <p className={playfair.className + " mb-8 md:mb-12 max-w-3xl leading-relaxed md:leading-loose text-black font-medium text-2xl md:text-3xl"} style={{ letterSpacing: '0.01em' }}>
+                <span className={playfair.className + ' italic text-black font-bold text-2xl md:text-3xl relative'} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
                   <span
                     className={styles.highlight}
-                    style={{ width: highlightWidth + '%', opacity: 0.28, height: '100%' }}
+                    style={{ width: highlightWidth + '%', opacity: 0.55, height: '100%', background: 'linear-gradient(90deg, #ffe066 60%, #ffd600 100%)' }}
                   ></span>
                   Connect
                 </span>
