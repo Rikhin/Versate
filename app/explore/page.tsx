@@ -32,7 +32,6 @@ export default function ExplorePage() {
       supabase
         .from("projects")
         .select("id, title, authors, category, description, awards, created_at")
-        .eq("competition_id", "2")
         .order("created_at", { ascending: false })
         .then(({ data, error }) => {
           if (error) setProjectsError(error.message)
