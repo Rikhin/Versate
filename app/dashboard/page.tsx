@@ -28,6 +28,7 @@ import {
 import Link from "next/link"
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
 import { SidebarProvider, Sidebar } from '@/components/ui/sidebar'
+import { useRequireProfile } from "@/hooks/use-require-profile"
 
 interface Profile {
   id: string
@@ -52,7 +53,7 @@ interface Profile {
 export default function DashboardPage() {
   const { user, isLoaded } = useUser()
   const [profile, setProfile] = useState<Profile | null>(null)
-  const [loading, setLoading] = useState(true)
+  const loading = useRequireProfile()
 
   useEffect(() => {
     if (!isLoaded) return
@@ -78,8 +79,6 @@ export default function DashboardPage() {
       } catch (error) {
         console.error("Error fetching profile:", error)
         redirect("/onboarding?required=1")
-      } finally {
-        setLoading(false)
       }
     }
 
@@ -88,11 +87,9 @@ export default function DashboardPage() {
 
   if (loading || !profile) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your dashboard...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading...</p>
       </div>
     )
   }

@@ -10,6 +10,7 @@ import { MessageSquare, Search, Send } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
 import { Textarea } from "@/components/ui/textarea"
 import { useRealtimeMessages } from "@/hooks/use-realtime-messages"
+import { useRequireProfile } from "@/hooks/use-require-profile"
 
 interface Conversation {
   partnerId: string
@@ -39,6 +40,7 @@ export default function MessagesPage() {
   const [isSending, setIsSending] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const loading = useRequireProfile()
 
   useEffect(() => {
     if (user) {
@@ -209,6 +211,15 @@ export default function MessagesPage() {
       e.preventDefault()
       sendMessage()
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading...</p>
+      </div>
+    )
   }
 
   return (
