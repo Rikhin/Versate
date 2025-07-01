@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +14,13 @@ import { Progress } from "@/components/ui/progress";
 import { User, Code, Trophy, Target, ArrowRight, ArrowLeft, Loader2, AlertCircle, MapPin, School, Calendar, Star } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations";
+import Papa from 'papaparse';
+import { competitions } from '@/lib/competitions-data';
+
+interface CompetitionInterest {
+  competitionId: string;
+  interest: 'competing' | 'looking_for_partner' | 'looking_for_mentor';
+}
 
 interface OnboardingFormData {
   firstName: string;
@@ -28,6 +35,65 @@ interface OnboardingFormData {
   timeCommitment: string;
   collaborationStyle: string[];
   location: string;
+  competitions: CompetitionInterest[];
+  otherCompetitionName?: string;
+  otherCompeting?: boolean;
+  otherNeedPartner?: boolean;
+  otherNeedMentor?: boolean;
+  profileImageUrl?: string;
+}
+
+function CityDropdown({ value, onChange }: { value: string, onChange: (val: string) => void }) {
+  const [cities, setCities] = useState<{ city: string, state_id: string }[]>([]);
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/uscities.csv')
+      .then(res => res.text())
+      .then(text => {
+        const parsed = Papa.parse(text, { header: true });
+        setCities(parsed.data.map((row: any) => ({ city: row.city, state_id: row.state_id })).filter((row: any) => row.city && row.state_id));
+        setLoading(false);
+      });
+  }, []);
+
+  const filtered = cities.filter(({ city, state_id }) =>
+    `${city}, ${state_id}`.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="relative">
+      <Input
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        placeholder="Type city, ST..."
+        aria-label="Type city, ST (e.g., San Jose, CA)"
+        className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4 mb-2"
+      />
+      <span className="sr-only">Type city, ST (e.g., San Jose, CA)</span>
+      <div className="max-h-40 overflow-y-auto border rounded-xl bg-white shadow-md">
+        {loading ? (
+          <div className="p-2 text-gray-500">Loading cities...</div>
+        ) : filtered.length === 0 ? (
+          <div className="p-2 text-gray-500">No results</div>
+        ) : (
+          filtered.slice(0, 10).map(({ city, state_id }) => {
+            const label = `${city}, ${state_id}`;
+            return (
+              <div
+                key={label}
+                className={`p-2 cursor-pointer hover:bg-indigo-100 ${label === value ? 'bg-indigo-200 font-bold' : ''}`}
+                onClick={() => { onChange(label); setSearch(label); }}
+              >
+                {label}
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
 }
 
 export function OnboardingForm() {
@@ -36,6 +102,8 @@ export function OnboardingForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const topRef = useRef<HTMLDivElement>(null);
+  const [imagePreview, setImagePreview] = useState<string>(user?.imageUrl || "");
 
   // Wait for user to load or if user is null
   if (!isLoaded || !user) return <div>Loading...</div>;
@@ -53,9 +121,10 @@ export function OnboardingForm() {
     timeCommitment: "",
     collaborationStyle: [],
     location: "",
+    competitions: [],
   });
 
-  const totalSteps = 4;
+  const totalSteps = 5;
   const progress = (currentStep / totalSteps) * 100;
 
   const skillOptions = [
@@ -93,7 +162,15 @@ export function OnboardingForm() {
         return formData.skills.length > 0 && formData.roles.length > 0;
       case 3:
         return formData.timeCommitment && formData.collaborationStyle.length > 0;
-      case 4:
+      case 4: {
+        // At least one competition or a valid 'Other' selection
+        const hasCompetition = formData.competitions.length > 0;
+        const hasOther = formData.otherCompetitionName && (
+          formData.otherCompeting || formData.otherNeedPartner || formData.otherNeedMentor
+        );
+        return hasCompetition || hasOther;
+      }
+      case 5:
         return formData.bio.trim().length > 0;
       default:
         return false;
@@ -121,6 +198,23 @@ export function OnboardingForm() {
     setError(null);
 
     try {
+      // Prepare competitions array, including 'Other' if filled
+      let competitions = [...formData.competitions];
+      if (
+        formData.otherCompetitionName &&
+        (formData.otherCompeting || formData.otherNeedPartner || formData.otherNeedMentor)
+      ) {
+        if (formData.otherCompeting) {
+          competitions.push({ competitionId: `other:${formData.otherCompetitionName}`, interest: 'competing' });
+        }
+        if (formData.otherNeedPartner) {
+          competitions.push({ competitionId: `other:${formData.otherCompetitionName}`, interest: 'looking_for_partner' });
+        }
+        if (formData.otherNeedMentor) {
+          competitions.push({ competitionId: `other:${formData.otherCompetitionName}`, interest: 'looking_for_mentor' });
+        }
+      }
+
       const response = await fetch("/api/profiles", {
         method: "POST",
         headers: {
@@ -140,6 +234,8 @@ export function OnboardingForm() {
           time_commitment: formData.timeCommitment,
           collaboration_style: formData.collaborationStyle,
           location: formData.location,
+          competitions,
+          profile_image_url: formData.profileImageUrl || user.imageUrl || "",
         }),
       });
 
@@ -157,17 +253,23 @@ export function OnboardingForm() {
     }
   };
 
+  useEffect(() => {
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [currentStep]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50/60 to-indigo-100/60 dark:from-zinc-900 dark:to-zinc-950 flex items-center justify-center px-2 py-8">
       <BackgroundGradient startColor="from-gray-50/50" endColor="to-gray-100/50" triggerStart="top center" triggerEnd="center center" />
       <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
-      <div className="relative z-10 flex items-center justify-center w-full max-w-2xl mx-auto">
+      <div className="relative z-10 flex items-center justify-center w-full mx-auto" style={{ maxWidth: '80vw' }}>
         <Card className="w-full rounded-3xl shadow-2xl border-0 bg-white/90 dark:bg-zinc-900/90 transition-all duration-500">
           <CardContent className="p-0">
             <div className="p-8 md:p-12">
               <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
                 {/* Header */}
-                <div className="text-center mb-10">
+                <div ref={topRef} className="text-center mb-10">
                   <div className="text-5xl md:text-6xl font-extrabold text-black mb-6 leading-tight tracking-tight">
                     Welcome to <span className="text-indigo-400">Versa</span>
                   </div>
@@ -195,31 +297,57 @@ export function OnboardingForm() {
                       <div className="text-center mb-8">
                         <div className="flex items-center justify-center space-x-3 mb-4">
                           <User className="h-8 w-8 text-indigo-500" />
-                          <h2 className="text-2xl md:text-3xl font-bold text-black">Personal Information</h2>
+                          <h2 className="text-2xl md:text-3xl font-semibold text-black">Personal Information</h2>
                         </div>
                         <p className="text-lg text-gray-500">Tell us about yourself to help us find the perfect teammates</p>
                       </div>
+                      <div className="flex flex-col items-center mb-6">
+                        <Label className="text-base font-medium text-black mb-2">Profile Picture (optional)</Label>
+                        <div className="mb-2">
+                          <img
+                            src={imagePreview || "/placeholder-user.jpg"}
+                            alt="Profile Preview"
+                            className="h-20 w-20 rounded-full object-cover border-2 border-gray-200"
+                          />
+                        </div>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const formDataObj = new FormData();
+                              formDataObj.append("file", file);
+                              // Upload to /api/upload, get URL
+                              const res = await fetch("/api/upload", { method: "POST", body: formDataObj });
+                              const data = await res.json();
+                              setFormData((prev) => ({ ...prev, profileImageUrl: data.url }));
+                              setImagePreview(data.url);
+                            }
+                          }}
+                        />
+                      </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-3">
-                          <Label htmlFor="firstName" className="text-base font-semibold text-black">First Name *</Label>
+                          <Label htmlFor="firstName" className="text-base font-medium text-black">First Name *</Label>
                           <Input id="firstName" value={formData.firstName} onChange={(e) => setFormData((prev) => ({ ...prev, firstName: e.target.value }))} placeholder="Enter your first name" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
                         </div>
                         <div className="space-y-3">
-                          <Label htmlFor="lastName" className="text-base font-semibold text-black">Last Name *</Label>
+                          <Label htmlFor="lastName" className="text-base font-medium text-black">Last Name *</Label>
                           <Input id="lastName" value={formData.lastName} onChange={(e) => setFormData((prev) => ({ ...prev, lastName: e.target.value }))} placeholder="Enter your last name" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
                         </div>
                       </div>
                       <div className="space-y-3">
-                        <Label htmlFor="email" className="text-base font-semibold text-black">Email *</Label>
+                        <Label htmlFor="email" className="text-base font-medium text-black">Email *</Label>
                         <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))} placeholder="Enter your email" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-3">
-                          <Label htmlFor="school" className="text-base font-semibold text-black">School *</Label>
-                          <Input id="school" value={formData.school} onChange={(e) => setFormData((prev) => ({ ...prev, school: e.target.value }))} placeholder="Enter your school name" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
+                          <Label htmlFor="school" className="text-base font-medium text-black">School *</Label>
+                          <Input id="school" value={formData.school} onChange={(e) => setFormData((prev) => ({ ...prev, school: e.target.value }))} placeholder="Enter your school name (City, ST)" aria-label="Enter your school name in the format: City, ST" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
                         </div>
                         <div className="space-y-3">
-                          <Label htmlFor="gradeLevel" className="text-base font-semibold text-black">Grade Level</Label>
+                          <Label htmlFor="gradeLevel" className="text-base font-medium text-black">Grade Level</Label>
                           <Select value={formData.gradeLevel} onValueChange={(value) => setFormData((prev) => ({ ...prev, gradeLevel: value }))}>
                             <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
                               <SelectValue placeholder="Select your grade level" />
@@ -239,8 +367,8 @@ export function OnboardingForm() {
                         </div>
                       </div>
                       <div className="space-y-3">
-                        <Label htmlFor="location" className="text-base font-semibold text-black">Location</Label>
-                        <Input id="location" value={formData.location} onChange={(e) => setFormData((prev) => ({ ...prev, location: e.target.value }))} placeholder="Enter your city, state, or country" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
+                        <Label htmlFor="location" className="text-base font-medium text-black">Location</Label>
+                        <CityDropdown value={formData.location} onChange={val => setFormData(prev => ({ ...prev, location: val }))} />
                       </div>
                     </div>
                   )}
@@ -250,18 +378,18 @@ export function OnboardingForm() {
                       <div className="text-center mb-8">
                         <div className="flex items-center justify-center space-x-3 mb-4">
                           <Code className="h-8 w-8 text-indigo-500" />
-                          <h2 className="text-2xl md:text-3xl font-bold text-black">Skills & Roles</h2>
+                          <h2 className="text-2xl md:text-3xl font-semibold text-black">Skills & Roles</h2>
                         </div>
                         <p className="text-lg text-gray-500">What are you good at and what roles do you prefer?</p>
                       </div>
                       <div className="space-y-8">
                         <div>
-                          <Label className="text-base font-semibold text-black mb-2 block">Select Your Skills *</Label>
+                          <Label className="text-base font-medium text-black mb-2 block">Select Your Skills *</Label>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                             {skillOptions.map((skill) => (
                               <div key={skill} className="flex items-center space-x-3">
                                 <Checkbox id={skill} checked={formData.skills.includes(skill)} onCheckedChange={() => toggleArrayItem(formData.skills, skill, (skills) => setFormData((prev) => ({ ...prev, skills })))} className="border-2 border-gray-200 data-[state=checked]:border-indigo-500" />
-                                <Label htmlFor={skill} className="text-sm font-semibold text-black cursor-pointer">
+                                <Label htmlFor={skill} className="text-sm font-medium text-black cursor-pointer">
                                   {skill}
                                 </Label>
                               </div>
@@ -269,12 +397,12 @@ export function OnboardingForm() {
                           </div>
                         </div>
                         <div>
-                          <Label className="text-base font-semibold text-black mb-2 block">Preferred Roles *</Label>
+                          <Label className="text-base font-medium text-black mb-2 block">Preferred Roles *</Label>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                             {roleOptions.map((role) => (
                               <div key={role} className="flex items-center space-x-3">
                                 <Checkbox id={role} checked={formData.roles.includes(role)} onCheckedChange={() => toggleArrayItem(formData.roles, role, (roles) => setFormData((prev) => ({ ...prev, roles })))} className="border-2 border-gray-200 data-[state=checked]:border-indigo-500" />
-                                <Label htmlFor={role} className="text-sm font-semibold text-black cursor-pointer">
+                                <Label htmlFor={role} className="text-sm font-medium text-black cursor-pointer">
                                   {role}
                                 </Label>
                               </div>
@@ -282,7 +410,7 @@ export function OnboardingForm() {
                           </div>
                         </div>
                         <div className="space-y-3">
-                          <Label htmlFor="experienceLevel" className="text-base font-semibold text-black">Experience Level</Label>
+                          <Label htmlFor="experienceLevel" className="text-base font-medium text-black">Experience Level</Label>
                           <Select value={formData.experienceLevel} onValueChange={(value) => setFormData((prev) => ({ ...prev, experienceLevel: value }))}>
                             <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
                               <SelectValue placeholder="Select your experience level" />
@@ -304,13 +432,13 @@ export function OnboardingForm() {
                       <div className="text-center mb-8">
                         <div className="flex items-center justify-center space-x-3 mb-4">
                           <Target className="h-8 w-8 text-indigo-500" />
-                          <h2 className="text-2xl md:text-3xl font-bold text-black">Preferences</h2>
+                          <h2 className="text-2xl md:text-3xl font-semibold text-black">Preferences</h2>
                         </div>
                         <p className="text-lg text-gray-500">How do you like to work and collaborate?</p>
                       </div>
                       <div className="space-y-8">
                         <div className="space-y-3">
-                          <Label htmlFor="timeCommitment" className="text-base font-semibold text-black">Time Commitment *</Label>
+                          <Label htmlFor="timeCommitment" className="text-base font-medium text-black">Time Commitment *</Label>
                           <Select value={formData.timeCommitment} onValueChange={(value) => setFormData((prev) => ({ ...prev, timeCommitment: value }))}>
                             <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
                               <SelectValue placeholder="Select your time commitment" />
@@ -324,12 +452,12 @@ export function OnboardingForm() {
                           </Select>
                         </div>
                         <div>
-                          <Label className="text-base font-semibold text-black mb-2 block">Collaboration Style *</Label>
+                          <Label className="text-base font-medium text-black mb-2 block">Collaboration Style *</Label>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                             {collaborationStyleOptions.map((style) => (
                               <div key={style} className="flex items-center space-x-3">
                                 <Checkbox id={style} checked={formData.collaborationStyle.includes(style)} onCheckedChange={() => toggleArrayItem(formData.collaborationStyle, style, (collaborationStyle) => setFormData((prev) => ({ ...prev, collaborationStyle })))} className="border-2 border-gray-200 data-[state=checked]:border-indigo-500" />
-                                <Label htmlFor={style} className="text-sm font-semibold text-black cursor-pointer">
+                                <Label htmlFor={style} className="text-sm font-medium text-black cursor-pointer">
                                   {style}
                                 </Label>
                               </div>
@@ -339,18 +467,80 @@ export function OnboardingForm() {
                       </div>
                     </div>
                   )}
-                  {/* Step 4: Bio */}
+                  {/* Step 4: Competition Interests */}
                   {currentStep === 4 && (
                     <div className="space-y-10 animate-fadeIn">
                       <div className="text-center mb-8">
                         <div className="flex items-center justify-center space-x-3 mb-4">
+                          <Trophy className="h-8 w-8 text-indigo-500" />
+                          <h2 className="text-2xl md:text-3xl font-semibold text-black">Competitions & Interests</h2>
+                        </div>
+                        <p className="text-lg text-gray-500">Select the competitions you're interested in and your goal for each.</p>
+                      </div>
+                      <div className="flex flex-wrap gap-6 justify-center w-full">
+                        {competitions.map((comp) => {
+                          const selected = formData.competitions.filter(c => c.competitionId === comp.id);
+                          const isChecked = (interest: string) => selected.some(s => s.interest === interest);
+                          const handleCheck = (interest: string, checked: boolean) => {
+                            setFormData(prev => {
+                              let competitions = prev.competitions.filter(c => !(c.competitionId === comp.id && c.interest === interest));
+                              if (checked) competitions = [...competitions, { competitionId: comp.id, interest: interest as any }];
+                              return { ...prev, competitions };
+                            });
+                          };
+                          return (
+                            <div key={comp.id} className="flex flex-col items-center bg-gray-50 dark:bg-zinc-800 rounded-2xl p-4 min-w-[220px] max-w-xs w-full shadow-md border border-gray-200 dark:border-zinc-700">
+                              <span className="font-bold text-lg mb-2">{comp.icon} {comp.name}</span>
+                              <div className="flex flex-row gap-3 mt-2">
+                                <label className="flex items-center gap-1 text-sm">
+                                  <input type="checkbox" checked={isChecked('competing')} onChange={e => handleCheck('competing', e.target.checked)} /> Competing
+                                </label>
+                                <label className="flex items-center gap-1 text-sm">
+                                  <input type="checkbox" checked={isChecked('looking_for_partner')} onChange={e => handleCheck('looking_for_partner', e.target.checked)} /> Need Partner
+                                </label>
+                                <label className="flex items-center gap-1 text-sm">
+                                  <input type="checkbox" checked={isChecked('looking_for_mentor')} onChange={e => handleCheck('looking_for_mentor', e.target.checked)} /> Need Mentor
+                                </label>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        {/* Other option */}
+                        <div className="flex flex-col items-center bg-gray-50 dark:bg-zinc-800 rounded-2xl p-4 min-w-[220px] max-w-xs w-full shadow-md border border-gray-200 dark:border-zinc-700">
+                          <span className="font-bold text-lg mb-2">Other</span>
+                          <Input
+                            value={formData.otherCompetitionName || ''}
+                            onChange={e => setFormData(prev => ({ ...prev, otherCompetitionName: e.target.value }))}
+                            placeholder="Competition name"
+                            className="mb-2 h-10 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-3"
+                          />
+                          <div className="flex flex-row gap-3 mt-2">
+                            <label className="flex items-center gap-1 text-sm">
+                              <input type="checkbox" checked={formData.otherCompeting || false} onChange={e => setFormData(prev => ({ ...prev, otherCompeting: e.target.checked }))} /> Competing
+                            </label>
+                            <label className="flex items-center gap-1 text-sm">
+                              <input type="checkbox" checked={formData.otherNeedPartner || false} onChange={e => setFormData(prev => ({ ...prev, otherNeedPartner: e.target.checked }))} /> Need Partner
+                            </label>
+                            <label className="flex items-center gap-1 text-sm">
+                              <input type="checkbox" checked={formData.otherNeedMentor || false} onChange={e => setFormData(prev => ({ ...prev, otherNeedMentor: e.target.checked }))} /> Need Mentor
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {/* Step 5: Bio */}
+                  {currentStep === 5 && (
+                    <div className="space-y-10 animate-fadeIn">
+                      <div className="text-center mb-8">
+                        <div className="flex items-center justify-center space-x-3 mb-4">
                           <Star className="h-8 w-8 text-indigo-500" />
-                          <h2 className="text-2xl md:text-3xl font-bold text-black">Tell Your Story</h2>
+                          <h2 className="text-2xl md:text-3xl font-semibold text-black">Tell Your Story</h2>
                         </div>
                         <p className="text-lg text-gray-500">Share a bit about yourself and what you're passionate about</p>
                       </div>
                       <div className="space-y-3">
-                        <Label htmlFor="bio" className="text-base font-semibold text-black">Bio *</Label>
+                        <Label htmlFor="bio" className="text-base font-medium text-black">Bio *</Label>
                         <Textarea id="bio" value={formData.bio} onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))} placeholder="Tell us about yourself, your interests, goals, and what you're looking for in a team..." className="min-h-32 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4 resize-none" />
                         <p className="text-sm text-gray-500">This will help other students understand who you are and what you bring to a team.</p>
                       </div>

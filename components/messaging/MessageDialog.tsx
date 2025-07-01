@@ -43,7 +43,10 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
 
   useEffect(() => {
     if (isOpen && user) {
-      fetchMessages()
+      fetchMessages().then(() => {
+        // Scroll to bottom after messages are loaded
+        setTimeout(scrollToBottom, 100);
+      });
     }
   }, [isOpen, recipientId, user])
 

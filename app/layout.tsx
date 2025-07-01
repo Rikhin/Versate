@@ -7,6 +7,7 @@ import { Header } from "@/components/ui/header"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
+import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -25,11 +26,13 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className + " bg-white text-black"}>
-          <BackgroundDesign />
-          <Header />
-          <main className="relative z-10 min-h-screen">{children}</main>
-          <Toaster />
-          <Analytics />
+          <OnboardingScrollEnforcer>
+            <BackgroundDesign />
+            <Header />
+            <main className="relative z-10 min-h-screen">{children}</main>
+            <Toaster />
+            <Analytics />
+          </OnboardingScrollEnforcer>
         </body>
       </html>
     </ClerkProvider>

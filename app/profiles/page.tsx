@@ -220,8 +220,8 @@ export default function ProfilesPage() {
                           <CardTitle className="text-lg">{profile.first_name} {profile.last_name}</CardTitle>
                           <CardDescription>{profile.grade_level || "Student"}</CardDescription>
                           <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-                            <School className="h-3 w-3" />
-                            <span>{profile.school || "School not specified"}</span>
+                            <MapPin className="h-3 w-3" />
+                            <span>{profile.location || "Location not specified"}</span>
                           </div>
                         </div>
                       </div>

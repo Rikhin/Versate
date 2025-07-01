@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { School, Star, Trophy, Users, ArrowLeft } from "lucide-react"
+import { School, Star, Trophy, Users, ArrowLeft, MapPin } from "lucide-react"
 import Link from "next/link"
 
 export default async function ProfileDetailPage({ params }: { params: { id: string } }) {
@@ -33,8 +33,8 @@ export default async function ProfileDetailPage({ params }: { params: { id: stri
                 <CardTitle className="text-2xl font-bold">{profile.first_name} {profile.last_name}</CardTitle>
                 <CardDescription>{profile.grade_level || "Student"}</CardDescription>
                 <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-                  <School className="h-3 w-3" />
-                  <span>{profile.school || "School not specified"}</span>
+                  <MapPin className="h-3 w-3" />
+                  <span>{profile.location || "Location not specified"}</span>
                 </div>
               </div>
             </div>

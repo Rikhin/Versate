@@ -184,7 +184,7 @@ export default function DashboardPage() {
                 <div className="rounded-xl bg-white/90 shadow-sm p-8 flex flex-col md:flex-row gap-8 items-center border border-gray-100 w-full">
                   <div className="flex-1 w-full">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="text-lg font-semibold text-gray-900">{profile.full_name || profile.user_id}</span>
+                      <span className="text-lg font-semibold text-gray-900">{(profile.full_name && profile.full_name.split(' ')[0]) || profile.first_name || "Your Name"}</span>
                       {profile.experience_level && (
                         <span className="flex items-center gap-1 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full font-medium">
                           <span className="inline-block w-2 h-2 bg-indigo-400 rounded-full"></span>

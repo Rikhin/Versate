@@ -12,6 +12,7 @@ import { Trophy, Search, Users, Calendar, MapPin, Star, Target, Zap, TrendingUp,
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
+import { MessageButton } from '@/components/messaging/MessageButton'
 
 // Add Profile type for students
 interface Profile {
@@ -64,6 +65,11 @@ export default function ExplorePage() {
   const [loadingStudents, setLoadingStudents] = useState(false)
   const [studentsError, setStudentsError] = useState<string | null>(null)
 
+  const competitions = useMemo(() => [
+    "all",
+    ...Array.from(new Set(isefProjects.map(p => p.competition || "ISEF")))
+  ], [isefProjects]);
+
   useEffect(() => {
     if (activeTab === "projects" && isefProjects.length === 0 && !loadingProjects) {
       setLoadingProjects(true)
@@ -81,9 +87,9 @@ export default function ExplorePage() {
     }
   }, [activeTab])
 
-  // Fetch students (profiles) when students tab is active
+  // Always fetch students on mount
   useEffect(() => {
-    if (activeTab === "students" && students.length === 0 && !loadingStudents) {
+    if (students.length === 0 && !loadingStudents) {
       setLoadingStudents(true)
       setStudentsError(null)
       fetch("/api/profiles/search?limit=50")
@@ -92,7 +98,11 @@ export default function ExplorePage() {
         .catch(err => setStudentsError("Failed to load students"))
         .finally(() => setLoadingStudents(false))
     }
-  }, [activeTab])
+  }, [])
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Filter projects by search and filters
   const filteredProjects = isefProjects.filter((project) => {
@@ -102,19 +112,9 @@ export default function ExplorePage() {
     const matchesState = selectedState === "all" || project.state === selectedState
     const matchesCity = selectedCity === "all" || project.city === selectedCity
     const matchesAward = selectedAward === "all" || project.awards === selectedAward
-    return matchesSearch && matchesYear && matchesCountry && matchesState && matchesCity && matchesAward
+    const matchesCompetition = selectedCompetition === "all" || (project.competition || "ISEF") === selectedCompetition
+    return matchesSearch && matchesYear && matchesCountry && matchesState && matchesCity && matchesAward && matchesCompetition
   })
-
-  const competitions = [
-    "Congressional App Challenge",
-    "Technovation Girls",
-    "Regeneron ISEF",
-    "Conrad Challenge",
-    "Diamond Challenge",
-    "DECA Competition",
-    "RoboCupJunior",
-    "eCYBERMISSION",
-  ]
 
   const categories = ["STEM", "Computer Science", "Business & Entrepreneurship", "Innovation & Design"]
 
@@ -151,6 +151,16 @@ export default function ExplorePage() {
           </div>
           {showFilters && (
             <div className="flex flex-wrap gap-2 items-center">
+              <Select value={selectedCompetition} onValueChange={setSelectedCompetition}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="All Competitions" />
+                </SelectTrigger>
+                <SelectContent>
+                  {competitions.map((competition) => (
+                    <SelectItem key={competition} value={competition}>{competition === "all" ? "All Competitions" : competition}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Select value={selectedYear} onValueChange={setSelectedYear}>
                 <SelectTrigger className="w-32">
                   <SelectValue placeholder="All Years" />
@@ -273,58 +283,70 @@ export default function ExplorePage() {
               <div className="text-center text-red-500 py-12">Error loading students: {studentsError}</div>
             ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {students.map((student: Profile) => (
-                <Card key={student.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-center space-x-4">
-                      <Avatar className="h-12 w-12">
-                          <AvatarImage src={student.avatar_url || "/placeholder.svg"} alt={student.first_name} />
-                          <AvatarFallback>{student.first_name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                          <CardTitle className="text-lg">{student.first_name} {student.last_name}</CardTitle>
-                          <CardDescription>{student.grade_level}</CardDescription>
-                        <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-                          <MapPin className="h-3 w-3" />
-                          <span>{student.school}</span>
+                {students.map((student: Profile) => {
+                  const bioPreview = student.bio.length > 120 ? student.bio.slice(0, 120) + '...' : student.bio;
+                  return (
+                    <Card key={student.id} className="hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <div className="flex items-center space-x-4">
+                          <Avatar className="h-12 w-12">
+                              <AvatarImage src={student.avatar_url || "/placeholder.svg"} alt={student.first_name} />
+                              <AvatarFallback>{student.first_name[0]}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                              <CardTitle className="text-lg">{student.first_name} {student.last_name}</CardTitle>
+                              <CardDescription>{student.grade_level}</CardDescription>
+                            <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
+                              <MapPin className="h-3 w-3" />
+                              <span>{student.location || "Location not specified"}</span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <p className="text-sm text-slate-600 mb-2">Skills:</p>
-                      <div className="flex flex-wrap gap-1">
-                          {student.skills.slice(0, 3).map((skill: string) => (
-                          <Badge key={skill} variant="secondary" className="text-xs">
-                            {skill}
-                          </Badge>
-                        ))}
-                        {student.skills.length > 3 && (
-                          <Badge variant="secondary" className="text-xs">
-                            +{student.skills.length - 3} more
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                        <p className="text-sm text-slate-600 mb-2">Looking for:</p>
-                        <Badge variant="outline" className="text-xs">
-                          {student.roles.join(", ")}
-                          </Badge>
-                      </div>
-                      <div>
-                        <p className="text-sm text-slate-600 mb-2">Bio:</p>
-                        <p className="text-sm text-slate-600">{student.bio}</p>
-                    </div>
-                    <Button className="w-full bg-transparent" variant="outline">
-                      <Users className="h-4 w-4 mr-2" />
-                      Connect
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div>
+                          <p className="text-sm text-slate-600 mb-2">Skills:</p>
+                          <div className="flex flex-wrap gap-1">
+                              {student.skills.slice(0, 3).map((skill: string) => (
+                              <Badge key={skill} variant="secondary" className="text-xs">
+                                {skill}
+                              </Badge>
+                            ))}
+                            {student.skills.length > 3 && (
+                              <Badge variant="secondary" className="text-xs">
+                                +{student.skills.length - 3} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        <div>
+                            <p className="text-sm text-slate-600 mb-2">Looking for:</p>
+                            <Badge variant="outline" className="text-xs">
+                              {student.roles.join(", ")}
+                              </Badge>
+                          </div>
+                          <div>
+                            <p className="text-sm text-slate-600 mb-2">Bio:</p>
+                            <p className="text-sm text-slate-600">
+                              {bioPreview}
+                              {student.bio.length > 120 && (
+                                <Link href={`/profiles/${student.user_id}`} className="text-blue-600 hover:underline ml-1">View Profile</Link>
+                              )}
+                            </p>
+                        </div>
+                        <div className="flex gap-2 mt-4">
+                          <MessageButton recipientId={student.user_id} recipientName={`${student.first_name} ${student.last_name}`} />
+                          <Link href={`/profiles/${student.user_id}`}>
+                            <Button variant="outline" size="sm" className="flex items-center">
+                              View Profile
+                            </Button>
+                          </Link>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
             )}
           </TabsContent>
         </Tabs>
