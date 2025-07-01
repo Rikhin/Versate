@@ -11,29 +11,10 @@ export async function GET(request: NextRequest) {
 
     const supabase = createServerClient();
     
-    // Get all conversations for the user
-    const { data: conversations, error } = await supabase
+    // Get all messages for the user
+    const { data: messages, error } = await supabase
       .from("messages")
-      .select(`
-        id,
-        sender_id,
-        recipient_id,
-        content,
-        created_at,
-        is_read,
-        sender:profiles!messages_sender_id_fkey(
-          id,
-          first_name,
-          last_name,
-          avatar_url
-        ),
-        recipient:profiles!messages_recipient_id_fkey(
-          id,
-          first_name,
-          last_name,
-          avatar_url
-        )
-      `)
+      .select("*")
       .or(`sender_id.eq.${userId},recipient_id.eq.${userId}`)
       .order("created_at", { ascending: false });
 
@@ -45,14 +26,30 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Collect all unique partner user IDs
+    const partnerIds = new Set();
+    messages?.forEach((msg) => {
+      if (msg.sender_id !== userId) partnerIds.add(msg.sender_id);
+      if (msg.recipient_id !== userId) partnerIds.add(msg.recipient_id);
+    });
+    const partnerIdList = Array.from(partnerIds);
+
+    // Fetch partner profiles
+    let profilesMap = {};
+    if (partnerIdList.length > 0) {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, first_name, last_name, avatar_url")
+        .in("user_id", partnerIdList);
+      profilesMap = Object.fromEntries((profiles || []).map(p => [p.user_id, p]));
+    }
+
     // Group messages by conversation partner
     const conversationMap = new Map();
-    
-    conversations?.forEach((message) => {
+    messages?.forEach((message) => {
       const isSender = message.sender_id === userId;
       const partnerId = isSender ? message.recipient_id : message.sender_id;
-      const partner = isSender ? message.recipient : message.sender;
-      
+      const partner = profilesMap[partnerId] || null;
       if (!conversationMap.has(partnerId)) {
         conversationMap.set(partnerId, {
           partnerId,
@@ -61,7 +58,6 @@ export async function GET(request: NextRequest) {
           unreadCount: 0,
         });
       }
-      
       const conversation = conversationMap.get(partnerId);
       if (!message.is_read && !isSender) {
         conversation.unreadCount++;
@@ -69,7 +65,6 @@ export async function GET(request: NextRequest) {
     });
 
     const conversationList = Array.from(conversationMap.values());
-    
     return NextResponse.json(conversationList);
   } catch (error) {
     console.error("Conversations fetch error:", error);
