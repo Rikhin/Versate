@@ -8,6 +8,7 @@ export default function OnboardingScrollEnforcer() {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const hasPrompted = useRef(false);
+  const hasNavigated = useRef(false);
 
   useEffect(() => {
     if (!isLoaded || !isSignedIn || !user) return;
@@ -38,6 +39,16 @@ export default function OnboardingScrollEnforcer() {
       detach();
     };
   }, [user, isSignedIn, isLoaded, router]);
+
+  const handleGoToOnboarding = () => {
+    if (hasNavigated.current) return;
+    hasNavigated.current = true;
+    try {
+      router.replace("/onboarding?required=1");
+    } catch (e) {
+      // fail silently
+    }
+  };
 
   if (!showModal) return null;
 
@@ -74,7 +85,7 @@ export default function OnboardingScrollEnforcer() {
         }}
       >
         <div style={{ fontWeight: 700, fontSize: "1.3rem", marginBottom: "0.5rem", color: "#2563eb" }}>
-          Welcome! 🌱
+          Welcome!
         </div>
         <div style={{ marginBottom: "1.5rem" }}>
           To help you get started, please complete the onboarding questionnaire.<br />
@@ -83,7 +94,7 @@ export default function OnboardingScrollEnforcer() {
           </span>
         </div>
         <button
-          onClick={() => router.replace("/onboarding?required=1")}
+          onClick={handleGoToOnboarding}
           style={{
             background: "#6366f1",
             color: "white",
