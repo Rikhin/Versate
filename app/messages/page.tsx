@@ -303,15 +303,15 @@ export default function MessagesPage() {
                   )}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 flex flex-col">
+              <CardContent className="flex-1 flex flex-col p-0">
                 {!selectedConversation ? (
                   <div className="text-center text-gray-500 flex-1 flex flex-col items-center justify-center">
                     <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                     <p>Choose a conversation from the list to start messaging</p>
                   </div>
                 ) : (
-                  <div className="flex flex-col h-full w-full">
-                    <div className="flex-1 overflow-y-auto space-y-4 p-4 border rounded-lg bg-white">
+                  <>
+                    <div className="flex-1 overflow-y-auto space-y-4 p-4 border-b bg-white">
                       {isLoadingMessages ? (
                         <div className="text-center text-gray-500">Loading messages...</div>
                       ) : messages.length === 0 ? (
@@ -346,7 +346,7 @@ export default function MessagesPage() {
                       )}
                       <div ref={messagesEndRef} />
                     </div>
-                    <div className="flex-shrink-0 flex space-x-2 p-4 border-t bg-white">
+                    <div className="flex-shrink-0 flex space-x-2 p-4 bg-white">
                       <Textarea
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
@@ -367,7 +367,7 @@ export default function MessagesPage() {
                     {sendError && (
                       <div className="text-red-500 text-sm px-4 pb-2">{sendError}</div>
                     )}
-                  </div>
+                  </>
                 )}
               </CardContent>
             </Card>
