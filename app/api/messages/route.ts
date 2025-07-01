@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error("Error sending message:", error);
       return NextResponse.json(
-        { error: "Failed to send message" },
+        { error: error.message || error.details || JSON.stringify(error) },
         { status: 500 }
       );
     }
