@@ -39,6 +39,7 @@ export default function MessagesPage() {
   const [isSending, setIsSending] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const subscriptionRef = useRef<any>(null)
 
   useEffect(() => {
     if (user) {
@@ -76,13 +77,28 @@ export default function MessagesPage() {
     }
   }, [selectedConversation, markMessagesAsRead])
 
+  // Set up real-time subscription once when user is available
   useEffect(() => {
-    if (!user) return
+    if (!user) {
+      // Clean up subscription if user is not available
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe()
+        subscriptionRef.current = null
+      }
+      return
+    }
 
     const supabase = createClient()
     
+    // Clean up any existing subscription
+    if (subscriptionRef.current) {
+      subscriptionRef.current.unsubscribe()
+    }
+    
+    console.log('Setting up real-time subscription for user:', user.id)
+    
     // Subscribe to all message changes for the current user
-    const channel = supabase.channel('messages-realtime')
+    const channel = supabase.channel(`messages-realtime-${user.id}`)
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
@@ -91,7 +107,7 @@ export default function MessagesPage() {
       }, (payload) => {
         console.log('Message change detected:', payload)
         
-        // Refresh conversations list
+        // Always refresh conversations list when any message changes
         fetchConversations()
         
         // If we're in a conversation with the sender/recipient, refresh messages
@@ -101,6 +117,7 @@ export default function MessagesPage() {
           
           if (messageUserId === selectedConversation.partnerId || 
               messageRecipientId === selectedConversation.partnerId) {
+            console.log('Refreshing messages for current conversation')
             fetchMessages(selectedConversation.partnerId)
             // Mark as read if it's a new message to us
             if (payload.eventType === 'INSERT' && 
@@ -111,12 +128,25 @@ export default function MessagesPage() {
           }
         }
       })
-      .subscribe()
+      .subscribe((status) => {
+        console.log('Subscription status:', status)
+        if (status === 'SUBSCRIBED') {
+          console.log('Successfully subscribed to real-time messages')
+        } else if (status === 'CHANNEL_ERROR') {
+          console.error('Failed to subscribe to real-time messages')
+        }
+      })
+
+    subscriptionRef.current = channel
 
     return () => {
-      channel.unsubscribe()
+      if (subscriptionRef.current) {
+        console.log('Cleaning up subscription')
+        subscriptionRef.current.unsubscribe()
+        subscriptionRef.current = null
+      }
     }
-  }, [user, selectedConversation, markMessagesAsRead])
+  }, [user]) // Only depend on user, not selectedConversation or markMessagesAsRead
 
   const fetchConversations = async () => {
     if (!user) return

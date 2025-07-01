@@ -104,6 +104,9 @@ CREATE POLICY "Users can insert messages" ON messages
 CREATE POLICY "Users can update their own messages" ON messages
   FOR UPDATE USING (auth.uid() = sender_id);
 
+-- Enable real-time replication for messages table
+ALTER PUBLICATION supabase_realtime ADD TABLE messages;
+
 -- Create notifications table
 CREATE TABLE IF NOT EXISTS notifications (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
