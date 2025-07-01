@@ -80,7 +80,7 @@ export function Header() {
           </Link>
         </div>
         {/* Center: Nav links */}
-        <nav className="hidden md:flex flex-1 items-center justify-center gap-8 md:gap-12 text-base md:text-lg font-bold uppercase tracking-widest">
+        <nav className="hidden md:flex flex-1 items-center justify-center gap-8 md:gap-12 text-base md:text-lg font-bold uppercase tracking-widest ml-4 md:ml-8">
           <Link href="/#works" className="hover:opacity-60 transition">Features</Link>
           <Link href="/#about" className="hover:opacity-60 transition">Projects</Link>
           <Link href="/#competitions" className="hover:opacity-60 transition">Competitions</Link>

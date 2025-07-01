@@ -239,30 +239,30 @@ export default function LandingPage() {
               ) : (
                 featuredProjects.map((project, index) => (
                   <Card key={project.id || index} className="border-0 shadow-none bg-transparent flex-1 max-w-md mx-auto">
-                    <CardHeader className="pb-8">
-                      <div className="flex justify-between items-start mb-4">
+                  <CardHeader className="pb-8">
+                    <div className="flex justify-between items-start mb-4">
                         <Badge variant="outline" className="border-2 border-black text-black px-4 py-2 text-sm font-bold uppercase tracking-widest">{project.category || 'Project'}</Badge>
                       </div>
                       <CardTitle className="text-2xl font-black text-black">{project.title || 'Untitled Project'}</CardTitle>
-                      <CardDescription className="text-lg text-gray-600">
+                    <CardDescription className="text-lg text-gray-600">
                         {(project.description && project.description.length > 100)
                           ? project.description.slice(0, 100) + '...'
                           : (project.description || 'No description available.')}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="flex items-center space-x-4">
-                        <Avatar className="h-12 w-12">
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="flex items-center space-x-4">
+                      <Avatar className="h-12 w-12">
                           <AvatarImage src={"/placeholder-user.jpg"} alt={project.authors?.[0] || "?"} />
                           <AvatarFallback className="bg-black text-white font-bold">{project.authors?.[0] || "?"}</AvatarFallback>
-                        </Avatar>
-                        <div>
+                      </Avatar>
+                      <div>
                           <p className="text-lg font-bold text-black">{project.authors || 'Unknown Author'}</p>
                           <p className="text-sm text-gray-600">{project.created_at ? new Date(project.created_at).toLocaleDateString() : ''}</p>
-                        </div>
+                    </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                  </CardContent>
+                </Card>
                 ))
               )}
             </div>

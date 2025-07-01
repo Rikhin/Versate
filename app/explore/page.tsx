@@ -218,51 +218,51 @@ export default function ExplorePage() {
             ) : projectsError ? (
               <div className="text-center text-red-500 py-12">Error loading projects: {projectsError}</div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredProjects.map((project) => (
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              {filteredProjects.map((project) => (
                   <Link key={project.id} href={`/explore/projects/${project.id}`} className="block group">
                     <Card className="hover:shadow-lg transition-shadow group-hover:border-blue-600">
-                      <CardHeader>
-                        <div className="flex justify-between items-start mb-2">
+                  <CardHeader>
+                    <div className="flex justify-between items-start mb-2">
                           <Badge variant="secondary">ISEF</Badge>
-                          <div className="flex items-center space-x-1">
-                            <Zap className="h-4 w-4 text-green-600" />
-                          </div>
-                        </div>
+                      <div className="flex items-center space-x-1">
+                        <Zap className="h-4 w-4 text-green-600" />
+                      </div>
+                    </div>
                         <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">{project.title}</CardTitle>
-                        <CardDescription className="line-clamp-2">{project.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="flex items-center space-x-3">
-                          <Avatar className="h-8 w-8">
+                    <CardDescription className="line-clamp-2">{project.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <Avatar className="h-8 w-8">
                             <AvatarImage src={"/placeholder-user.jpg"} alt={project.authors?.[0] || "?"} />
                             <AvatarFallback>{project.authors?.[0] || "?"}</AvatarFallback>
-                          </Avatar>
-                          <div>
+                      </Avatar>
+                      <div>
                             <p className="text-sm font-medium">{project.authors}</p>
                           </div>
                         </div>
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-sm text-slate-600">
-                            <div className="flex items-center space-x-1">
-                              <Users className="h-4 w-4" />
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm text-slate-600">
+                        <div className="flex items-center space-x-1">
+                          <Users className="h-4 w-4" />
                               <span>ISEF Project</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <Calendar className="h-4 w-4" />
-                              <span>{new Date(project.created_at).toLocaleDateString()}</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-1 text-sm text-slate-600">
-                            <TrendingUp className="h-4 w-4" />
-                            <span>{project.awards || "No awards"}</span>
-                          </div>
                         </div>
-                      </CardContent>
-                    </Card>
+                        <div className="flex items-center space-x-1">
+                          <Calendar className="h-4 w-4" />
+                              <span>{new Date(project.created_at).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-1 text-sm text-slate-600">
+                        <TrendingUp className="h-4 w-4" />
+                            <span>{project.awards || "No awards"}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
                   </Link>
-                ))}
-              </div>
+              ))}
+            </div>
             )}
           </TabsContent>
 
@@ -272,59 +272,59 @@ export default function ExplorePage() {
             ) : studentsError ? (
               <div className="text-center text-red-500 py-12">Error loading students: {studentsError}</div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {students.map((student: Profile) => (
-                  <Card key={student.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-center space-x-4">
-                        <Avatar className="h-12 w-12">
+                <Card key={student.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-center space-x-4">
+                      <Avatar className="h-12 w-12">
                           <AvatarImage src={student.avatar_url || "/placeholder.svg"} alt={student.first_name} />
                           <AvatarFallback>{student.first_name[0]}</AvatarFallback>
-                        </Avatar>
-                        <div>
+                      </Avatar>
+                      <div>
                           <CardTitle className="text-lg">{student.first_name} {student.last_name}</CardTitle>
                           <CardDescription>{student.grade_level}</CardDescription>
-                          <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-                            <MapPin className="h-3 w-3" />
-                            <span>{student.school}</span>
-                          </div>
+                        <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
+                          <MapPin className="h-3 w-3" />
+                          <span>{student.school}</span>
                         </div>
                       </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div>
-                        <p className="text-sm text-slate-600 mb-2">Skills:</p>
-                        <div className="flex flex-wrap gap-1">
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <p className="text-sm text-slate-600 mb-2">Skills:</p>
+                      <div className="flex flex-wrap gap-1">
                           {student.skills.slice(0, 3).map((skill: string) => (
-                            <Badge key={skill} variant="secondary" className="text-xs">
-                              {skill}
-                            </Badge>
-                          ))}
-                          {student.skills.length > 3 && (
-                            <Badge variant="secondary" className="text-xs">
-                              +{student.skills.length - 3} more
-                            </Badge>
-                          )}
-                        </div>
+                          <Badge key={skill} variant="secondary" className="text-xs">
+                            {skill}
+                          </Badge>
+                        ))}
+                        {student.skills.length > 3 && (
+                          <Badge variant="secondary" className="text-xs">
+                            +{student.skills.length - 3} more
+                          </Badge>
+                        )}
                       </div>
-                      <div>
+                    </div>
+                    <div>
                         <p className="text-sm text-slate-600 mb-2">Looking for:</p>
                         <Badge variant="outline" className="text-xs">
                           {student.roles.join(", ")}
-                        </Badge>
+                          </Badge>
                       </div>
                       <div>
                         <p className="text-sm text-slate-600 mb-2">Bio:</p>
                         <p className="text-sm text-slate-600">{student.bio}</p>
-                      </div>
-                      <Button className="w-full bg-transparent" variant="outline">
-                        <Users className="h-4 w-4 mr-2" />
-                        Connect
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                    </div>
+                    <Button className="w-full bg-transparent" variant="outline">
+                      <Users className="h-4 w-4 mr-2" />
+                      Connect
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
             )}
           </TabsContent>
         </Tabs>

@@ -95,15 +95,15 @@ export default function ProfilesPage() {
     })
 
     // Sort profiles
-    switch (sortBy) {
-      case "name":
+      switch (sortBy) {
+        case "name":
         filtered.sort((a, b) => `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`))
         break
       case "recent":
         filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         break
-      case "experience":
-        const experienceOrder = { "Beginner": 1, "Intermediate": 2, "Advanced": 3, "Expert": 4 }
+        case "experience":
+          const experienceOrder = { "Beginner": 1, "Intermediate": 2, "Advanced": 3, "Expert": 4 }
         filtered.sort((a, b) => (experienceOrder[a.experience_level as keyof typeof experienceOrder] || 0) - (experienceOrder[b.experience_level as keyof typeof experienceOrder] || 0))
         break
     }
@@ -151,19 +151,19 @@ export default function ProfilesPage() {
                 </div>
                 <div className="flex items-center space-x-2">
                   <ArrowUpDown className="h-4 w-4 text-slate-400" />
-                  <Select value={sortBy} onValueChange={setSortBy}>
+                <Select value={sortBy} onValueChange={setSortBy}>
                     <SelectTrigger className="w-40">
                       <SelectValue placeholder="Sort by" />
-                    </SelectTrigger>
-                    <SelectContent>
+                  </SelectTrigger>
+                  <SelectContent>
                       <SelectItem value="recent">Most Recent</SelectItem>
-                      <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="name">Name</SelectItem>
                       <SelectItem value="experience">Experience</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  </SelectContent>
+                </Select>
                 </div>
               </div>
-              
+
               <div className="flex flex-wrap gap-2 items-center">
                 <Select value={selectedExperience} onValueChange={setSelectedExperience}>
                   <SelectTrigger className="w-40">
@@ -177,7 +177,7 @@ export default function ProfilesPage() {
                     ))}
                   </SelectContent>
                 </Select>
-                
+
                 <Select value={selectedRole} onValueChange={setSelectedRole}>
                   <SelectTrigger className="w-40">
                     <SelectValue placeholder="Role" />
@@ -204,19 +204,19 @@ export default function ProfilesPage() {
                   {searchQuery || selectedExperience !== "all" || selectedRole !== "all" 
                     ? "No profiles match your search criteria." 
                     : "No profiles found."}
-                </div>
-              </div>
+                      </div>
+                    </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProfiles.map((profile) => (
                   <Card key={profile.id} className="hover:shadow-lg transition-shadow">
                     <CardHeader>
-                      <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-4">
                         <Avatar className="h-12 w-12">
                           <AvatarImage src={profile.avatar_url || "/placeholder-user.jpg"} alt={`${profile.first_name} ${profile.last_name}`} />
                           <AvatarFallback>{profile.first_name[0]}{profile.last_name[0]}</AvatarFallback>
-                        </Avatar>
-                        <div>
+                      </Avatar>
+                      <div>
                           <CardTitle className="text-lg">{profile.first_name} {profile.last_name}</CardTitle>
                           <CardDescription>{profile.grade_level || "Student"}</CardDescription>
                           <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
@@ -235,9 +235,9 @@ export default function ProfilesPage() {
                         <div className="flex items-center space-x-1">
                           <Trophy className="h-4 w-4 text-blue-600" />
                           <span>{profile.time_commitment || "Flexible"}</span>
-                        </div>
-                      </div>
-                      
+                    </div>
+                    </div>
+
                       {profile.bio && (
                         <div>
                           <p className="text-sm text-slate-600 line-clamp-3">{profile.bio}</p>
@@ -245,7 +245,7 @@ export default function ProfilesPage() {
                       )}
                       
                       {profile.roles && profile.roles.length > 0 && (
-                        <div>
+                    <div>
                           <p className="text-sm text-slate-600 mb-2">Looking for:</p>
                           <Badge variant="outline" className="text-xs">
                             {profile.roles.join(", ")}
@@ -259,16 +259,16 @@ export default function ProfilesPage() {
                           <div className="flex flex-wrap gap-1">
                             {profile.skills.slice(0, 3).map((skill) => (
                               <Badge key={skill} variant="secondary" className="text-xs">
-                                {skill}
-                              </Badge>
-                            ))}
+                            {skill}
+                          </Badge>
+                        ))}
                             {profile.skills.length > 3 && (
                               <Badge variant="secondary" className="text-xs">
                                 +{profile.skills.length - 3} more
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
                       )}
                       
                       <div className="flex space-x-2">
@@ -284,11 +284,11 @@ export default function ProfilesPage() {
                             <UserCheck className="h-4 w-4 mr-2" />
                             View Profile
                           </Link>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
               </div>
             )}
           </TextFade>
