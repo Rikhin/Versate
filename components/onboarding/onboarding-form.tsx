@@ -158,333 +158,228 @@ export function OnboardingForm() {
   };
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
-      {/* Background Animations */}
-      <BackgroundGradient 
-        startColor="from-gray-50/50" 
-        endColor="to-gray-100/50" 
-        triggerStart="top center"
-        triggerEnd="center center"
-      />
-      <FloatingShapes 
-        count={3} 
-        triggerStart="top center"
-        triggerEnd="bottom center"
-      />
-      
-      {/* Main Content Container */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen p-8">
-        <div className="w-full max-w-4xl">
-          <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
-            {/* Header */}
-            <div className="text-center mb-12">
-              <div className="text-6xl md:text-7xl font-black text-black mb-8 leading-none">
-                Welcome to
-                <br />
-                <span className="text-gray-400">Versa</span>
-              </div>
-              <p className="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                Let's get to know you better so we can match you with the perfect teammates
-              </p>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="mb-12">
-              <div className="flex justify-between text-sm text-gray-600 mb-4">
-                <span className="font-bold uppercase tracking-widest">Step {currentStep} of {totalSteps}</span>
-                <span className="font-bold uppercase tracking-widest">{Math.round(progress)}% Complete</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <div 
-                  className="bg-black h-3 rounded-full transition-all duration-500 ease-out"
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
-            </div>
-
-            {/* Form Steps */}
-            <Card className="border-0 shadow-none bg-transparent">
-              <CardContent className="p-0">
-                {/* Step 1: Personal Information */}
-                {currentStep === 1 && (
-                  <div className="space-y-8">
-                    <div className="text-center mb-8">
-                      <div className="flex items-center justify-center space-x-3 mb-4">
-                        <User className="h-8 w-8 text-black" />
-                        <h2 className="text-3xl font-black text-black">Personal Information</h2>
-                      </div>
-                      <p className="text-xl text-gray-600">Tell us about yourself to help us find the perfect teammates</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-4">
-                        <Label htmlFor="firstName" className="text-lg font-bold text-black">First Name *</Label>
-                        <Input
-                          id="firstName"
-                          value={formData.firstName}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, firstName: e.target.value }))}
-                          placeholder="Enter your first name"
-                          className="h-14 text-lg border-2 border-gray-300 focus:border-black"
-                        />
-                      </div>
-                      <div className="space-y-4">
-                        <Label htmlFor="lastName" className="text-lg font-bold text-black">Last Name *</Label>
-                        <Input
-                          id="lastName"
-                          value={formData.lastName}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, lastName: e.target.value }))}
-                          placeholder="Enter your last name"
-                          className="h-14 text-lg border-2 border-gray-300 focus:border-black"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <Label htmlFor="email" className="text-lg font-bold text-black">Email *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-                        placeholder="Enter your email"
-                        className="h-14 text-lg border-2 border-gray-300 focus:border-black"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-4">
-                        <Label htmlFor="school" className="text-lg font-bold text-black">School *</Label>
-                        <Input
-                          id="school"
-                          value={formData.school}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, school: e.target.value }))}
-                          placeholder="Enter your school name"
-                          className="h-14 text-lg border-2 border-gray-300 focus:border-black"
-                        />
-                      </div>
-                      <div className="space-y-4">
-                        <Label htmlFor="gradeLevel" className="text-lg font-bold text-black">Grade Level</Label>
-                        <Select value={formData.gradeLevel} onValueChange={(value) => setFormData((prev) => ({ ...prev, gradeLevel: value }))}>
-                          <SelectTrigger className="h-14 text-lg border-2 border-gray-300 focus:border-black">
-                            <SelectValue placeholder="Select your grade level" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="9th Grade">9th Grade</SelectItem>
-                            <SelectItem value="10th Grade">10th Grade</SelectItem>
-                            <SelectItem value="11th Grade">11th Grade</SelectItem>
-                            <SelectItem value="12th Grade">12th Grade</SelectItem>
-                            <SelectItem value="College Freshman">College Freshman</SelectItem>
-                            <SelectItem value="College Sophomore">College Sophomore</SelectItem>
-                            <SelectItem value="College Junior">College Junior</SelectItem>
-                            <SelectItem value="College Senior">College Senior</SelectItem>
-                            <SelectItem value="Graduate Student">Graduate Student</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <Label htmlFor="location" className="text-lg font-bold text-black">Location</Label>
-                      <Input
-                        id="location"
-                        value={formData.location}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, location: e.target.value }))}
-                        placeholder="Enter your city, state, or country"
-                        className="h-14 text-lg border-2 border-gray-300 focus:border-black"
-                      />
-                    </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/60 to-indigo-100/60 dark:from-zinc-900 dark:to-zinc-950 flex items-center justify-center px-2 py-8">
+      <BackgroundGradient startColor="from-gray-50/50" endColor="to-gray-100/50" triggerStart="top center" triggerEnd="center center" />
+      <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
+      <div className="relative z-10 flex items-center justify-center w-full max-w-2xl mx-auto">
+        <Card className="w-full rounded-3xl shadow-2xl border-0 bg-white/90 dark:bg-zinc-900/90 transition-all duration-500">
+          <CardContent className="p-0">
+            <div className="p-8 md:p-12">
+              <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
+                {/* Header */}
+                <div className="text-center mb-10">
+                  <div className="text-5xl md:text-6xl font-extrabold text-black mb-6 leading-tight tracking-tight">
+                    Welcome to <span className="text-indigo-400">Versa</span>
                   </div>
-                )}
-
-                {/* Step 2: Skills & Roles */}
-                {currentStep === 2 && (
-                  <div className="space-y-8">
-                    <div className="text-center mb-8">
-                      <div className="flex items-center justify-center space-x-3 mb-4">
-                        <Code className="h-8 w-8 text-black" />
-                        <h2 className="text-3xl font-black text-black">Skills & Roles</h2>
-                      </div>
-                      <p className="text-xl text-gray-600">What are you good at and what roles do you prefer?</p>
-                    </div>
-
-                    <div className="space-y-8">
-                      <div>
-                        <Label className="text-lg font-bold text-black mb-4 block">Select Your Skills *</Label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                          {skillOptions.map((skill) => (
-                            <div key={skill} className="flex items-center space-x-3">
-                              <Checkbox
-                                id={skill}
-                                checked={formData.skills.includes(skill)}
-                                onCheckedChange={() => toggleArrayItem(formData.skills, skill, (skills) => setFormData((prev) => ({ ...prev, skills })))}
-                                className="border-2 border-gray-300 data-[state=checked]:border-black"
-                              />
-                              <Label htmlFor={skill} className="text-sm font-bold text-black cursor-pointer">
-                                {skill}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-lg font-bold text-black mb-4 block">Preferred Roles *</Label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                          {roleOptions.map((role) => (
-                            <div key={role} className="flex items-center space-x-3">
-                              <Checkbox
-                                id={role}
-                                checked={formData.roles.includes(role)}
-                                onCheckedChange={() => toggleArrayItem(formData.roles, role, (roles) => setFormData((prev) => ({ ...prev, roles })))}
-                                className="border-2 border-gray-300 data-[state=checked]:border-black"
-                              />
-                              <Label htmlFor={role} className="text-sm font-bold text-black cursor-pointer">
-                                {role}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="space-y-4">
-                        <Label htmlFor="experienceLevel" className="text-lg font-bold text-black">Experience Level</Label>
-                        <Select value={formData.experienceLevel} onValueChange={(value) => setFormData((prev) => ({ ...prev, experienceLevel: value }))}>
-                          <SelectTrigger className="h-14 text-lg border-2 border-gray-300 focus:border-black">
-                            <SelectValue placeholder="Select your experience level" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Beginner">Beginner</SelectItem>
-                            <SelectItem value="Intermediate">Intermediate</SelectItem>
-                            <SelectItem value="Advanced">Advanced</SelectItem>
-                            <SelectItem value="Expert">Expert</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 3: Preferences */}
-                {currentStep === 3 && (
-                  <div className="space-y-8">
-                    <div className="text-center mb-8">
-                      <div className="flex items-center justify-center space-x-3 mb-4">
-                        <Target className="h-8 w-8 text-black" />
-                        <h2 className="text-3xl font-black text-black">Preferences</h2>
-                      </div>
-                      <p className="text-xl text-gray-600">How do you like to work and collaborate?</p>
-                    </div>
-
-                    <div className="space-y-8">
-                      <div className="space-y-4">
-                        <Label htmlFor="timeCommitment" className="text-lg font-bold text-black">Time Commitment *</Label>
-                        <Select value={formData.timeCommitment} onValueChange={(value) => setFormData((prev) => ({ ...prev, timeCommitment: value }))}>
-                          <SelectTrigger className="h-14 text-lg border-2 border-gray-300 focus:border-black">
-                            <SelectValue placeholder="Select your time commitment" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1-5 hours/week">1-5 hours/week</SelectItem>
-                            <SelectItem value="5-10 hours/week">5-10 hours/week</SelectItem>
-                            <SelectItem value="10-20 hours/week">10-20 hours/week</SelectItem>
-                            <SelectItem value="20+ hours/week">20+ hours/week</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <Label className="text-lg font-bold text-black mb-4 block">Collaboration Style *</Label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                          {collaborationStyleOptions.map((style) => (
-                            <div key={style} className="flex items-center space-x-3">
-                              <Checkbox
-                                id={style}
-                                checked={formData.collaborationStyle.includes(style)}
-                                onCheckedChange={() => toggleArrayItem(formData.collaborationStyle, style, (collaborationStyle) => setFormData((prev) => ({ ...prev, collaborationStyle })))}
-                                className="border-2 border-gray-300 data-[state=checked]:border-black"
-                              />
-                              <Label htmlFor={style} className="text-sm font-bold text-black cursor-pointer">
-                                {style}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 4: Bio */}
-                {currentStep === 4 && (
-                  <div className="space-y-8">
-                    <div className="text-center mb-8">
-                      <div className="flex items-center justify-center space-x-3 mb-4">
-                        <Star className="h-8 w-8 text-black" />
-                        <h2 className="text-3xl font-black text-black">Tell Your Story</h2>
-                      </div>
-                      <p className="text-xl text-gray-600">Share a bit about yourself and what you're passionate about</p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <Label htmlFor="bio" className="text-lg font-bold text-black">Bio *</Label>
-                      <Textarea
-                        id="bio"
-                        value={formData.bio}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
-                        placeholder="Tell us about yourself, your interests, goals, and what you're looking for in a team..."
-                        className="min-h-32 text-lg border-2 border-gray-300 focus:border-black resize-none"
-                      />
-                      <p className="text-sm text-gray-600">This will help other students understand who you are and what you bring to a team.</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Error Message */}
-                {error && (
-                  <div className="flex items-center space-x-2 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <AlertCircle className="h-5 w-5 text-red-600" />
-                    <p className="text-red-600 font-bold">{error}</p>
-                  </div>
-                )}
-
-                {/* Navigation Buttons */}
-                <div className="flex justify-between items-center pt-8">
-                  <Button
-                    variant="outline"
-                    onClick={handleBack}
-                    disabled={currentStep === 1}
-                    className="border-2 border-black text-black hover:bg-black hover:text-white px-8 py-4 text-lg font-bold"
-                  >
-                    <ArrowLeft className="mr-2 h-5 w-5" />
-                    Back
-                  </Button>
-
-                  <Button
-                    onClick={handleNext}
-                    disabled={!isStepValid() || isSubmitting}
-                    className="bg-black text-white hover:bg-gray-800 px-8 py-4 text-lg font-bold"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Creating Profile...
-                      </>
-                    ) : currentStep === totalSteps ? (
-                      <>
-                        Complete Setup
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </>
-                    ) : (
-                      <>
-                        Next
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </>
-                    )}
-                  </Button>
+                  <p className="text-lg md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Let's get to know you better so we can match you with the perfect teammates
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
-          </TextFade>
-        </div>
+
+                {/* Progress Bar */}
+                <div className="mb-10">
+                  <div className="flex justify-between text-xs md:text-sm text-gray-600 mb-2">
+                    <span className="font-semibold uppercase tracking-widest">Step {currentStep} of {totalSteps}</span>
+                    <span className="font-semibold uppercase tracking-widest">{Math.round(progress)}% Complete</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div className="bg-indigo-500 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${progress}%` }}></div>
+                  </div>
+                </div>
+
+                {/* Form Steps with fade-in transition */}
+                <div className="transition-opacity duration-500" style={{ opacity: 1 }}>
+                  {/* Step 1: Personal Information */}
+                  {currentStep === 1 && (
+                    <div className="space-y-10 animate-fadeIn">
+                      <div className="text-center mb-8">
+                        <div className="flex items-center justify-center space-x-3 mb-4">
+                          <User className="h-8 w-8 text-indigo-500" />
+                          <h2 className="text-2xl md:text-3xl font-bold text-black">Personal Information</h2>
+                        </div>
+                        <p className="text-lg text-gray-500">Tell us about yourself to help us find the perfect teammates</p>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-3">
+                          <Label htmlFor="firstName" className="text-base font-semibold text-black">First Name *</Label>
+                          <Input id="firstName" value={formData.firstName} onChange={(e) => setFormData((prev) => ({ ...prev, firstName: e.target.value }))} placeholder="Enter your first name" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
+                        </div>
+                        <div className="space-y-3">
+                          <Label htmlFor="lastName" className="text-base font-semibold text-black">Last Name *</Label>
+                          <Input id="lastName" value={formData.lastName} onChange={(e) => setFormData((prev) => ({ ...prev, lastName: e.target.value }))} placeholder="Enter your last name" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <Label htmlFor="email" className="text-base font-semibold text-black">Email *</Label>
+                        <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))} placeholder="Enter your email" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-3">
+                          <Label htmlFor="school" className="text-base font-semibold text-black">School *</Label>
+                          <Input id="school" value={formData.school} onChange={(e) => setFormData((prev) => ({ ...prev, school: e.target.value }))} placeholder="Enter your school name" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
+                        </div>
+                        <div className="space-y-3">
+                          <Label htmlFor="gradeLevel" className="text-base font-semibold text-black">Grade Level</Label>
+                          <Select value={formData.gradeLevel} onValueChange={(value) => setFormData((prev) => ({ ...prev, gradeLevel: value }))}>
+                            <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
+                              <SelectValue placeholder="Select your grade level" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="9th Grade">9th Grade</SelectItem>
+                              <SelectItem value="10th Grade">10th Grade</SelectItem>
+                              <SelectItem value="11th Grade">11th Grade</SelectItem>
+                              <SelectItem value="12th Grade">12th Grade</SelectItem>
+                              <SelectItem value="College Freshman">College Freshman</SelectItem>
+                              <SelectItem value="College Sophomore">College Sophomore</SelectItem>
+                              <SelectItem value="College Junior">College Junior</SelectItem>
+                              <SelectItem value="College Senior">College Senior</SelectItem>
+                              <SelectItem value="Graduate Student">Graduate Student</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <Label htmlFor="location" className="text-base font-semibold text-black">Location</Label>
+                        <Input id="location" value={formData.location} onChange={(e) => setFormData((prev) => ({ ...prev, location: e.target.value }))} placeholder="Enter your city, state, or country" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
+                      </div>
+                    </div>
+                  )}
+                  {/* Step 2: Skills & Roles */}
+                  {currentStep === 2 && (
+                    <div className="space-y-10 animate-fadeIn">
+                      <div className="text-center mb-8">
+                        <div className="flex items-center justify-center space-x-3 mb-4">
+                          <Code className="h-8 w-8 text-indigo-500" />
+                          <h2 className="text-2xl md:text-3xl font-bold text-black">Skills & Roles</h2>
+                        </div>
+                        <p className="text-lg text-gray-500">What are you good at and what roles do you prefer?</p>
+                      </div>
+                      <div className="space-y-8">
+                        <div>
+                          <Label className="text-base font-semibold text-black mb-2 block">Select Your Skills *</Label>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            {skillOptions.map((skill) => (
+                              <div key={skill} className="flex items-center space-x-3">
+                                <Checkbox id={skill} checked={formData.skills.includes(skill)} onCheckedChange={() => toggleArrayItem(formData.skills, skill, (skills) => setFormData((prev) => ({ ...prev, skills })))} className="border-2 border-gray-200 data-[state=checked]:border-indigo-500" />
+                                <Label htmlFor={skill} className="text-sm font-semibold text-black cursor-pointer">
+                                  {skill}
+                                </Label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-base font-semibold text-black mb-2 block">Preferred Roles *</Label>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            {roleOptions.map((role) => (
+                              <div key={role} className="flex items-center space-x-3">
+                                <Checkbox id={role} checked={formData.roles.includes(role)} onCheckedChange={() => toggleArrayItem(formData.roles, role, (roles) => setFormData((prev) => ({ ...prev, roles })))} className="border-2 border-gray-200 data-[state=checked]:border-indigo-500" />
+                                <Label htmlFor={role} className="text-sm font-semibold text-black cursor-pointer">
+                                  {role}
+                                </Label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <Label htmlFor="experienceLevel" className="text-base font-semibold text-black">Experience Level</Label>
+                          <Select value={formData.experienceLevel} onValueChange={(value) => setFormData((prev) => ({ ...prev, experienceLevel: value }))}>
+                            <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
+                              <SelectValue placeholder="Select your experience level" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Beginner">Beginner</SelectItem>
+                              <SelectItem value="Intermediate">Intermediate</SelectItem>
+                              <SelectItem value="Advanced">Advanced</SelectItem>
+                              <SelectItem value="Expert">Expert</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {/* Step 3: Preferences */}
+                  {currentStep === 3 && (
+                    <div className="space-y-10 animate-fadeIn">
+                      <div className="text-center mb-8">
+                        <div className="flex items-center justify-center space-x-3 mb-4">
+                          <Target className="h-8 w-8 text-indigo-500" />
+                          <h2 className="text-2xl md:text-3xl font-bold text-black">Preferences</h2>
+                        </div>
+                        <p className="text-lg text-gray-500">How do you like to work and collaborate?</p>
+                      </div>
+                      <div className="space-y-8">
+                        <div className="space-y-3">
+                          <Label htmlFor="timeCommitment" className="text-base font-semibold text-black">Time Commitment *</Label>
+                          <Select value={formData.timeCommitment} onValueChange={(value) => setFormData((prev) => ({ ...prev, timeCommitment: value }))}>
+                            <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
+                              <SelectValue placeholder="Select your time commitment" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1-5 hours/week">1-5 hours/week</SelectItem>
+                              <SelectItem value="5-10 hours/week">5-10 hours/week</SelectItem>
+                              <SelectItem value="10-20 hours/week">10-20 hours/week</SelectItem>
+                              <SelectItem value="20+ hours/week">20+ hours/week</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-base font-semibold text-black mb-2 block">Collaboration Style *</Label>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            {collaborationStyleOptions.map((style) => (
+                              <div key={style} className="flex items-center space-x-3">
+                                <Checkbox id={style} checked={formData.collaborationStyle.includes(style)} onCheckedChange={() => toggleArrayItem(formData.collaborationStyle, style, (collaborationStyle) => setFormData((prev) => ({ ...prev, collaborationStyle })))} className="border-2 border-gray-200 data-[state=checked]:border-indigo-500" />
+                                <Label htmlFor={style} className="text-sm font-semibold text-black cursor-pointer">
+                                  {style}
+                                </Label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {/* Step 4: Bio */}
+                  {currentStep === 4 && (
+                    <div className="space-y-10 animate-fadeIn">
+                      <div className="text-center mb-8">
+                        <div className="flex items-center justify-center space-x-3 mb-4">
+                          <Star className="h-8 w-8 text-indigo-500" />
+                          <h2 className="text-2xl md:text-3xl font-bold text-black">Tell Your Story</h2>
+                        </div>
+                        <p className="text-lg text-gray-500">Share a bit about yourself and what you're passionate about</p>
+                      </div>
+                      <div className="space-y-3">
+                        <Label htmlFor="bio" className="text-base font-semibold text-black">Bio *</Label>
+                        <Textarea id="bio" value={formData.bio} onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))} placeholder="Tell us about yourself, your interests, goals, and what you're looking for in a team..." className="min-h-32 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4 resize-none" />
+                        <p className="text-sm text-gray-500">This will help other students understand who you are and what you bring to a team.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Error Message */}
+                  {error && (
+                    <div className="flex items-center space-x-2 p-4 bg-red-50 border border-red-200 rounded-lg mt-6 animate-fadeIn">
+                      <AlertCircle className="h-5 w-5 text-red-400" />
+                      <p className="text-red-500 font-semibold">{error}</p>
+                    </div>
+                  )}
+
+                  {/* Navigation Buttons */}
+                  <div className="flex flex-col md:flex-row justify-between items-center pt-10 gap-4 animate-fadeIn">
+                    <Button variant="outline" size="lg" className="rounded-xl px-8 py-3 text-base font-semibold border-gray-300 hover:bg-gray-100 transition-all" onClick={handleBack} disabled={currentStep === 1 || isSubmitting}>
+                      <ArrowLeft className="mr-2 h-5 w-5" /> Back
+                    </Button>
+                    <Button size="lg" className="rounded-xl px-8 py-3 text-base font-semibold bg-indigo-500 hover:bg-indigo-600 text-white shadow-md transition-all" onClick={handleNext} disabled={!isStepValid() || isSubmitting}>
+                      {isSubmitting ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : currentStep === totalSteps ? "Finish" : "Next"}
+                      {currentStep !== totalSteps && <ArrowRight className="ml-2 h-5 w-5" />}
+                    </Button>
+                  </div>
+                </div>
+              </TextFade>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
