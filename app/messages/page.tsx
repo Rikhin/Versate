@@ -80,14 +80,27 @@ export default function MessagesPage() {
   const handleNewMessage = useCallback((message: any) => {
     console.log('New message received via WebSocket:', message)
     
-    // If we're in a conversation with the sender, add the message to the current conversation
-    if (selectedConversation && 
-        (message.sender_id === selectedConversation.partnerId || 
-         message.recipient_id === selectedConversation.partnerId)) {
-      setMessages(prev => [...prev, message])
-      // Mark as read if it's a new message to us
-      if (message.recipient_id === user?.id && message.sender_id === selectedConversation.partnerId) {
-        markMessagesAsRead(selectedConversation.partnerId)
+    // Check if this message belongs to the currently selected conversation
+    if (selectedConversation) {
+      const isInCurrentConversation = 
+        (message.sender_id === selectedConversation.partnerId && message.recipient_id === user?.id) ||
+        (message.sender_id === user?.id && message.recipient_id === selectedConversation.partnerId)
+      
+      console.log('Is in current conversation:', isInCurrentConversation, {
+        messageSender: message.sender_id,
+        messageRecipient: message.recipient_id,
+        selectedPartner: selectedConversation.partnerId,
+        currentUser: user?.id
+      })
+      
+      if (isInCurrentConversation) {
+        console.log('Adding message to current conversation')
+        setMessages(prev => [...prev, message])
+        
+        // Mark as read if it's a new message to us
+        if (message.recipient_id === user?.id && message.sender_id === selectedConversation.partnerId) {
+          markMessagesAsRead(selectedConversation.partnerId)
+        }
       }
     }
     

@@ -46,11 +46,14 @@ export function useRealtimeMessages(
             // Keep connection alive
             break;
           case 'new_message':
+            console.log('New message event received:', data.message);
             if (data.message && onNewMessage) {
+              console.log('Calling onNewMessage with:', data.message);
               onNewMessage(data.message);
             }
             break;
           case 'conversation_update':
+            console.log('Conversation update event received');
             if (onConversationUpdate) {
               onConversationUpdate();
             }
