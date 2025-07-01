@@ -162,16 +162,9 @@ export default function LandingPage() {
         {/* Features Section */}
         <section id="works" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.15}>
-            <div className="mb-12 md:mb-24 flex flex-col items-start">
-              <div className="flex items-baseline gap-4">
-                <div className="text-5xl md:text-9xl font-black text-black mb-2 md:mb-0">01</div>
-                <div>
-                  <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black leading-none mb-2 md:mb-0">Everything You Need to Succeed</h2>
-                  <p className="text-base md:text-2xl text-gray-600 leading-relaxed mt-2">
-                    Our platform provides all the tools and connections you need to excel in academic competitions
-                  </p>
-                </div>
-              </div>
+            <div className="mb-12 md:mb-24 flex flex-col items-end w-full">
+              <h2 className="text-xl md:text-4xl font-semibold text-black text-right leading-tight mb-2 md:mb-0">Everything You Need to Succeed</h2>
+              <p className="text-base md:text-xl text-gray-600 text-right leading-relaxed mt-2 max-w-2xl">Our platform provides all the tools and connections you need to excel in academic competitions</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-16">
               <Card className="border-0 shadow-none bg-transparent">
@@ -222,16 +215,9 @@ export default function LandingPage() {
         {/* Featured Projects */}
         <section id="about" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="mb-12 md:mb-24 flex flex-col items-start">
-              <div className="flex items-baseline gap-4">
-                <div className="text-5xl md:text-9xl font-black text-black mb-2 md:mb-0">02</div>
-                <div>
-                  <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black leading-none mb-2 md:mb-0">Featured Projects</h2>
-                  <p className="text-base md:text-2xl text-gray-600 leading-relaxed mt-2">
-                    Discover exciting projects looking for talented team members
-                  </p>
-                </div>
-              </div>
+            <div className="mb-12 md:mb-24 flex flex-col items-end w-full">
+              <h2 className="text-xl md:text-4xl font-semibold text-black text-right leading-tight mb-2 md:mb-0">Featured Projects</h2>
+              <p className="text-base md:text-xl text-gray-600 text-right leading-relaxed mt-2 max-w-2xl">Discover exciting projects looking for talented team members</p>
             </div>
             <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 md:gap-8">
               {loadingProjects ? (
@@ -284,16 +270,9 @@ export default function LandingPage() {
         {/* Competitions Section */}
         <section id="competitions" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="mb-12 md:mb-24 flex flex-col items-start">
-              <div className="flex items-baseline gap-4">
-                <div className="text-5xl md:text-9xl font-black text-black mb-2 md:mb-0">03</div>
-                <div>
-                  <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black leading-none mb-2 md:mb-0">Supported Competitions</h2>
-                  <p className="text-base md:text-2xl text-gray-600 leading-relaxed mt-2">
-                    We support teams participating in prestigious academic competitions worldwide
-                  </p>
-                </div>
-              </div>
+            <div className="mb-12 md:mb-24 flex flex-col items-end w-full">
+              <h2 className="text-xl md:text-4xl font-semibold text-black text-right leading-tight mb-2 md:mb-0">Supported Competitions</h2>
+              <p className="text-base md:text-xl text-gray-600 text-right leading-relaxed mt-2 max-w-2xl">We support teams participating in prestigious academic competitions worldwide</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
               {competitions.slice(0, 8).map((competition) => (
