@@ -185,13 +185,13 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
                     className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[280px] px-4 py-2 rounded-lg break-words ${
+                      className={`inline-block max-w-[60%] min-w-[64px] px-4 py-2 rounded-lg align-bottom break-words whitespace-pre-wrap shadow-sm ${
                         isOwnMessage
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-100 text-gray-900"
+                          ? "bg-blue-600 text-white self-end"
+                          : "bg-gray-100 text-gray-900 self-start"
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap break-words overflow-hidden">
+                      <p className="text-sm break-words whitespace-pre-wrap overflow-hidden">
                         {message.content}
                       </p>
                       <p className={`text-xs mt-1 ${
