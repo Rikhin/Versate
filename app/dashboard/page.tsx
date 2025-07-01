@@ -69,15 +69,15 @@ export default function DashboardPage() {
           const data = await response.json()
           setProfile(data)
         } else if (response.status === 404) {
-          // No profile found, redirect to onboarding
-          redirect("/onboarding")
+          // No profile found, redirect to onboarding with required param
+          redirect("/onboarding?required=1")
         } else {
           console.error("Error fetching profile:", response.statusText)
-          redirect("/onboarding")
+          redirect("/onboarding?required=1")
         }
       } catch (error) {
         console.error("Error fetching profile:", error)
-        redirect("/onboarding")
+        redirect("/onboarding?required=1")
       } finally {
         setLoading(false)
       }

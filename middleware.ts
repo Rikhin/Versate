@@ -1,6 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { createServerClient } from "@/lib/supabase/server";
 
 export async function middleware(req: NextRequest) {
   const { userId } = await auth();
@@ -16,18 +15,10 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  if (userId) {
-    const supabase = createServerClient();
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("user_id", userId)
-      .single();
-
-    if (!profile) {
-      url.pathname = "/onboarding";
-      return NextResponse.redirect(url);
-    }
+  // If not signed in, redirect to sign-in
+  if (!userId) {
+    url.pathname = "/sign-in";
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();

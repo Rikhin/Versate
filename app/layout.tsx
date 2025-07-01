@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
 import { BackgroundDesign } from "@/components/ui/background-design"
 import { Header } from "@/components/ui/header"
+import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -26,6 +27,7 @@ export default function RootLayout({
           <BackgroundDesign />
           <Header />
           <main className="relative z-10 min-h-screen">{children}</main>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>
