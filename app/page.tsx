@@ -101,11 +101,11 @@ export default function LandingPage() {
       {/* Main Content Container */}
       <div className="relative z-10 mx-auto" style={{maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto', paddingLeft: '24px', paddingRight: '24px'}}>
         {/* Hero Section */}
-        <section id="home" className="container mx-auto px-4 md:px-8 py-12 md:py-32 text-left">
+        <section id="home" className="container mx-auto px-4 md:px-8 py-8 md:py-20 text-left">
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.2}>
             <div className="max-w-6xl mx-auto relative">
-              <div className="text-5xl md:text-8xl font-black text-black mb-6 md:mb-8 leading-none">
-                Find Your<br />Perfect<br /><span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent">Team</span>
+              <div className="text-3xl md:text-6xl font-semibold text-black mb-4 md:mb-6 leading-tight">
+                Find Your<br />Perfect<br /><span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent font-semibold">Team</span>
               </div>
               <p className={playfair.className + " mb-8 md:mb-12 max-w-3xl leading-relaxed md:leading-loose text-black font-medium text-base md:text-xl"} style={{ letterSpacing: '0.01em' }}>
                 <span className={playfair.className + ' italic text-black font-bold text-base md:text-xl relative'}>
@@ -146,7 +146,7 @@ export default function LandingPage() {
         </section>
 
         {/* Stats Section */}
-        <section className="container mx-auto px-4 md:px-8 py-12 md:py-32">
+        <section className="container mx-auto px-4 md:px-8 py-8 md:py-20">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-16">
               {stats.map((stat, index) => (
@@ -160,7 +160,7 @@ export default function LandingPage() {
         </section>
 
         {/* Features Section */}
-        <section id="works" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
+        <section id="works" className="container mx-auto px-4 md:px-8 py-8 md:py-20">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.15}>
             <div className="mb-12 md:mb-24 flex flex-col items-start w-full">
               <h2 className="text-xl md:text-4xl font-semibold text-black text-left leading-tight mb-2 md:mb-0">Everything You Need to Succeed</h2>
@@ -213,7 +213,7 @@ export default function LandingPage() {
         </section>
 
         {/* Featured Projects */}
-        <section id="about" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
+        <section id="about" className="container mx-auto px-4 md:px-8 py-8 md:py-20">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
             <div className="mb-12 md:mb-24 flex flex-col items-start w-full">
               <h2 className="text-xl md:text-4xl font-semibold text-black text-left leading-tight mb-2 md:mb-0">Featured Projects</h2>
@@ -268,7 +268,7 @@ export default function LandingPage() {
         </section>
 
         {/* Competitions Section */}
-        <section id="competitions" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
+        <section id="competitions" className="container mx-auto px-4 md:px-8 py-8 md:py-20">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
             <div className="mb-12 md:mb-24 flex flex-col items-start w-full">
               <h2 className="text-xl md:text-4xl font-semibold text-black text-left leading-tight mb-2 md:mb-0">Supported Competitions</h2>
@@ -300,7 +300,7 @@ export default function LandingPage() {
         </section>
 
         {/* CTA Section */}
-        <section id="contacts" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
+        <section id="contacts" className="container mx-auto px-4 md:px-8 py-8 md:py-20">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.2}>
             <Card className="bg-black text-white border-0">
               <CardContent className="p-8 md:p-24 text-center">

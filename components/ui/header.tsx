@@ -70,20 +70,20 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur border-b border-gray-200">
-      <div className="w-full flex items-center justify-center px-2 md:px-6 py-3 md:py-6">
-        <div className="flex items-center max-w-5xl w-full mx-auto gap-4 md:gap-8 justify-center">
+      <div className="w-full flex items-center justify-center px-0" style={{maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto', paddingLeft: '24px', paddingRight: '24px'}}>
+        <div className="flex items-center w-full mx-auto gap-2 md:gap-6 justify-center">
           {/* Left: Logo group */}
-          <div className="flex items-center flex-shrink-0 min-w-[180px] md:min-w-[220px] lg:min-w-[240px] justify-start">
-            <Link href="/" className="flex items-center gap-3 group">
-              <Trophy className="h-7 w-7 md:h-9 md:w-9 text-black group-hover:scale-110 transition-transform" />
+          <div className="flex items-center flex-shrink-0 min-w-[120px] md:min-w-[160px] lg:min-w-[180px] justify-start">
+            <Link href="/" className="flex items-center gap-2 group">
+              <Trophy className="h-6 w-6 md:h-7 md:w-7 text-black group-hover:scale-110 transition-transform" />
               <div>
-                <span className="text-lg md:text-2xl font-black text-black leading-tight">Versa</span>
-                <p className="text-sm md:text-base text-gray-500 -mt-1 font-semibold hidden sm:block">built by Rikhin Kavuru</p>
+                <span className="text-base md:text-xl font-bold text-black leading-tight">Versa</span>
+                <p className="text-xs md:text-sm text-gray-500 -mt-1 font-medium hidden sm:block">built by Rikhin Kavuru</p>
               </div>
             </Link>
           </div>
           {/* Center: Nav links */}
-          <nav className="flex-grow flex items-center gap-8 md:gap-12 text-base md:text-lg font-bold uppercase tracking-widest justify-center">
+          <nav className="flex-grow flex items-center gap-4 md:gap-8 text-sm md:text-base font-semibold uppercase tracking-wider justify-center">
             <Link href="/#works" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Features</Link>
             <Link href="/#about" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Projects</Link>
             <Link href="/#competitions" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Competitions</Link>
@@ -103,11 +103,11 @@ export function Header() {
             )}
           </nav>
           {/* Right: User actions/profile */}
-          <div className="flex items-center flex-shrink-0 min-w-[180px] md:min-w-[220px] lg:min-w-[240px] justify-end">
+          <div className="flex items-center flex-shrink-0 min-w-[120px] md:min-w-[160px] lg:min-w-[180px] justify-end">
             {isSignedIn ? (
               <>
                 <Link href="/dashboard" className="hidden sm:block pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>
-                  <button className="px-4 md:px-6 py-2 rounded-lg border border-black text-black font-bold bg-white hover:bg-gray-100 transition text-sm md:text-base" disabled={showModal}>Dashboard</button>
+                  <button className="px-3 md:px-4 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition text-xs md:text-sm" disabled={showModal}>Dashboard</button>
                 </Link>
                 {/* Custom User Menu */}
                 <div className="relative" ref={userMenuRef}>
@@ -191,10 +191,10 @@ export function Header() {
             ) : (
               <>
                 <SignInButton mode="modal">
-                  <button className="px-3 md:px-6 py-2 rounded-lg border border-black text-black font-bold bg-white hover:bg-gray-100 transition text-sm md:text-base" disabled={showModal}>Sign In</button>
+                  <button className="px-2 md:px-4 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition text-xs md:text-sm" disabled={showModal}>Sign In</button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="px-3 md:px-6 py-2 rounded-lg bg-black text-white font-bold hover:bg-gray-900 transition text-sm md:text-base" disabled={showModal}>Sign Up</button>
+                  <button className="px-2 md:px-4 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-900 transition text-xs md:text-sm" disabled={showModal}>Sign Up</button>
                 </SignUpButton>
               </>
             )}
