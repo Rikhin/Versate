@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { MessageSquare, Search, Send } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
 import { Textarea } from "@/components/ui/textarea"
-import { createClient } from "@/lib/supabase"
+import { useRealtimeMessages } from "@/hooks/use-realtime-messages"
 
 interface Conversation {
   partnerId: string
@@ -39,7 +39,6 @@ export default function MessagesPage() {
   const [isSending, setIsSending] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const subscriptionRef = useRef<any>(null)
 
   useEffect(() => {
     if (user) {
@@ -77,76 +76,32 @@ export default function MessagesPage() {
     }
   }, [selectedConversation, markMessagesAsRead])
 
-  // Set up real-time subscription once when user is available
-  useEffect(() => {
-    if (!user) {
-      // Clean up subscription if user is not available
-      if (subscriptionRef.current) {
-        subscriptionRef.current.unsubscribe()
-        subscriptionRef.current = null
-      }
-      return
-    }
-
-    const supabase = createClient()
+  // Set up WebSocket-based real-time messaging
+  const handleNewMessage = useCallback((message: any) => {
+    console.log('New message received via WebSocket:', message)
     
-    // Clean up any existing subscription
-    if (subscriptionRef.current) {
-      subscriptionRef.current.unsubscribe()
-    }
-    
-    console.log('Setting up real-time subscription for user:', user.id)
-    
-    // Subscribe to all message changes for the current user
-    const channel = supabase.channel(`messages-realtime-${user.id}`)
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'messages',
-        filter: `sender_id=eq.${user.id} OR recipient_id=eq.${user.id}`
-      }, (payload) => {
-        console.log('Message change detected:', payload)
-        
-        // Always refresh conversations list when any message changes
-        fetchConversations()
-        
-        // If we're in a conversation with the sender/recipient, refresh messages
-        if (selectedConversation) {
-          const messageUserId = (payload.new as any)?.sender_id || (payload.old as any)?.sender_id
-          const messageRecipientId = (payload.new as any)?.recipient_id || (payload.old as any)?.recipient_id
-          
-          if (messageUserId === selectedConversation.partnerId || 
-              messageRecipientId === selectedConversation.partnerId) {
-            console.log('Refreshing messages for current conversation')
-            fetchMessages(selectedConversation.partnerId)
-            // Mark as read if it's a new message to us
-            if (payload.eventType === 'INSERT' && 
-                (payload.new as any)?.recipient_id === user.id && 
-                (payload.new as any)?.sender_id === selectedConversation.partnerId) {
-              markMessagesAsRead(selectedConversation.partnerId)
-            }
-          }
-        }
-      })
-      .subscribe((status) => {
-        console.log('Subscription status:', status)
-        if (status === 'SUBSCRIBED') {
-          console.log('Successfully subscribed to real-time messages')
-        } else if (status === 'CHANNEL_ERROR') {
-          console.error('Failed to subscribe to real-time messages')
-        }
-      })
-
-    subscriptionRef.current = channel
-
-    return () => {
-      if (subscriptionRef.current) {
-        console.log('Cleaning up subscription')
-        subscriptionRef.current.unsubscribe()
-        subscriptionRef.current = null
+    // If we're in a conversation with the sender, add the message to the current conversation
+    if (selectedConversation && 
+        (message.sender_id === selectedConversation.partnerId || 
+         message.recipient_id === selectedConversation.partnerId)) {
+      setMessages(prev => [...prev, message])
+      // Mark as read if it's a new message to us
+      if (message.recipient_id === user?.id && message.sender_id === selectedConversation.partnerId) {
+        markMessagesAsRead(selectedConversation.partnerId)
       }
     }
-  }, [user]) // Only depend on user, not selectedConversation or markMessagesAsRead
+    
+    // Always refresh conversations list
+    fetchConversations()
+  }, [selectedConversation, user, markMessagesAsRead])
+
+  const handleConversationUpdate = useCallback(() => {
+    console.log('Conversation update received via WebSocket')
+    fetchConversations()
+  }, [])
+
+  // Initialize real-time messaging
+  useRealtimeMessages(handleNewMessage, handleConversationUpdate)
 
   const fetchConversations = async () => {
     if (!user) return
@@ -222,6 +177,7 @@ export default function MessagesPage() {
       })
       const result = await response.json()
       if (response.ok) {
+        // Message will be added via WebSocket, but we can add it immediately for better UX
         setMessages((prev) => [...prev, result])
         setNewMessage("")
         setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100)

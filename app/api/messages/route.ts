@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { createServerClient } from "@/lib/supabase/server";
+import { broadcastMessage, broadcastConversationUpdate } from "./realtime/route";
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,6 +39,11 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    // Broadcast the new message to the recipient
+    broadcastMessage(recipientId, message);
+    broadcastConversationUpdate(recipientId);
+    broadcastConversationUpdate(userId);
 
     return NextResponse.json(message, { status: 201 });
   } catch (error) {
