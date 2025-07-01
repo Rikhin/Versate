@@ -40,7 +40,7 @@ export default function MessagesPage() {
   const [isSending, setIsSending] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const loading = useRequireProfile()
+  const { loading, profile } = useRequireProfile()
 
   useEffect(() => {
     if (user) {
@@ -220,6 +220,10 @@ export default function MessagesPage() {
         <p className="text-gray-600">Loading...</p>
       </div>
     )
+  }
+
+  if (!profile) {
+    return null; // Will redirect, don't render anything
   }
 
   return (

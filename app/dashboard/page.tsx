@@ -51,47 +51,19 @@ interface Profile {
 }
 
 export default function DashboardPage() {
-  const { user, isLoaded } = useUser()
-  const [profile, setProfile] = useState<Profile | null>(null)
-  const loading = useRequireProfile()
+  const { loading, profile } = useRequireProfile()
 
-  useEffect(() => {
-    if (!isLoaded) return
-
-    if (!user) {
-      redirect("/sign-in")
-    }
-
-    // Fetch user profile
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch(`/api/profiles/${user.id}`)
-        if (response.ok) {
-          const data = await response.json()
-          setProfile(data)
-        } else if (response.status === 404) {
-          // No profile found, redirect to onboarding with required param
-          redirect("/onboarding?required=1")
-        } else {
-          console.error("Error fetching profile:", response.statusText)
-          redirect("/onboarding?required=1")
-        }
-      } catch (error) {
-        console.error("Error fetching profile:", error)
-        redirect("/onboarding?required=1")
-      }
-    }
-
-    fetchProfile()
-  }, [user, isLoaded])
-
-  if (loading || !profile) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
         <p className="text-gray-600">Loading...</p>
       </div>
     )
+  }
+
+  if (!profile) {
+    return null; // Will redirect, don't render anything
   }
 
   const stats = [
@@ -156,8 +128,8 @@ export default function DashboardPage() {
     },
   ]
 
-  // Extract first name from full_name or use user's first name
-  const firstName = profile.full_name?.split(' ')[0] || user?.firstName || 'User'
+  // Extract first name from full_name or fallback
+  const firstName = profile.full_name?.split(' ')[0] || 'User'
 
   // Profile completion calculation
   const profileFields = [
@@ -212,7 +184,7 @@ export default function DashboardPage() {
                 <div className="rounded-xl bg-white/90 shadow-sm p-8 flex flex-col md:flex-row gap-8 items-center border border-gray-100 w-full">
                   <div className="flex-1 w-full">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="text-lg font-semibold text-gray-900">{profile.full_name || user?.fullName}</span>
+                      <span className="text-lg font-semibold text-gray-900">{profile.full_name || profile.user_id}</span>
                       {profile.experience_level && (
                         <span className="flex items-center gap-1 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full font-medium">
                           <span className="inline-block w-2 h-2 bg-indigo-400 rounded-full"></span>
@@ -225,17 +197,12 @@ export default function DashboardPage() {
                     </div>
                     <div className="text-gray-700 text-base mb-4">{profile.bio || <span className="italic text-gray-400">No bio added yet.</span>}</div>
                     {profile.skills && profile.skills.length > 0 && (
-                      <div className="mb-4 flex flex-wrap gap-2">
-                        {profile.skills.slice(0, 8).map((skill, index) => (
-                          <span key={index} className="bg-gray-100 text-xs px-2 py-1 rounded-full font-medium text-gray-700 border border-gray-200">
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {profile.skills.map((skill: string, index: number) => (
+                          <span key={index} className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-medium">
                             {skill}
                           </span>
                         ))}
-                        {profile.skills.length > 8 && (
-                          <span className="bg-gray-200 text-xs px-2 py-1 rounded-full font-medium text-gray-500 border border-gray-200">
-                            +{profile.skills.length - 8} more
-                          </span>
-                        )}
                       </div>
                     )}
                   </div>
