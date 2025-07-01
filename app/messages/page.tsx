@@ -303,7 +303,7 @@ export default function MessagesPage() {
                   )}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 flex flex-col p-0">
+              <CardContent className="flex flex-col p-0">
                 {!selectedConversation ? (
                   <div className="text-center text-gray-500 flex-1 flex flex-col items-center justify-center">
                     <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
@@ -311,7 +311,7 @@ export default function MessagesPage() {
                   </div>
                 ) : (
                   <>
-                    <div className="flex-1 overflow-y-auto space-y-4 p-4 border-b bg-white">
+                    <div className="overflow-y-auto space-y-4 p-4 border-b bg-white h-[500px]">
                       {isLoadingMessages ? (
                         <div className="text-center text-gray-500">Loading messages...</div>
                       ) : messages.length === 0 ? (
