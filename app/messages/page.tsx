@@ -293,7 +293,7 @@ export default function MessagesPage() {
 
           {/* Message Area */}
           <div className="lg:col-span-2">
-            <Card className="h-[650px] flex flex-col">
+            <Card className="h-[450px] flex flex-col">
               <CardHeader className="flex-shrink-0">
                 <CardTitle>
                   {selectedConversation ? (
