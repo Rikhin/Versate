@@ -30,6 +30,7 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
   const [newMessage, setNewMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isSending, setIsSending] = useState(false)
+  const [sendError, setSendError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -67,6 +68,7 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
     if (!newMessage.trim() || !user || isSending) return
 
     setIsSending(true)
+    setSendError(null)
     try {
       const response = await fetch("/api/messages", {
         method: "POST",
@@ -79,12 +81,17 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
         }),
       })
 
+      const result = await response.json()
+      console.log("Send message response:", result)
+
       if (response.ok) {
-        const sentMessage = await response.json()
-        setMessages(prev => [...prev, sentMessage])
+        setMessages(prev => [...prev, result])
         setNewMessage("")
+      } else {
+        setSendError(result.error || "Failed to send message.")
       }
     } catch (error) {
+      setSendError("Network error. Please try again.")
       console.error("Error sending message:", error)
     } finally {
       setIsSending(false)
@@ -177,6 +184,9 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
             <Send className="h-4 w-4" />
           </Button>
         </div>
+        {sendError && (
+          <div className="text-red-500 text-sm px-4 pb-2">{sendError}</div>
+        )}
       </DialogContent>
     </Dialog>
   )
