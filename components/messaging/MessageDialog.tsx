@@ -32,6 +32,10 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
   const [isSending, setIsSending] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+
+  // Limit to last 50 messages to prevent performance issues
+  const MAX_MESSAGES = 50
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -77,7 +81,9 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
       const response = await fetch(`/api/messages?with=${recipientId}`)
       if (response.ok) {
         const data = await response.json()
-        setMessages(data)
+        // Only keep the last MAX_MESSAGES messages
+        const limitedMessages = data.slice(-MAX_MESSAGES)
+        setMessages(limitedMessages)
       }
     } catch (error) {
       console.error("Error fetching messages:", error)
@@ -107,7 +113,11 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
       console.log("Send message response:", result)
 
       if (response.ok) {
-        setMessages(prev => [...prev, result])
+        setMessages(prev => {
+          const newMessages = [...prev, result]
+          // Keep only the last MAX_MESSAGES messages
+          return newMessages.slice(-MAX_MESSAGES)
+        })
         setNewMessage("")
       } else {
         setSendError(result.error || "Failed to send message.")
@@ -151,36 +161,47 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
           </div>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto space-y-4 p-4 border rounded-lg">
+        <div 
+          ref={messagesContainerRef}
+          className="flex-1 overflow-y-auto space-y-4 p-4 border rounded-lg min-h-0"
+          style={{ maxHeight: '400px' }}
+        >
           {isLoading ? (
             <div className="text-center text-gray-500">Loading messages...</div>
           ) : messages.length === 0 ? (
             <div className="text-center text-gray-500">No messages yet. Start the conversation!</div>
           ) : (
-            messages.map((message) => {
-              const isOwnMessage = message.sender_id === user?.id
-              return (
-                <div
-                  key={message.id}
-                  className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                      isOwnMessage
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-900"
-                    }`}
-                  >
-                    <p className="text-sm">{message.content}</p>
-                    <p className={`text-xs mt-1 ${
-                      isOwnMessage ? "text-blue-100" : "text-gray-500"
-                    }`}>
-                      {formatTime(message.created_at)}
-                    </p>
-                  </div>
+            <>
+              {messages.length >= MAX_MESSAGES && (
+                <div className="text-center text-xs text-gray-400 pb-2">
+                  Showing last {MAX_MESSAGES} messages
                 </div>
-              )
-            })
+              )}
+              {messages.map((message) => {
+                const isOwnMessage = message.sender_id === user?.id
+                return (
+                  <div
+                    key={message.id}
+                    className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                        isOwnMessage
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-100 text-gray-900"
+                      }`}
+                    >
+                      <p className="text-sm">{message.content}</p>
+                      <p className={`text-xs mt-1 ${
+                        isOwnMessage ? "text-blue-100" : "text-gray-500"
+                      }`}>
+                        {formatTime(message.created_at)}
+                      </p>
+                    </div>
+                  </div>
+                )
+              })}
+            </>
           )}
           <div ref={messagesEndRef} />
         </div>
