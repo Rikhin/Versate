@@ -279,9 +279,11 @@ export default function ProfilesPage() {
                             className="flex-1"
                           />
                         )}
-                        <Button variant="outline" size="sm" className="flex-1">
-                          <UserCheck className="h-4 w-4 mr-2" />
-                          View Profile
+                        <Button asChild variant="outline" size="sm" className="flex-1">
+                          <Link href={`/profiles/${profile.user_id}`}>
+                            <UserCheck className="h-4 w-4 mr-2" />
+                            View Profile
+                          </Link>
                         </Button>
                       </div>
                     </CardContent>
