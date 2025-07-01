@@ -53,6 +53,14 @@ BEGIN
     END IF;
 END $$;
 
+-- Add profile_embedding column if it doesn't exist
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'profile_embedding') THEN
+        ALTER TABLE profiles ADD COLUMN profile_embedding float8[];
+    END IF;
+END $$;
+
 -- Create index on user_id if it doesn't exist
 CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
 

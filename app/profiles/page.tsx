@@ -30,6 +30,7 @@ import Link from "next/link"
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
 import { MessageButton } from "@/components/messaging/MessageButton"
 import { useUser } from "@clerk/nextjs"
+import { RecommendedTeammatesModal } from "@/components/recommended-teammates-modal"
 
 interface Profile {
   id: string
@@ -59,10 +60,22 @@ export default function ProfilesPage() {
   const [selectedExperience, setSelectedExperience] = useState("all")
   const [selectedRole, setSelectedRole] = useState("all")
   const [sortBy, setSortBy] = useState("recent")
+  const [recommended, setRecommended] = useState<any[]>([])
+  const [showRecommended, setShowRecommended] = useState(false)
 
   useEffect(() => {
     fetchProfiles()
-  }, [])
+    if (user) {
+      fetch("/api/ai-match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id })
+      })
+        .then(res => res.ok ? res.json() : Promise.reject(res))
+        .then(data => setRecommended(data.matches))
+        .catch(() => {})
+    }
+  }, [user])
 
   const fetchProfiles = async () => {
     setLoading(true)
@@ -136,6 +149,32 @@ export default function ProfilesPage() {
               <h1 className="text-3xl font-bold text-slate-800 mb-2">Find Your Perfect Teammate</h1>
               <p className="text-slate-600">Connect with talented students and build amazing teams together</p>
             </div>
+
+            {user && recommended.length > 0 && (
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-lg font-semibold text-slate-800">Recommended Teammates</h2>
+                  <button className="text-xs text-gray-500 underline" onClick={() => setShowRecommended(true)}>See all</button>
+                </div>
+                <div className="flex gap-4">
+                  {recommended.map((m, i) => (
+                    <Card key={m.user_id} className="flex items-center gap-3 p-3 shadow-none border-gray-100 w-1/3 min-w-[180px]">
+                      <Avatar>
+                        <AvatarImage src={m.avatar_url} alt={m.first_name} />
+                        <AvatarFallback>{m.first_name?.[0]}{m.last_name?.[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900">{m.first_name} {m.last_name}</div>
+                        <div className="text-xs text-gray-500 truncate max-w-xs">{m.bio}</div>
+                      </div>
+                      <span className="text-xs bg-gray-100 rounded-full px-2 py-1 font-mono text-gray-600">{(m.similarity * 100).toFixed(0)}%</span>
+                      <Button size="sm" variant="outline" className="ml-2">Message</Button>
+                    </Card>
+                  ))}
+                </div>
+                {showRecommended && <RecommendedTeammatesModal matches={recommended} onClose={() => setShowRecommended(false)} />}
+              </div>
+            )}
 
             {/* Search and Filters */}
             <div className="mb-8 space-y-4">

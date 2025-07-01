@@ -16,6 +16,7 @@ import { useUser } from "@clerk/nextjs";
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations";
 import Papa from 'papaparse';
 import { competitions } from '@/lib/competitions-data';
+import { RecommendedTeammatesModal } from "@/components/recommended-teammates-modal";
 
 interface CompetitionInterest {
   competitionId: string;
@@ -104,6 +105,8 @@ export function OnboardingForm() {
   const [error, setError] = useState<string | null>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const [imagePreview, setImagePreview] = useState<string>(user?.imageUrl || "");
+  const [recommended, setRecommended] = useState<any[]>([]);
+  const [showRecommended, setShowRecommended] = useState(false);
 
   // Wait for user to load or if user is null
   if (!isLoaded || !user) return <div>Loading...</div>;
@@ -240,6 +243,17 @@ export function OnboardingForm() {
       });
 
       if (response.ok) {
+        // After successful onboarding, fetch recommended teammates
+        const res = await fetch("/api/ai-match", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: user.id })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setRecommended(data.matches);
+          setShowRecommended(true);
+        }
         router.push("/dashboard");
       } else {
         const errorData = await response.json();
@@ -571,6 +585,9 @@ export function OnboardingForm() {
           </CardContent>
         </Card>
       </div>
+      {showRecommended && (
+        <RecommendedTeammatesModal matches={recommended} onClose={() => setShowRecommended(false)} />
+      )}
     </div>
   );
 } 

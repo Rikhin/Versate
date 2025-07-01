@@ -103,12 +103,16 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section id="home" className="container mx-auto px-4 md:px-8 py-8 md:py-20 text-left">
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.2}>
-            <div className="max-w-6xl mx-auto relative">
-              <div className="text-3xl md:text-6xl font-semibold text-black mb-4 md:mb-6 leading-tight">
-                Find Your<br />Perfect<br /><span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent font-semibold">Team</span>
+            <div className="max-w-6xl mx-auto relative flex flex-col items-center justify-center text-center">
+              <div className="text-4xl md:text-7xl font-semibold text-black mb-4 md:mb-6 leading-tight flex flex-col items-center">
+                <span>Find Your</span>
+                <span>Perfect</span>
+                <span className="inline-block">
+                  <span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent font-semibold" style={{ fontSize: '1.2em', lineHeight: '1.1', fontWeight: 700 }}>Team</span>
+                </span>
               </div>
-              <p className={playfair.className + " mb-8 md:mb-12 max-w-3xl leading-relaxed md:leading-loose text-black font-medium text-base md:text-xl"} style={{ letterSpacing: '0.01em' }}>
-                <span className={playfair.className + ' italic text-black font-bold text-base md:text-xl relative'}>
+              <p className={playfair.className + " mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed md:leading-loose text-black text-base md:text-xl font-normal"} style={{ letterSpacing: '0.01em', fontWeight: 400 }}>
+                <span className={playfair.className + ' italic text-black font-semibold text-base md:text-xl relative'}>
                   <span
                     className={styles.highlight}
                     style={{ width: highlightWidth + '%', opacity: 0.32, height: '100%', background: 'linear-gradient(90deg, #ffe066 60%, #ffd600 100%)' }}
@@ -117,7 +121,7 @@ export default function LandingPage() {
                 </span>
                 {typed}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
+              <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center items-center">
                 {isSignedIn ? (
                   <Link href="/dashboard">
                     <Button size="lg" className="text-xl px-12 py-6 bg-black text-white hover:bg-gray-800">
@@ -162,11 +166,11 @@ export default function LandingPage() {
         {/* Features Section */}
         <section id="works" className="container mx-auto px-4 md:px-8 py-8 md:py-20">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.15}>
-            <div className="mb-12 md:mb-24 flex flex-col items-start w-full">
-              <h2 className="text-xl md:text-4xl font-semibold text-black text-left leading-tight mb-2 md:mb-0">Everything You Need to Succeed</h2>
-              <p className="text-base md:text-xl text-gray-600 text-left leading-relaxed mt-2 max-w-2xl">Our platform provides all the tools and connections you need to excel in academic competitions</p>
+            <div className="mb-12 md:mb-24 flex flex-col items-end w-full">
+              <h2 className="text-xl md:text-4xl font-semibold text-black text-right leading-tight mb-2 md:mb-0">Everything You Need to Succeed</h2>
+              <p className="text-base md:text-xl text-gray-600 text-right leading-relaxed mt-2 max-w-2xl">Our platform provides all the tools and connections you need to excel in academic competitions</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-16">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-16 justify-end text-right">
               <Card className="border-0 shadow-none bg-transparent">
                 <CardHeader className="pb-8">
                   <div className="flex items-center space-x-6">
@@ -215,11 +219,11 @@ export default function LandingPage() {
         {/* Featured Projects */}
         <section id="about" className="container mx-auto px-4 md:px-8 py-8 md:py-20">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="mb-12 md:mb-24 flex flex-col items-start w-full">
-              <h2 className="text-xl md:text-4xl font-semibold text-black text-left leading-tight mb-2 md:mb-0">Featured Projects</h2>
-              <p className="text-base md:text-xl text-gray-600 text-left leading-relaxed mt-2 max-w-2xl">Discover exciting projects looking for talented team members</p>
+            <div className="mb-12 md:mb-24 flex flex-col items-end w-full">
+              <h2 className="text-xl md:text-4xl font-semibold text-black text-right leading-tight mb-2 md:mb-0">Featured Projects</h2>
+              <p className="text-base md:text-xl text-gray-600 text-right leading-relaxed mt-2 max-w-2xl">Discover exciting projects looking for talented team members</p>
             </div>
-            <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 md:gap-8">
+            <div className="flex flex-col md:flex-row justify-end items-stretch gap-4 md:gap-8 text-right">
               {loadingProjects ? (
                 <div className="md:col-span-3 text-center text-gray-500 py-12">Loading featured projects...</div>
               ) : projectsError ? (
@@ -228,20 +232,22 @@ export default function LandingPage() {
                 <div className="md:col-span-3 text-center text-gray-500 py-12">No projects found.</div>
               ) : (
                 featuredProjects.map((project, index) => (
-                  <Card key={project.id || index} className="border-0 shadow-none bg-transparent flex-1 max-w-md mx-auto">
-                  <CardHeader className="pb-8">
-                    <div className="flex justify-between items-start mb-4">
+                  <Card key={project.id || index} className="border-0 shadow-none bg-transparent flex-1 max-w-md ml-auto">
+                  <CardHeader className="pb-8 text-right">
+                    <div className="flex justify-end items-start mb-4">
                         <Badge variant="outline" className="border-2 border-black text-black px-4 py-2 text-sm font-bold uppercase tracking-widest">{project.category || 'Project'}</Badge>
                       </div>
-                      <CardTitle className="text-2xl font-medium text-black text-left">{project.title || 'Untitled Project'}</CardTitle>
-                    <CardDescription className="text-lg text-gray-600">
-                        {(project.description && project.description.length > 100)
-                          ? project.description.slice(0, 100) + '...'
+                      <CardTitle className="text-xl font-medium text-black text-right">
+                        {project.title && project.title.length > 32 ? project.title.slice(0, 32) + '…' : (project.title || 'Untitled Project')}
+                      </CardTitle>
+                    <CardDescription className="text-base text-gray-600 text-right">
+                        {(project.description && project.description.length > 80)
+                          ? project.description.slice(0, 80) + '…'
                           : (project.description || 'No description available.')}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex items-center space-x-4">
+                  <CardContent className="space-y-6 text-right">
+                    <div className="flex items-center justify-end space-x-4">
                       <Avatar className="h-12 w-12">
                           <AvatarImage src={"/placeholder-user.jpg"} alt={project.authors?.[0] || "?"} />
                           <AvatarFallback className="bg-black text-white font-bold">{project.authors?.[0] || "?"}</AvatarFallback>
@@ -249,8 +255,8 @@ export default function LandingPage() {
                       <div>
                           <p className="text-lg font-bold text-black">{project.authors || 'Unknown Author'}</p>
                           <p className="text-sm text-gray-600">{project.created_at ? new Date(project.created_at).toLocaleDateString() : ''}</p>
-                    </div>
                       </div>
+                    </div>
                   </CardContent>
                 </Card>
                 ))
@@ -270,11 +276,11 @@ export default function LandingPage() {
         {/* Competitions Section */}
         <section id="competitions" className="container mx-auto px-4 md:px-8 py-8 md:py-20">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="mb-12 md:mb-24 flex flex-col items-start w-full">
-              <h2 className="text-xl md:text-4xl font-semibold text-black text-left leading-tight mb-2 md:mb-0">Supported Competitions</h2>
-              <p className="text-base md:text-xl text-gray-600 text-left leading-relaxed mt-2 max-w-2xl">We support teams participating in prestigious academic competitions worldwide</p>
+            <div className="mb-12 md:mb-24 flex flex-col items-end w-full">
+              <h2 className="text-xl md:text-4xl font-semibold text-black text-right leading-tight mb-2 md:mb-0">Supported Competitions</h2>
+              <p className="text-base md:text-xl text-gray-600 text-right leading-relaxed mt-2 max-w-2xl">We support teams participating in prestigious academic competitions worldwide</p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 justify-end text-right">
               {competitions.slice(0, 8).map((competition) => (
                 <Link
                   key={competition.id}

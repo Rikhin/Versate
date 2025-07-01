@@ -69,9 +69,9 @@ export function Header() {
   }, [user]);
 
   return (
-    <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur border-b border-gray-200">
-      <div className="w-full flex items-center justify-center px-0" style={{maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto', paddingLeft: '24px', paddingRight: '24px'}}>
-        <div className="flex items-center w-full mx-auto gap-2 md:gap-6 justify-center">
+    <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur border-b border-gray-200" style={{minHeight: '80px'}}>
+      <div className="w-full flex items-center justify-center px-0" style={{maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto', paddingLeft: '24px', paddingRight: '24px', minHeight: '80px'}}>
+        <div className="flex items-center w-full mx-auto gap-2 md:gap-6 justify-center min-h-[80px]" style={{minHeight: '80px'}}>
           {/* Left: Logo group */}
           <div className="flex items-center flex-shrink-0 min-w-[120px] md:min-w-[160px] lg:min-w-[180px] justify-start">
             <Link href="/" className="flex items-center gap-2 group">
