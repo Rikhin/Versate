@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { MessageSquare, Search, Send } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
 import { Textarea } from "@/components/ui/textarea"
+import { createClient } from "@/lib/supabase"
 
 interface Conversation {
   partnerId: string
@@ -45,11 +46,41 @@ export default function MessagesPage() {
     }
   }, [user])
 
+  const markMessagesAsRead = useCallback(async (partnerId: string) => {
+    await fetch("/api/messages/read", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ partnerId }),
+    })
+    fetchConversations()
+  }, [])
+
   useEffect(() => {
     if (selectedConversation) {
       fetchMessages(selectedConversation.partnerId)
+      markMessagesAsRead(selectedConversation.partnerId)
     }
   }, [selectedConversation])
+
+  useEffect(() => {
+    const supabase = createClient()
+    if (!user) return
+    const channel = supabase.channel('messages-realtime')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'messages',
+        filter: `recipient_id=eq.${user.id}`
+      }, (payload) => {
+        if (selectedConversation && payload.new && payload.new.sender_id === selectedConversation.partnerId) {
+          fetchMessages(selectedConversation.partnerId)
+          markMessagesAsRead(selectedConversation.partnerId)
+        }
+        fetchConversations()
+      })
+      .subscribe()
+    return () => { channel.unsubscribe() }
+  }, [user, selectedConversation])
 
   const fetchConversations = async () => {
     if (!user) return
