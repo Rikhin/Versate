@@ -72,11 +72,11 @@ export function Header() {
         {/* Desktop: Logo left, nav center, user actions right */}
         <div className="flex flex-1 items-center gap-4 md:gap-8">
           {/* Logo and subtitle - compact, original spacing */}
-          <Link href="/" className="flex items-center gap-2 md:gap-3 group flex-shrink-0">
-            <Trophy className="h-6 w-6 md:h-8 md:w-8 text-black group-hover:scale-110 transition-transform" />
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+            <Trophy className="h-7 w-7 md:h-9 md:w-9 text-black group-hover:scale-110 transition-transform" />
             <div>
-              <span className="text-base md:text-xl font-black text-black leading-tight">Versa</span>
-              <p className="text-xs text-gray-500 -mt-1 font-medium hidden sm:block">built by Rikhin Kavuru</p>
+              <span className="text-lg md:text-2xl font-black text-black leading-tight">Versa</span>
+              <p className="text-sm md:text-base text-gray-500 -mt-1 font-semibold hidden sm:block">built by Rikhin Kavuru</p>
             </div>
           </Link>
           {/* Desktop Nav links (centered) */}
