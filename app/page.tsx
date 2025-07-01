@@ -99,7 +99,7 @@ export default function LandingPage() {
       />
       
       {/* Main Content Container */}
-      <div className="relative z-10">
+      <div className="relative z-10 mx-auto" style={{maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto', paddingLeft: '24px', paddingRight: '24px'}}>
         {/* Hero Section */}
         <section id="home" className="container mx-auto px-4 md:px-8 py-12 md:py-32 text-left">
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.2}>
@@ -162,14 +162,16 @@ export default function LandingPage() {
         {/* Features Section */}
         <section id="works" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.15}>
-            <div className="text-center mb-12 md:mb-24">
-              <div className="text-5xl md:text-9xl font-black text-black mb-6 md:mb-8">01</div>
-              <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black mb-6 md:mb-8 leading-none">
-                Everything You<br />Need to Succeed
-              </h2>
-              <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                Our platform provides all the tools and connections you need to excel in academic competitions
-              </p>
+            <div className="mb-12 md:mb-24 flex flex-col items-start">
+              <div className="flex items-baseline gap-4">
+                <div className="text-5xl md:text-9xl font-black text-black mb-2 md:mb-0">01</div>
+                <div>
+                  <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black leading-none mb-2 md:mb-0">Everything You Need to Succeed</h2>
+                  <p className="text-base md:text-2xl text-gray-600 leading-relaxed mt-2">
+                    Our platform provides all the tools and connections you need to excel in academic competitions
+                  </p>
+                </div>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-16">
               <Card className="border-0 shadow-none bg-transparent">
@@ -220,14 +222,16 @@ export default function LandingPage() {
         {/* Featured Projects */}
         <section id="about" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="text-center mb-12 md:mb-24">
-              <div className="text-5xl md:text-9xl font-black text-black mb-6 md:mb-8">02</div>
-              <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black mb-6 md:mb-8 leading-none">
-                Featured<br />Projects
-              </h2>
-              <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                Discover exciting projects looking for talented team members
-              </p>
+            <div className="mb-12 md:mb-24 flex flex-col items-start">
+              <div className="flex items-baseline gap-4">
+                <div className="text-5xl md:text-9xl font-black text-black mb-2 md:mb-0">02</div>
+                <div>
+                  <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black leading-none mb-2 md:mb-0">Featured Projects</h2>
+                  <p className="text-base md:text-2xl text-gray-600 leading-relaxed mt-2">
+                    Discover exciting projects looking for talented team members
+                  </p>
+                </div>
+              </div>
             </div>
             <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 md:gap-8">
               {loadingProjects ? (
@@ -280,14 +284,16 @@ export default function LandingPage() {
         {/* Competitions Section */}
         <section id="competitions" className="container mx-auto px-4 md:px-8 py-12 md:py-32">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="text-center mb-12 md:mb-24">
-              <div className="text-5xl md:text-9xl font-black text-black mb-6 md:mb-8">03</div>
-              <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black mb-6 md:mb-8 leading-none">
-                Supported<br />Competitions
-              </h2>
-              <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                We support teams participating in prestigious academic competitions worldwide
-              </p>
+            <div className="mb-12 md:mb-24 flex flex-col items-start">
+              <div className="flex items-baseline gap-4">
+                <div className="text-5xl md:text-9xl font-black text-black mb-2 md:mb-0">03</div>
+                <div>
+                  <h2 className="text-2xl md:text-6xl md:text-7xl font-black text-black leading-none mb-2 md:mb-0">Supported Competitions</h2>
+                  <p className="text-base md:text-2xl text-gray-600 leading-relaxed mt-2">
+                    We support teams participating in prestigious academic competitions worldwide
+                  </p>
+                </div>
+              </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
               {competitions.slice(0, 8).map((competition) => (
