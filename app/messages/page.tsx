@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { MessageSquare, Search, Send } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
-import { MessageDialog } from "@/components/messaging/MessageDialog"
+import { Textarea } from "@/components/ui/textarea"
 
 interface Conversation {
   partnerId: string
@@ -32,13 +32,24 @@ export default function MessagesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [messages, setMessages] = useState<any[]>([])
+  const [newMessage, setNewMessage] = useState("")
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false)
+  const [isSending, setIsSending] = useState(false)
+  const [sendError, setSendError] = useState<string | null>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (user) {
       fetchConversations()
     }
   }, [user])
+
+  useEffect(() => {
+    if (selectedConversation) {
+      fetchMessages(selectedConversation.partnerId)
+    }
+  }, [selectedConversation])
 
   const fetchConversations = async () => {
     if (!user) return
@@ -57,6 +68,21 @@ export default function MessagesPage() {
     }
   }
 
+  const fetchMessages = async (partnerId: string) => {
+    setIsLoadingMessages(true)
+    try {
+      const response = await fetch(`/api/messages?with=${partnerId}`)
+      if (response.ok) {
+        const data = await response.json()
+        setMessages(data)
+      }
+    } catch (error) {
+      setMessages([])
+    } finally {
+      setIsLoadingMessages(false)
+    }
+  }
+
   const filteredConversations = conversations.filter(conversation => {
     const fullName = `${conversation.partner.first_name} ${conversation.partner.last_name}`.toLowerCase()
     return fullName.includes(searchQuery.toLowerCase())
@@ -64,7 +90,6 @@ export default function MessagesPage() {
 
   const openConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation)
-    setIsDialogOpen(true)
   }
 
   const formatTime = (dateString: string) => {
@@ -83,6 +108,41 @@ export default function MessagesPage() {
 
   const formatMessagePreview = (content: string) => {
     return content.length > 50 ? content.substring(0, 50) + "..." : content
+  }
+
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !selectedConversation || isSending) return
+    setIsSending(true)
+    setSendError(null)
+    try {
+      const response = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recipientId: selectedConversation.partnerId,
+          content: newMessage.trim(),
+        }),
+      })
+      const result = await response.json()
+      if (response.ok) {
+        setMessages((prev) => [...prev, result])
+        setNewMessage("")
+        setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100)
+      } else {
+        setSendError(result.error || "Failed to send message.")
+      }
+    } catch (error) {
+      setSendError("Network error. Please try again.")
+    } finally {
+      setIsSending(false)
+    }
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      sendMessage()
+    }
   }
 
   return (
@@ -176,34 +236,74 @@ export default function MessagesPage() {
                   )}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 flex items-center justify-center">
+              <CardContent className="flex-1 flex flex-col">
                 {!selectedConversation ? (
-                  <div className="text-center text-gray-500">
+                  <div className="text-center text-gray-500 flex-1 flex flex-col items-center justify-center">
                     <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                     <p>Choose a conversation from the list to start messaging</p>
                   </div>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Button onClick={() => setIsDialogOpen(true)}>
-                      <Send className="h-4 w-4 mr-2" />
-                      Open Conversation
-                    </Button>
+                  <div className="flex flex-col h-full w-full">
+                    <div className="flex-1 overflow-y-auto space-y-4 p-4 border rounded-lg bg-white">
+                      {isLoadingMessages ? (
+                        <div className="text-center text-gray-500">Loading messages...</div>
+                      ) : messages.length === 0 ? (
+                        <div className="text-center text-gray-500">No messages yet. Start the conversation!</div>
+                      ) : (
+                        messages.map((message) => {
+                          const isOwnMessage = message.sender_id === user?.id
+                          return (
+                            <div
+                              key={message.id}
+                              className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
+                            >
+                              <div
+                                className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                                  isOwnMessage
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-100 text-gray-900"
+                                }`}
+                              >
+                                <p className="text-sm">{message.content}</p>
+                                <p className={`text-xs mt-1 ${
+                                  isOwnMessage ? "text-blue-100" : "text-gray-500"
+                                }`}>
+                                  {formatTime(message.created_at)}
+                                </p>
+                              </div>
+                            </div>
+                          )
+                        })
+                      )}
+                      <div ref={messagesEndRef} />
+                    </div>
+                    <div className="flex-shrink-0 flex space-x-2 p-4 border-t bg-white">
+                      <Textarea
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        placeholder="Type your message..."
+                        className="flex-1 min-h-[60px] max-h-[120px] resize-none"
+                        disabled={isSending}
+                      />
+                      <Button
+                        onClick={sendMessage}
+                        disabled={!newMessage.trim() || isSending}
+                        size="sm"
+                        className="self-end"
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    {sendError && (
+                      <div className="text-red-500 text-sm px-4 pb-2">{sendError}</div>
+                    )}
                   </div>
                 )}
               </CardContent>
             </Card>
           </div>
         </div>
-
-        {/* Message Dialog */}
-        {selectedConversation && (
-          <MessageDialog
-            isOpen={isDialogOpen}
-            onClose={() => setIsDialogOpen(false)}
-            recipientId={selectedConversation.partnerId}
-            recipientName={`${selectedConversation.partner.first_name} ${selectedConversation.partner.last_name}`}
-          />
-        )}
       </div>
     </div>
   )
