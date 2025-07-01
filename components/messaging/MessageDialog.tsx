@@ -163,8 +163,7 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
 
         <div 
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto space-y-4 p-4 border rounded-lg min-h-0"
-          style={{ maxHeight: '400px' }}
+          className="overflow-y-auto space-y-4 p-4 border rounded-lg min-h-0 max-h-[350px]"
         >
           {isLoading ? (
             <div className="text-center text-gray-500">Loading messages...</div>

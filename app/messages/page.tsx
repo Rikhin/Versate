@@ -311,7 +311,7 @@ export default function MessagesPage() {
                   </div>
                 ) : (
                   <div className="flex flex-col h-full w-full">
-                    <div className="flex-1 overflow-y-auto space-y-4 p-4 border rounded-lg bg-white">
+                    <div className="overflow-y-auto space-y-4 p-4 border rounded-lg bg-white max-h-[calc(100vh-300px)] mx-auto">
                       {isLoadingMessages ? (
                         <div className="text-center text-gray-500">Loading messages...</div>
                       ) : messages.length === 0 ? (
