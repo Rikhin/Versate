@@ -71,16 +71,14 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-6 flex items-center justify-between gap-4 md:gap-8 w-full">
         {/* Desktop: Logo left, nav center, user actions right */}
         <div className="flex flex-1 items-center gap-4 md:gap-8">
-          {/* Logo and subtitle - bigger and flush left */}
-          <div className="flex flex-shrink-0 items-center justify-start min-w-[220px] md:min-w-[320px] lg:min-w-[400px]">
-            <Link href="/" className="flex items-center gap-3 group">
-              <Trophy className="h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 text-black group-hover:scale-110 transition-transform" />
-              <div className="flex flex-col justify-center">
-                <span className="text-xl md:text-3xl lg:text-4xl font-black text-black leading-tight">Versa</span>
-                <p className="text-sm md:text-base lg:text-lg text-gray-500 -mt-1 font-semibold hidden sm:block">built by Rikhin Kavuru</p>
-              </div>
-            </Link>
-          </div>
+          {/* Logo and subtitle - compact, original spacing */}
+          <Link href="/" className="flex items-center gap-2 md:gap-3 group flex-shrink-0">
+            <Trophy className="h-6 w-6 md:h-8 md:w-8 text-black group-hover:scale-110 transition-transform" />
+            <div>
+              <span className="text-base md:text-xl font-black text-black leading-tight">Versa</span>
+              <p className="text-xs text-gray-500 -mt-1 font-medium hidden sm:block">built by Rikhin Kavuru</p>
+            </div>
+          </Link>
           {/* Desktop Nav links (centered) */}
           <nav className="hidden md:flex flex-1 items-center justify-center gap-8 md:gap-12 text-base md:text-lg font-bold uppercase tracking-widest">
             <Link href="/#works" className="hover:opacity-60 transition">Features</Link>
