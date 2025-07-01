@@ -76,7 +76,7 @@ export function Header() {
           <div className="flex items-center flex-shrink-0 min-w-[120px] md:min-w-[160px] lg:min-w-[180px] justify-start">
             <Link href="/" className="flex items-center gap-2 group">
               <Trophy className="h-6 w-6 md:h-7 md:w-7 text-black group-hover:scale-110 transition-transform" />
-              <div>
+          <div>
                 <span className="text-base md:text-xl font-bold text-black leading-tight">Versa</span>
                 <p className="text-xs md:text-sm text-gray-500 -mt-1 font-medium hidden sm:block">built by Rikhin Kavuru</p>
               </div>
@@ -99,52 +99,52 @@ export function Header() {
                     {unreadCount > 99 ? '99+' : unreadCount}
                   </Badge>
                 )}
-              </Link>
+        </Link>
             )}
-          </nav>
+        </nav>
           {/* Right: User actions/profile */}
           <div className="flex items-center flex-shrink-0 min-w-[120px] md:min-w-[160px] lg:min-w-[180px] justify-end">
-            {isSignedIn ? (
-              <>
+          {isSignedIn ? (
+            <>
                 <Link href="/dashboard" className="hidden sm:block pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>
                   <button className="px-3 md:px-4 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition text-xs md:text-sm" disabled={showModal}>Dashboard</button>
-                </Link>
-                {/* Custom User Menu */}
-                <div className="relative" ref={userMenuRef}>
-                  <button
+              </Link>
+              {/* Custom User Menu */}
+              <div className="relative" ref={userMenuRef}>
+                <button
                     onClick={() => !showModal && setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-1 md:space-x-2 p-1 md:p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex items-center space-x-1 md:space-x-2 p-1 md:p-2 rounded-lg hover:bg-gray-100 transition-colors"
                     disabled={showModal}
                     aria-disabled={showModal}
                     tabIndex={showModal ? -1 : 0}
                     style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
-                  >
-                    <Avatar className="h-6 w-6 md:h-8 md:w-8">
-                      <AvatarImage src={user?.imageUrl} alt={user?.fullName || 'User'} />
-                      <AvatarFallback className="text-xs md:text-sm">
-                        {user?.firstName?.charAt(0) || 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <ChevronDown className={`h-3 w-3 md:h-4 md:w-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
-                  </button>
+                >
+                  <Avatar className="h-6 w-6 md:h-8 md:w-8">
+                    <AvatarImage src={user?.imageUrl} alt={user?.fullName || 'User'} />
+                    <AvatarFallback className="text-xs md:text-sm">
+                      {user?.firstName?.charAt(0) || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <ChevronDown className={`h-3 w-3 md:h-4 md:w-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
                   {isUserMenuOpen && !showModal && (
-                    <div className="absolute right-0 mt-2 w-48 md:w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                      <div className="px-3 md:px-4 py-2 md:py-3 border-b border-gray-100">
-                        <p className="text-xs md:text-sm font-medium text-gray-900">{user?.fullName}</p>
-                        <p className="text-xs text-gray-500">{user?.primaryEmailAddress?.emailAddress}</p>
-                      </div>
-                      <div className="py-1">
-                        <Link
-                          href="/profile"
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                  <div className="absolute right-0 mt-2 w-48 md:w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <div className="px-3 md:px-4 py-2 md:py-3 border-b border-gray-100">
+                      <p className="text-xs md:text-sm font-medium text-gray-900">{user?.fullName}</p>
+                      <p className="text-xs text-gray-500">{user?.primaryEmailAddress?.emailAddress}</p>
+                    </div>
+                    <div className="py-1">
+                      <Link
+                        href="/profile"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                           tabIndex={showModal ? -1 : 0}
                           aria-disabled={showModal}
                           style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
-                        >
-                          <User className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
-                          View Profile
-                        </Link>
+                      >
+                        <User className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
+                        View Profile
+                      </Link>
                         <Link
                           href="/messages"
                           onClick={() => setIsUserMenuOpen(false)}
@@ -164,40 +164,40 @@ export function Header() {
                             </Badge>
                           )}
                         </Link>
-                        <Link
-                          href="/dashboard"
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                           tabIndex={showModal ? -1 : 0}
                           aria-disabled={showModal}
                           style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
-                        >
-                          <Settings className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
-                          Dashboard
-                        </Link>
-                      </div>
-                      <div className="border-t border-gray-100 pt-1">
-                        <SignOutButton>
-                          <button className="flex items-center w-full px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors" disabled={showModal}>
-                            <LogOut className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
-                            Sign Out
-                          </button>
-                        </SignOutButton>
-                      </div>
+                      >
+                        <Settings className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
+                        Dashboard
+                      </Link>
                     </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <>
-                <SignInButton mode="modal">
+                    <div className="border-t border-gray-100 pt-1">
+                      <SignOutButton>
+                          <button className="flex items-center w-full px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors" disabled={showModal}>
+                          <LogOut className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
+                          Sign Out
+                        </button>
+                      </SignOutButton>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <SignInButton mode="modal">
                   <button className="px-2 md:px-4 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition text-xs md:text-sm" disabled={showModal}>Sign In</button>
-                </SignInButton>
-                <SignUpButton mode="modal">
+              </SignInButton>
+              <SignUpButton mode="modal">
                   <button className="px-2 md:px-4 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-900 transition text-xs md:text-sm" disabled={showModal}>Sign Up</button>
-                </SignUpButton>
-              </>
-            )}
+              </SignUpButton>
+            </>
+          )}
           </div>
         </div>
       </div>
@@ -236,13 +236,13 @@ export function Header() {
             </Link>
             {isSignedIn && (
               <>
-                <Link 
-                  href="/dashboard" 
-                  className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
+              <Link 
+                href="/dashboard" 
+                className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
                 <Link 
                   href="/messages" 
                   className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition relative"

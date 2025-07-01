@@ -9,23 +9,23 @@ export default async function OnboardingPage() {
   let userId: string | null = null
   let profile: any = null
   let error: string | null = null
-
+  
   try {
     const authResult = await auth()
     userId = authResult.userId
-    if (!userId) {
-      redirect("/sign-in")
-    }
-    // Check if user already has a profile
-    const supabase = createServerClient()
+  if (!userId) {
+    redirect("/sign-in")
+  }
+  // Check if user already has a profile
+  const supabase = createServerClient()
     const { data, error: supabaseError } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("user_id", userId)
-      .single()
+    .from("profiles")
+    .select("id")
+    .eq("user_id", userId)
+    .single()
     if (!supabaseError && data) {
-      redirect("/dashboard")
-    }
+    redirect("/dashboard")
+  }
     if (supabaseError && supabaseError.code !== "PGRST116") { // PGRST116 = No rows found
       error = supabaseError.message
     }

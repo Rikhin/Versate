@@ -286,45 +286,45 @@ export default function ExplorePage() {
                 {students.map((student: Profile) => {
                   const bioPreview = student.bio.length > 120 ? student.bio.slice(0, 120) + '...' : student.bio;
                   return (
-                    <Card key={student.id} className="hover:shadow-lg transition-shadow">
-                      <CardHeader>
-                        <div className="flex items-center space-x-4">
-                          <Avatar className="h-12 w-12">
+                <Card key={student.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-center space-x-4">
+                      <Avatar className="h-12 w-12">
                               <AvatarImage src={student.avatar_url || "/placeholder.svg"} alt={student.first_name} />
                               <AvatarFallback>{student.first_name[0]}</AvatarFallback>
-                          </Avatar>
-                          <div>
+                      </Avatar>
+                      <div>
                               <CardTitle className="text-lg">{student.first_name} {student.last_name}</CardTitle>
                               <CardDescription>{student.grade_level}</CardDescription>
-                            <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-                              <MapPin className="h-3 w-3" />
+                        <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
+                          <MapPin className="h-3 w-3" />
                               <span>{student.location || "Location not specified"}</span>
-                            </div>
-                          </div>
                         </div>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div>
-                          <p className="text-sm text-slate-600 mb-2">Skills:</p>
-                          <div className="flex flex-wrap gap-1">
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <p className="text-sm text-slate-600 mb-2">Skills:</p>
+                      <div className="flex flex-wrap gap-1">
                               {student.skills.slice(0, 3).map((skill: string) => (
-                              <Badge key={skill} variant="secondary" className="text-xs">
-                                {skill}
-                              </Badge>
-                            ))}
-                            {student.skills.length > 3 && (
-                              <Badge variant="secondary" className="text-xs">
-                                +{student.skills.length - 3} more
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                        <div>
+                          <Badge key={skill} variant="secondary" className="text-xs">
+                            {skill}
+                          </Badge>
+                        ))}
+                        {student.skills.length > 3 && (
+                          <Badge variant="secondary" className="text-xs">
+                            +{student.skills.length - 3} more
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <div>
                             <p className="text-sm text-slate-600 mb-2">Looking for:</p>
                             <Badge variant="outline" className="text-xs">
                               {student.roles.join(", ")}
-                              </Badge>
-                          </div>
+                          </Badge>
+                      </div>
                           <div>
                             <p className="text-sm text-slate-600 mb-2">Bio:</p>
                             <p className="text-sm text-slate-600">
@@ -333,20 +333,20 @@ export default function ExplorePage() {
                                 <Link href={`/profiles/${student.user_id}`} className="text-blue-600 hover:underline ml-1">View Profile</Link>
                               )}
                             </p>
-                        </div>
+                    </div>
                         <div className="flex gap-2 mt-4">
                           <MessageButton recipientId={student.user_id} recipientName={`${student.first_name} ${student.last_name}`} />
                           <Link href={`/profiles/${student.user_id}`}>
                             <Button variant="outline" size="sm" className="flex items-center">
                               View Profile
-                            </Button>
+                    </Button>
                           </Link>
                         </div>
-                      </CardContent>
-                    </Card>
+                  </CardContent>
+                </Card>
                   );
                 })}
-              </div>
+            </div>
             )}
           </TabsContent>
         </Tabs>

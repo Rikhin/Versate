@@ -27,9 +27,9 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className + " bg-white text-black"}>
           <OnboardingScrollEnforcer>
-            <BackgroundDesign />
-            <Header />
-            <main className="relative z-10 min-h-screen">{children}</main>
+          <BackgroundDesign />
+          <Header />
+          <main className="relative z-10 min-h-screen">{children}</main>
             <Toaster />
             <Analytics />
           </OnboardingScrollEnforcer>
