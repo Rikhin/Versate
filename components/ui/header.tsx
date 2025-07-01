@@ -6,11 +6,14 @@ import { Trophy, User, Settings, LogOut, ChevronDown, Menu, X, MessageSquare } f
 import { useState, useRef, useEffect } from "react";
 import { Button } from "./button";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { Badge } from "./badge";
+import { createClient } from "@/lib/supabase";
 
 export function Header() {
   const { isSignedIn, user } = useUser();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,6 +28,43 @@ export function Header() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Fetch unread message count
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchUnreadCount = async () => {
+      try {
+        const response = await fetch("/api/messages/conversations");
+        if (response.ok) {
+          const conversations = await response.json();
+          const totalUnread = conversations.reduce((sum: number, conv: any) => sum + conv.unreadCount, 0);
+          setUnreadCount(totalUnread);
+        }
+      } catch (error) {
+        console.error("Error fetching unread count:", error);
+      }
+    };
+
+    fetchUnreadCount();
+
+    // Set up real-time subscription for unread count
+    const supabase = createClient();
+    const channel = supabase.channel('unread-count-realtime')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'messages',
+        filter: `recipient_id=eq.${user.id}`
+      }, () => {
+        fetchUnreadCount();
+      })
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [user]);
 
   return (
     <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur border-b border-gray-200">
@@ -57,7 +97,17 @@ export function Header() {
           <Link href="/#competitions" className="hover:opacity-60 transition">Competitions</Link>
           <Link href="/dashboard/plans" className="hover:opacity-60 transition">Plans</Link>
           {isSignedIn && (
-            <Link href="/messages" className="hover:opacity-60 transition">Messages</Link>
+            <Link href="/messages" className="hover:opacity-60 transition relative">
+              Messages
+              {unreadCount > 0 && (
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                >
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </Badge>
+              )}
+            </Link>
           )}
         </nav>
 
@@ -103,10 +153,18 @@ export function Header() {
                       <Link
                         href="/messages"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                        className="flex items-center px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors relative"
                       >
                         <MessageSquare className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
                         Messages
+                        {unreadCount > 0 && (
+                          <Badge 
+                            variant="destructive" 
+                            className="ml-auto h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs"
+                          >
+                            {unreadCount > 99 ? '99+' : unreadCount}
+                          </Badge>
+                        )}
                       </Link>
                       
                       <Link
@@ -187,10 +245,18 @@ export function Header() {
                 </Link>
                 <Link 
                   href="/messages" 
-                  className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition"
+                  className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition relative"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Messages
+                  {unreadCount > 0 && (
+                    <Badge 
+                      variant="destructive" 
+                      className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                    >
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </Badge>
+                  )}
                 </Link>
               </>
             )}

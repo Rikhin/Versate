@@ -74,16 +74,35 @@ CREATE TABLE IF NOT EXISTS team_members (
   UNIQUE(team_id, user_id)
 );
 
--- Create messages table for user-to-user messaging
+-- Update: Use TEXT for sender_id and recipient_id to match Clerk user IDs
+DROP TABLE IF EXISTS messages CASCADE;
+
 CREATE TABLE IF NOT EXISTS messages (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  sender_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  recipient_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  sender_id TEXT NOT NULL,
+  recipient_id TEXT NOT NULL,
   content TEXT NOT NULL,
   is_read BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON messages(sender_id);
+CREATE INDEX IF NOT EXISTS idx_messages_recipient_id ON messages(recipient_id);
+CREATE INDEX IF NOT EXISTS idx_messages_conversation ON messages(sender_id, recipient_id, created_at);
+
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view messages they sent or received" ON messages
+  FOR SELECT USING (
+    auth.uid() = sender_id OR auth.uid() = recipient_id
+  );
+
+CREATE POLICY "Users can insert messages" ON messages
+  FOR INSERT WITH CHECK (auth.uid() = sender_id);
+
+CREATE POLICY "Users can update their own messages" ON messages
+  FOR UPDATE USING (auth.uid() = sender_id);
 
 -- Create notifications table
 CREATE TABLE IF NOT EXISTS notifications (
@@ -137,16 +156,12 @@ CREATE INDEX IF NOT EXISTS idx_teams_owner_id ON teams(owner_id);
 CREATE INDEX IF NOT EXISTS idx_teams_category ON teams(category);
 CREATE INDEX IF NOT EXISTS idx_team_members_team_id ON team_members(team_id);
 CREATE INDEX IF NOT EXISTS idx_team_members_user_id ON team_members(user_id);
-CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON messages(sender_id);
-CREATE INDEX IF NOT EXISTS idx_messages_recipient_id ON messages(recipient_id);
-CREATE INDEX IF NOT EXISTS idx_messages_conversation ON messages(sender_id, recipient_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON notifications(user_id);
 
 -- Enable Row Level Security
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE teams ENABLE ROW LEVEL SECURITY;
 ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
-ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for profiles
@@ -177,18 +192,6 @@ CREATE POLICY "Team members can view team membership" ON team_members FOR SELECT
 );
 CREATE POLICY "Users can join teams" ON team_members FOR INSERT WITH CHECK (user_id = current_setting('app.current_user_id'));
 CREATE POLICY "Users can update own membership" ON team_members FOR UPDATE USING (user_id = current_setting('app.current_user_id'));
-
--- RLS Policies for messages
-CREATE POLICY "Users can view messages they sent or received" ON messages
-  FOR SELECT USING (
-    auth.uid() = sender_id OR auth.uid() = recipient_id
-  );
-
-CREATE POLICY "Users can insert messages" ON messages
-  FOR INSERT WITH CHECK (auth.uid() = sender_id);
-
-CREATE POLICY "Users can update their own messages" ON messages
-  FOR UPDATE USING (auth.uid() = sender_id);
 
 -- RLS Policies for notifications
 CREATE POLICY "Users can view own notifications" ON notifications FOR SELECT USING (user_id = current_setting('app.current_user_id'));

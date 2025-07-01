@@ -47,40 +47,76 @@ export default function MessagesPage() {
   }, [user])
 
   const markMessagesAsRead = useCallback(async (partnerId: string) => {
-    await fetch("/api/messages/read", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ partnerId }),
-    })
-    fetchConversations()
-  }, [])
+    if (!user) return
+    
+    try {
+      const response = await fetch("/api/messages/read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ partnerId }),
+      })
+      
+      if (response.ok) {
+        // Update conversations to reflect read status
+        setConversations(prev => prev.map(conv => 
+          conv.partnerId === partnerId 
+            ? { ...conv, unreadCount: 0 }
+            : conv
+        ))
+      }
+    } catch (error) {
+      console.error("Error marking messages as read:", error)
+    }
+  }, [user])
 
   useEffect(() => {
     if (selectedConversation) {
       fetchMessages(selectedConversation.partnerId)
       markMessagesAsRead(selectedConversation.partnerId)
     }
-  }, [selectedConversation])
+  }, [selectedConversation, markMessagesAsRead])
 
   useEffect(() => {
-    const supabase = createClient()
     if (!user) return
+
+    const supabase = createClient()
+    
+    // Subscribe to all message changes for the current user
     const channel = supabase.channel('messages-realtime')
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
         table: 'messages',
-        filter: `recipient_id=eq.${user.id}`
+        filter: `sender_id=eq.${user.id} OR recipient_id=eq.${user.id}`
       }, (payload) => {
-        if (selectedConversation && payload.new && payload.new.sender_id === selectedConversation.partnerId) {
-          fetchMessages(selectedConversation.partnerId)
-          markMessagesAsRead(selectedConversation.partnerId)
-        }
+        console.log('Message change detected:', payload)
+        
+        // Refresh conversations list
         fetchConversations()
+        
+        // If we're in a conversation with the sender/recipient, refresh messages
+        if (selectedConversation) {
+          const messageUserId = (payload.new as any)?.sender_id || (payload.old as any)?.sender_id
+          const messageRecipientId = (payload.new as any)?.recipient_id || (payload.old as any)?.recipient_id
+          
+          if (messageUserId === selectedConversation.partnerId || 
+              messageRecipientId === selectedConversation.partnerId) {
+            fetchMessages(selectedConversation.partnerId)
+            // Mark as read if it's a new message to us
+            if (payload.eventType === 'INSERT' && 
+                (payload.new as any)?.recipient_id === user.id && 
+                (payload.new as any)?.sender_id === selectedConversation.partnerId) {
+              markMessagesAsRead(selectedConversation.partnerId)
+            }
+          }
+        }
       })
       .subscribe()
-    return () => { channel.unsubscribe() }
-  }, [user, selectedConversation])
+
+    return () => {
+      channel.unsubscribe()
+    }
+  }, [user, selectedConversation, markMessagesAsRead])
 
   const fetchConversations = async () => {
     if (!user) return

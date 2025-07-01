@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Send, X } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
+import { createClient } from "@/lib/supabase"
 
 interface MessageDialogProps {
   isOpen: boolean
@@ -21,7 +22,6 @@ interface Message {
   recipient_id: string
   content: string
   created_at: string
-  is_read: boolean
 }
 
 export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: MessageDialogProps) {
@@ -46,6 +46,28 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Set up real-time subscription
+  useEffect(() => {
+    if (!isOpen || !user) return
+
+    const supabase = createClient()
+    const channel = supabase.channel('dialog-messages-realtime')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'messages',
+        filter: `(sender_id=eq.${user.id} AND recipient_id=eq.${recipientId}) OR (sender_id=eq.${recipientId} AND recipient_id=eq.${user.id})`
+      }, (payload) => {
+        console.log('Dialog message change detected:', payload)
+        fetchMessages()
+      })
+      .subscribe()
+
+    return () => {
+      channel.unsubscribe()
+    }
+  }, [isOpen, user, recipientId])
 
   const fetchMessages = async () => {
     if (!user) return
