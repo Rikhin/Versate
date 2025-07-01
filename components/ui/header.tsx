@@ -68,51 +68,55 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-6 flex items-center justify-between gap-4 md:gap-8">
-        {/* Logo and subtitle */}
-        <Link href="/" className="flex items-center gap-2 md:gap-3 group">
-          <Trophy className="h-6 w-6 md:h-8 md:w-8 text-black group-hover:scale-110 transition-transform" />
-          <div>
-            <span className="text-lg md:text-2xl font-black text-black leading-tight">Versa</span>
-            <p className="text-xs text-gray-500 -mt-1 font-medium hidden sm:block">built by Rikhin Kavuru</p>
-          </div>
-        </Link>
-        
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-        >
-          {isMobileMenuOpen ? (
-            <X className="h-5 w-5 text-black" />
-          ) : (
-            <Menu className="h-5 w-5 text-black" />
-          )}
-        </button>
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-6 flex items-center justify-between gap-4 md:gap-8 w-full">
+        {/* Desktop: Logo left, nav center, user actions right */}
+        <div className="flex flex-1 items-center gap-4 md:gap-8">
+          {/* Logo and subtitle */}
+          <Link href="/" className="flex items-center gap-2 md:gap-3 group flex-shrink-0">
+            <Trophy className="h-6 w-6 md:h-8 md:w-8 text-black group-hover:scale-110 transition-transform" />
+            <div>
+              <span className="text-lg md:text-2xl font-black text-black leading-tight">Versa</span>
+              <p className="text-xs text-gray-500 -mt-1 font-medium hidden sm:block">built by Rikhin Kavuru</p>
+            </div>
+          </Link>
+          {/* Desktop Nav links (centered) */}
+          <nav className="hidden md:flex flex-1 items-center justify-center gap-8 md:gap-12 text-base md:text-lg font-bold uppercase tracking-widest">
+            <Link href="/#works" className="hover:opacity-60 transition">Features</Link>
+            <Link href="/#about" className="hover:opacity-60 transition">Projects</Link>
+            <Link href="/#competitions" className="hover:opacity-60 transition">Competitions</Link>
+            <Link href="/dashboard/plans" className="hover:opacity-60 transition">Plans</Link>
+            {isSignedIn && (
+              <Link href="/messages" className="hover:opacity-60 transition relative">
+                Messages
+                {unreadCount > 0 && (
+                  <Badge 
+                    variant="destructive" 
+                    className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                  >
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </Badge>
+                )}
+              </Link>
+            )}
+          </nav>
+        </div>
 
-        {/* Desktop Nav links */}
-        <nav className="hidden md:flex items-center gap-8 md:gap-12 text-base md:text-lg font-bold uppercase tracking-widest">
-          <Link href="/#works" className="hover:opacity-60 transition">Features</Link>
-          <Link href="/#about" className="hover:opacity-60 transition">Projects</Link>
-          <Link href="/#competitions" className="hover:opacity-60 transition">Competitions</Link>
-          <Link href="/dashboard/plans" className="hover:opacity-60 transition">Plans</Link>
-          {isSignedIn && (
-            <Link href="/messages" className="hover:opacity-60 transition relative">
-              Messages
-              {unreadCount > 0 && (
-                <Badge 
-                  variant="destructive" 
-                  className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                >
-                  {unreadCount > 99 ? '99+' : unreadCount}
-                </Badge>
-              )}
-            </Link>
-          )}
-        </nav>
+        {/* Mobile Menu Button (right) */}
+        <div className="flex items-center gap-2 md:hidden flex-shrink-0">
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5 text-black" />
+            ) : (
+              <Menu className="h-5 w-5 text-black" />
+            )}
+          </button>
+        </div>
 
         {/* Auth buttons or user */}
-        <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
           {isSignedIn ? (
             <>
               <Link href="/dashboard" className="hidden sm:block">
