@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { MessageSquare, Search, Send } from "lucide-react"
+import { MessageSquare, Search, Send, Bot } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
 import { Textarea } from "@/components/ui/textarea"
 import { useRealtimeMessages } from "@/hooks/use-realtime-messages"
 import { useRequireProfile } from "@/hooks/use-require-profile"
+import AIChatbot from "@/components/ai-chatbot/AIChatbot"
 
 interface Conversation {
   partnerId: string
@@ -34,6 +35,7 @@ export default function MessagesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
+  const [isAIChat, setIsAIChat] = useState(false)
   const [messages, setMessages] = useState<any[]>([])
   const [newMessage, setNewMessage] = useState("")
   const [isLoadingMessages, setIsLoadingMessages] = useState(false)
@@ -157,6 +159,12 @@ export default function MessagesPage() {
 
   const openConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation)
+    setIsAIChat(false)
+  }
+
+  const openAIChat = () => {
+    setSelectedConversation(null)
+    setIsAIChat(true)
   }
 
   const formatTime = (dateString: string) => {
@@ -254,6 +262,28 @@ export default function MessagesPage() {
                 </div>
               </CardHeader>
               <CardContent className="p-0">
+                {/* AI Chat Option */}
+                <div
+                  className={`p-4 hover:bg-gray-50 cursor-pointer border-b ${isAIChat ? 'bg-blue-50 border-blue-200' : ''}`}
+                  onClick={openAIChat}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Avatar className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600">
+                      <Bot className="h-5 w-5 text-white" />
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-gray-900">AI Assistant</p>
+                        <div className="flex items-center space-x-1">
+                          <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+                          <span className="text-xs text-gray-500">Online</span>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-500">Always here to help</p>
+                    </div>
+                  </div>
+                </div>
+
                 {isLoading ? (
                   <div className="p-4 text-center text-gray-500">Loading conversations...</div>
                 ) : filteredConversations.length === 0 ? (
@@ -265,7 +295,7 @@ export default function MessagesPage() {
                     {filteredConversations.map((conversation) => (
                       <div
                         key={conversation.partnerId}
-                        className="p-4 hover:bg-gray-50 cursor-pointer border-b last:border-b-0"
+                        className={`p-4 hover:bg-gray-50 cursor-pointer border-b last:border-b-0 ${selectedConversation?.partnerId === conversation.partnerId ? 'bg-blue-50 border-blue-200' : ''}`}
                         onClick={() => openConversation(conversation)}
                       >
                         <div className="flex items-center space-x-3">
@@ -308,82 +338,88 @@ export default function MessagesPage() {
           {/* Message Area */}
           <div className="lg:col-span-2">
             <Card className="h-[600px] flex flex-col">
-              <CardHeader className="flex-shrink-0">
-                <CardTitle>
-                  {selectedConversation ? (
-                    `${selectedConversation.partner.first_name} ${selectedConversation.partner.last_name}`
-                  ) : (
-                    "Select a conversation to start messaging"
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col p-0">
-                {!selectedConversation ? (
-                  <div className="text-center text-gray-500 flex-1 flex flex-col items-center justify-center">
-                    <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p>Choose a conversation from the list to start messaging</p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="overflow-y-auto space-y-4 p-4 border-b bg-white h-[500px]">
-                      {isLoadingMessages ? (
-                        <div className="text-center text-gray-500">Loading messages...</div>
-                      ) : messages.length === 0 ? (
-                        <div className="text-center text-gray-500">No messages yet. Start the conversation!</div>
+              {isAIChat ? (
+                <AIChatbot />
+              ) : (
+                <>
+                  <CardHeader className="flex-shrink-0">
+                    <CardTitle>
+                      {selectedConversation ? (
+                        `${selectedConversation.partner.first_name} ${selectedConversation.partner.last_name}`
                       ) : (
-                        messages.map((message) => {
-                          const isOwnMessage = message.sender_id === user?.id
-                          return (
-                            <div
-                              key={message.id}
-                              className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
-                            >
-                              <div
-                                className={`inline-block max-w-[60%] min-w-[64px] px-4 py-2 rounded-lg align-bottom break-words whitespace-pre-wrap shadow-sm ${
-                                  isOwnMessage
-                                    ? "bg-blue-600 text-white self-end"
-                                    : "bg-gray-100 text-gray-900 self-start"
-                                }`}
-                              >
-                                <p className="text-sm break-words whitespace-pre-wrap overflow-hidden">
-                                  {message.content}
-                                </p>
-                                <p className={`text-xs mt-1 ${
-                                  isOwnMessage ? "text-blue-100" : "text-gray-500"
-                                }`}>
-                                  {formatTime(message.created_at)}
-                                </p>
-                              </div>
-                            </div>
-                          )
-                        })
+                        "Select a conversation to start messaging"
                       )}
-                      <div ref={messagesEndRef} />
-                    </div>
-                    <div className="flex-shrink-0 flex space-x-2 p-4 bg-white">
-                      <Textarea
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Type your message..."
-                        className="flex-1 min-h-[60px] max-h-[120px] resize-none"
-                        disabled={isSending}
-                      />
-                      <Button
-                        onClick={sendMessage}
-                        disabled={!newMessage.trim() || isSending}
-                        size="sm"
-                        className="self-end"
-                      >
-                        <Send className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    {sendError && (
-                      <div className="text-red-500 text-sm px-4 pb-2">{sendError}</div>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex flex-col p-0">
+                    {!selectedConversation ? (
+                      <div className="text-center text-gray-500 flex-1 flex flex-col items-center justify-center">
+                        <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                        <p>Choose a conversation from the list to start messaging</p>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="overflow-y-auto space-y-4 p-4 border-b bg-white h-[500px]">
+                          {isLoadingMessages ? (
+                            <div className="text-center text-gray-500">Loading messages...</div>
+                          ) : messages.length === 0 ? (
+                            <div className="text-center text-gray-500">No messages yet. Start the conversation!</div>
+                          ) : (
+                            messages.map((message) => {
+                              const isOwnMessage = message.sender_id === user?.id
+                              return (
+                                <div
+                                  key={message.id}
+                                  className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
+                                >
+                                  <div
+                                    className={`inline-block max-w-[60%] min-w-[64px] px-4 py-2 rounded-lg align-bottom break-words whitespace-pre-wrap shadow-sm ${
+                                      isOwnMessage
+                                        ? "bg-blue-600 text-white self-end"
+                                        : "bg-gray-100 text-gray-900 self-start"
+                                    }`}
+                                  >
+                                    <p className="text-sm break-words whitespace-pre-wrap overflow-hidden">
+                                      {message.content}
+                                    </p>
+                                    <p className={`text-xs mt-1 ${
+                                      isOwnMessage ? "text-blue-100" : "text-gray-500"
+                                    }`}>
+                                      {formatTime(message.created_at)}
+                                    </p>
+                                  </div>
+                                </div>
+                              )
+                            })
+                          )}
+                          <div ref={messagesEndRef} />
+                        </div>
+                        <div className="flex-shrink-0 flex space-x-2 p-4 bg-white">
+                          <Textarea
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                            placeholder="Type your message..."
+                            className="flex-1 min-h-[60px] max-h-[120px] resize-none"
+                            disabled={isSending}
+                          />
+                          <Button
+                            onClick={sendMessage}
+                            disabled={!newMessage.trim() || isSending}
+                            size="sm"
+                            className="self-end"
+                          >
+                            <Send className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        {sendError && (
+                          <div className="text-red-500 text-sm px-4 pb-2">{sendError}</div>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </CardContent>
+                  </CardContent>
+                </>
+              )}
             </Card>
           </div>
         </div>
