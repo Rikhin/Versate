@@ -3,6 +3,7 @@ import React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Rocket } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const versaGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600";
 const versaTextGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent";
@@ -61,41 +62,20 @@ const mockUserSubscription = {
 
 export default function PlansPage() {
   const [selected, setSelected] = useState(0);
-  const [loading, setLoading] = useState<string | null>(null);
-  const [userSub, setUserSub] = useState(mockUserSubscription);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const router = useRouter();
 
-  const handleSubscribe = async (priceId: string | null) => {
-    if (!priceId) return; // Free plan
-    setLoading(priceId);
-    const res = await fetch("/api/stripe/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ priceId }),
-    });
-    const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
+  function handleContinue() {
+    const plan = plans[selected];
+    if (plan.price === 0) {
+      setShowSuccess(true);
+      // Optionally, handle free plan signup logic here
     } else {
-      alert("Error creating checkout session");
+      // Redirect to Stripe checkout (placeholder)
+      // Replace with your actual Stripe integration logic
+      window.location.href = `/api/stripe/checkout?plan=${encodeURIComponent(plan.name)}`;
     }
-    setLoading(null);
-  };
-
-  const handleManageBilling = async () => {
-    setLoading("billing");
-    const res = await fetch("/api/stripe/portal", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ customerId: userSub.stripeCustomerId }),
-    });
-    const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      alert("Error opening billing portal");
-    }
-    setLoading(null);
-  };
+  }
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-start py-12 px-4 md:px-0">
@@ -107,7 +87,9 @@ export default function PlansPage() {
         </span>
       </div>
       {/* Title */}
-      <h1 className="text-4xl md:text-6xl font-black text-black text-center mb-4">Accelerate Search. <span className={versaTextGradient}>Boost Success.</span></h1>
+      <h1 className="text-3xl md:text-5xl font-extrabold text-black text-center mb-4">
+        <span className={versaTextGradient}>Accelerate</span> Search. Boost <span className={versaTextGradient}>Success.</span>
+      </h1>
       {/* Subtitle */}
       <p className="text-lg md:text-xl text-gray-600 text-center mb-10 max-w-2xl">
         Versa empowers students and teams to discover, connect, and win. Enjoy smart matching, curated opportunities, and a supportive community—built to help you reach your goals faster.
@@ -121,13 +103,13 @@ export default function PlansPage() {
           >
             {/* Most Popular Badge */}
             {i === 1 && (
-              <span className={`absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-bold px-4 py-1 rounded-full shadow-md tracking-wide text-white ${versaGradient}`}>MOST POPULAR</span>
+              <span className={`absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1 rounded-full shadow-md tracking-wide text-white ${versaGradient}`}>MOST POPULAR</span>
             )}
-            <h2 className="text-xl font-bold text-black mb-2">{plan.name}</h2>
+            <h2 className="text-lg font-semibold text-black mb-2">{plan.name}</h2>
             <p className="text-gray-500 text-sm mb-4 text-center">{plan.description}</p>
             <div className="mb-2 flex items-center gap-2">
               {plan.oldPrice && <span className="text-gray-400 line-through text-lg">${plan.oldPrice}</span>}
-              <span className="text-3xl font-black text-black">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
+              <span className="text-2xl font-extrabold text-black">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
               {plan.price !== 0 && <span className="text-xs text-gray-400 font-semibold">USD</span>}
             </div>
             <ul className="text-left text-gray-700 text-sm space-y-2 mt-4 mb-2 w-full max-w-xs">
@@ -144,6 +126,20 @@ export default function PlansPage() {
           </div>
         ))}
       </div>
+      {/* Continue Button */}
+      <div className="w-full flex justify-center mt-8">
+        <button
+          className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-150 ${versaGradient} text-white shadow-lg disabled:opacity-60`}
+          onClick={handleContinue}
+          disabled={selected === null}
+        >
+          Continue
+        </button>
+      </div>
+      {/* Success Message for Free Plan */}
+      {showSuccess && (
+        <div className="mt-6 text-green-600 font-semibold text-center">You have successfully selected the free Starter plan!</div>
+      )}
     </div>
   );
 } 
