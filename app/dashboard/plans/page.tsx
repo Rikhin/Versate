@@ -2,7 +2,7 @@
 import React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Rocket } from "lucide-react";
+import { CheckCircle, Rocket, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const versaGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600";
@@ -103,7 +103,7 @@ export default function PlansPage() {
           >
             {/* Most Popular Badge */}
             {i === 1 && (
-              <span className={`absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1 rounded-full shadow-md tracking-wide text-white ${versaGradient}`}>MOST POPULAR</span>
+              <span className="absolute top-0 right-0 mt-4 mr-4 px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-semibold shadow">Most Popular</span>
             )}
             <h2 className="text-lg font-semibold text-black mb-2">{plan.name}</h2>
             <p className="text-gray-500 text-sm mb-4 text-center">{plan.description}</p>
@@ -128,13 +128,13 @@ export default function PlansPage() {
       </div>
       {/* Continue Button */}
       <div className="w-full flex justify-center mt-8">
-        <button
-          className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-150 ${versaGradient} text-white shadow-lg disabled:opacity-60`}
+        <Button
+          className="mt-8 w-full py-3 rounded-lg font-semibold text-base bg-black text-white hover:bg-gray-900 flex items-center justify-center gap-2"
           onClick={handleContinue}
-          disabled={selected === null}
         >
           Continue
-        </button>
+          <ArrowRight className="h-5 w-5 text-blue-600" />
+        </Button>
       </div>
       {/* Success Message for Free Plan */}
       {showSuccess && (
