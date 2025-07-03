@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Trophy, Users, MessageSquare, Target, Star, ArrowRight, Code, Award, Zap } from "lucide-react"
+import { Trophy, Users, MessageSquare, Target, Star, ArrowRight, Code, Award, Zap, Rocket } from "lucide-react"
 import Link from "next/link"
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
@@ -14,6 +14,53 @@ import { Inter } from 'next/font/google'
 import React, { useState, useEffect } from 'react'
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '700'] })
+
+const versaGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600";
+const versaTextGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent";
+const plans = [
+  {
+    name: "Starter - Free",
+    price: 0,
+    oldPrice: null,
+    description: "Get started with Versa's core features and discover your first opportunities.",
+    features: [
+      "\u2714\ufe0f Unlimited search of public competitions and programs",
+      "\u2714\ufe0f Smart filters and recommendations",
+      "\u2714\ufe0f Access to basic team matching",
+      "\u2714\ufe0f Community support forum",
+      "\u2714\ufe0f Save favorite opportunities",
+    ],
+    cta: "Get Started",
+  },
+  {
+    name: "Plus - Lifetime Access",
+    price: 49.99,
+    oldPrice: 99.99,
+    description: "Unlock advanced analytics, premium matching, and exclusive resources.",
+    features: [
+      "\u2714\ufe0f All Starter features",
+      "\u2714\ufe0f Advanced team matching & AI recommendations",
+      "\u2714\ufe0f Access to premium competitions & programs",
+      "\u2714\ufe0f Early access to new features",
+      "\u2714\ufe0f Priority support",
+    ],
+    cta: "Upgrade to Plus",
+  },
+  {
+    name: "Pro - Lifetime Access",
+    price: 99.99,
+    oldPrice: 199.99,
+    description: "For power users: full access to Versa's ecosystem, integrations, and custom tools.",
+    features: [
+      "\u2714\ufe0f All Plus features",
+      "\u2714\ufe0f Custom integrations (Slack, Notion, etc.)",
+      "\u2714\ufe0f API access & automation tools",
+      "\u2714\ufe0f Dedicated onboarding & support",
+      "\u2714\ufe0f Invite-only community events",
+    ],
+    cta: "Go Pro",
+  },
+];
 
 export default function LandingPage() {
   const { isSignedIn } = useUser()
@@ -129,7 +176,7 @@ export default function LandingPage() {
         <div className="w-full max-w-[1400px] mx-auto px-6 md:px-16 py-16 md:py-24 my-10 rounded-[32px] border border-white/20 shadow-[0_4px_20px_0_rgba(0,0,0,0.05),inset_0_1px_8px_rgba(255,255,255,0.15)] backdrop-blur-sm bg-white/5 flex flex-col gap-20 relative">
           {/* Why Versa Section - reduce top margin even more */}
           <div className="px-8 md:px-20 py-6 md:py-8 flex flex-col items-center">
-            <h2 className={`text-3xl sm:text-4xl md:text-5xl font-semibold text-black text-center mb-8 pt-8 ${inter.className}`}>Why <span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent">Versa?</span></h2>
+            <h2 className={`text-3xl sm:text-4xl md:text-5xl font-semibold text-black text-center mb-8 pt-8 ${inter.className}`}>Why <span className={versaTextGradient}>Versa?</span></h2>
             <p className={`text-lg md:text-xl text-gray-700 text-center mb-12 max-w-2xl ${inter.className}`}>Versa provides info and access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.</p>
             <div className="flex flex-wrap justify-center gap-6 w-full">
               <div className={`rounded-full border-2 border-indigo-100 bg-white/80 shadow px-6 py-3 text-base font-semibold text-indigo-700 whitespace-nowrap ${inter.className}`}>Researchers</div>
@@ -143,7 +190,7 @@ export default function LandingPage() {
 
           {/* Everything You Need to Succeed (Features) */}
           <div className="px-8 md:px-20 py-12 md:py-16 flex flex-col items-center">
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>Everything You Need to <span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent">Succeed</span></h2>
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>Everything You Need to <span className={versaTextGradient}>Succeed</span></h2>
             <p className={`text-lg md:text-xl text-gray-700 text-center mb-12 max-w-3xl ${inter.className}`}>Access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.</p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 w-full max-w-5xl">
@@ -182,7 +229,7 @@ export default function LandingPage() {
           {/* How It Works */}
           <div className="px-8 md:px-20 pt-6 md:pt-8 pb-12 md:pb-16 flex flex-col items-center">
             <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-8 ${inter.className}`}>
-              <span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent">How</span> It Works
+              <span className={versaTextGradient}>How</span> It Works
             </h2>
             <div className="flex flex-col md:flex-row gap-8 md:gap-12 w-full justify-center items-stretch max-w-6xl">
               <Card className="flex-1 bg-white/90 border-2 border-indigo-100 rounded-3xl shadow-xl p-8 flex flex-col items-center text-center">
@@ -206,7 +253,7 @@ export default function LandingPage() {
           {/* Supported Competitions */}
           <div className="px-8 md:px-20 py-12 md:py-16 flex flex-col items-center">
             <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>
-              Supported <span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent">Competitions</span>
+              Supported <span className={versaTextGradient}>Competitions</span>
             </h2>
             <p className="text-lg md:text-xl text-gray-700 text-center mb-12 max-w-2xl">We support teams participating in prestigious academic competitions worldwide</p>
             <div className="flex flex-wrap justify-center gap-6 md:gap-8 w-full max-w-6xl">
@@ -232,76 +279,45 @@ export default function LandingPage() {
 
           {/* Pricing */}
           <div className="px-8 md:px-20 pt-6 md:pt-8 pb-12 md:pb-16 flex flex-col items-center">
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-8 ${inter.className}`}>Pricing</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 w-full mb-12 max-w-6xl">
-              <div className="rounded-2xl bg-white/90 shadow-lg border border-gray-100 p-8 flex flex-col items-center">
-                <h2 className="text-2xl font-bold mb-2">Free</h2>
-                <div className="text-4xl font-extrabold mb-2">Free</div>
-                <div className="text-gray-500 mb-4 text-center">Basic features for individuals</div>
-                <ul className="mb-6 space-y-2 w-full">
-                  <li className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    1 project
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    Basic support
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    Community access
-                  </li>
-                </ul>
-                <Button className="w-full" disabled>Get Started</Button>
-              </div>
-              <div className="rounded-2xl bg-white/90 shadow-lg border border-gray-100 p-8 flex flex-col items-center">
-                <h2 className="text-2xl font-bold mb-2">Pro</h2>
-                <div className="text-4xl font-extrabold mb-2">$12/mo</div>
-                <div className="text-gray-500 mb-4 text-center">Advanced features for power users</div>
-                <ul className="mb-6 space-y-2 w-full">
-                  <li className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    Unlimited projects
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    Priority support
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    Team collaboration
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    Advanced analytics
-                  </li>
-                </ul>
-                <Button className="w-full bg-black text-white hover:bg-gray-900">Subscribe</Button>
-              </div>
-              <div className="rounded-2xl bg-white/90 shadow-lg border border-gray-100 p-8 flex flex-col items-center">
-                <h2 className="text-2xl font-bold mb-2">Enterprise</h2>
-                <div className="text-4xl font-extrabold mb-2">$49/mo</div>
-                <div className="text-gray-500 mb-4 text-center">Best for organizations and schools</div>
-                <ul className="mb-6 space-y-2 w-full">
-                  <li className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    Custom integrations
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    Dedicated support
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    Admin tools
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    SAML SSO
-                  </li>
-                </ul>
-                <Button className="w-full bg-black text-white hover:bg-gray-900">Subscribe</Button>
-              </div>
+            <div className="flex justify-center mb-4">
+              <span className={`inline-flex items-center text-sm md:text-base font-semibold text-white ${versaGradient} rounded-full px-4 py-1 tracking-wide`}>
+                <Rocket className="w-4 h-4 mr-2" />
+                One-Time Purchase, Lifetime Access
+              </span>
+            </div>
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>Pricing</h2>
+            <p className="text-lg md:text-xl text-gray-600 text-center mb-10 max-w-2xl">
+              Versa empowers students and teams to discover, connect, and win. Enjoy smart matching, curated opportunities, and a supportive community—built to help you reach your goals faster.
+            </p>
+            <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-stretch mb-8">
+              {plans.map((plan, i) => (
+                <div
+                  key={plan.name}
+                  className={`flex-1 bg-white rounded-2xl shadow-xl border p-8 flex flex-col items-center min-w-[280px] max-w-sm relative transition-all duration-200 ${i === 1 ? 'border-2 border-blue-500' : 'border-gray-100'}`}
+                >
+                  {i === 1 && (
+                    <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1 rounded-full bg-blue-600 text-white shadow border-2 border-blue-500">Most Popular</span>
+                  )}
+                  <h2 className="text-lg font-semibold text-black mb-2">{plan.name}</h2>
+                  <p className="text-gray-500 text-sm mb-4 text-center">{plan.description}</p>
+                  <div className="mb-2 flex items-center gap-2">
+                    {plan.oldPrice && <span className="text-gray-400 line-through text-lg">${plan.oldPrice}</span>}
+                    <span className="text-2xl font-extrabold text-black">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
+                    {plan.price !== 0 && <span className="text-xs text-gray-400 font-semibold">USD</span>}
+                  </div>
+                  <ul className="text-left text-gray-700 text-sm space-y-2 mt-4 mb-2 w-full max-w-xs">
+                    {plan.features.map((f, idx) => (
+                      <li key={idx}>{f}</li>
+                    ))}
+                  </ul>
+                  <button
+                    className={`mt-4 w-full py-2 rounded-lg font-semibold text-base transition-all duration-150 bg-gray-100 text-black hover:bg-gray-200`}
+                    disabled
+                  >
+                    {plan.cta}
+                  </button>
+                </div>
+              ))}
             </div>
             <div className="flex justify-center">
               {isSignedIn ? (

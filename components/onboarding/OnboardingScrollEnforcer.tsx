@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, createContext, useContext } from "react";
-import { useUser } from "@clerk/nextjs";
+import { useUser, SignOutButton } from "@clerk/nextjs";
 import { useRouter, usePathname } from "next/navigation";
 
 // Context for modal state
@@ -117,21 +117,39 @@ export default function OnboardingScrollEnforcer({ children }: { children?: Reac
                 This helps us match you with the best teams and opportunities.
               </span>
             </div>
-            <button
-              onClick={handleGoToOnboarding}
-              style={{
-                background: "#6366f1",
-                color: "white",
-                border: "none",
-                borderRadius: "0.75rem",
-                padding: "0.75rem 2.5rem",
-                fontSize: "1.1rem",
-                fontWeight: 600,
-                boxShadow: "0 2px 8px rgba(99,102,241,0.08)",
-              }}
-            >
-              Go to Onboarding
-            </button>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button
+                onClick={handleGoToOnboarding}
+                style={{
+                  background: "#6366f1",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "0.75rem",
+                  padding: "0.75rem 2.5rem",
+                  fontSize: "1.1rem",
+                  fontWeight: 600,
+                  boxShadow: "0 2px 8px rgba(99,102,241,0.08)",
+                }}
+              >
+                Go to Onboarding
+              </button>
+              <SignOutButton redirectUrl="/">
+                <button
+                  style={{
+                    background: "#f3f4f6",
+                    color: "#334155",
+                    border: "1px solid #cbd5e1",
+                    borderRadius: "0.75rem",
+                    padding: "0.75rem 2.5rem",
+                    fontSize: "1.1rem",
+                    fontWeight: 600,
+                    boxShadow: "0 2px 8px rgba(99,102,241,0.04)",
+                  }}
+                >
+                  Sign Out
+                </button>
+              </SignOutButton>
+            </div>
           </div>
         </div>
       )}
