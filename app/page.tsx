@@ -278,15 +278,15 @@ export default function LandingPage() {
           </div>
 
           {/* Pricing */}
-          <div className="px-8 md:px-20 pt-6 md:pt-8 pb-12 md:pb-16 flex flex-col items-center">
-            <div className="flex justify-center mb-4">
+          <div className="px-8 md:px-20 pt-12 md:pt-16 pb-12 md:pb-16 flex flex-col items-center">
+            <div className="flex justify-center mb-8">
               <span className={`inline-flex items-center text-sm md:text-base font-semibold text-white ${versaGradient} rounded-full px-4 py-1 tracking-wide`}>
                 <Rocket className="w-4 h-4 mr-2" />
                 One-Time Purchase, Lifetime Access
               </span>
             </div>
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>Pricing</h2>
-            <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-stretch mb-8">
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-8 ${inter.className}`}>Pricing</h2>
+            <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-stretch mb-8 mt-4">
               {plans.map((plan, i) => (
                 <div
                   key={plan.name}
