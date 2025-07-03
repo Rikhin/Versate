@@ -286,9 +286,6 @@ export default function LandingPage() {
               </span>
             </div>
             <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>Pricing</h2>
-            <p className="text-lg md:text-xl text-gray-600 text-center mb-10 max-w-2xl">
-              Versa empowers students and teams to discover, connect, and win. Enjoy smart matching, curated opportunities, and a supportive community—built to help you reach your goals faster.
-            </p>
             <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-stretch mb-8">
               {plans.map((plan, i) => (
                 <div
