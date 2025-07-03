@@ -45,7 +45,6 @@ export default function SummerProgramsPage() {
   const [filterAcceptance, setFilterAcceptance] = useState("")
   const [filterDeadline, setFilterDeadline] = useState("")
   const [filterTargeted, setFilterTargeted] = useState("")
-  const [filterCompetitive, setFilterCompetitive] = useState("")
   const [selectedProgram, setSelectedProgram] = useState<SummerProgram|null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -56,9 +55,11 @@ export default function SummerProgramsPage() {
   // Extract unique filter values
   const allCosts = Array.from(new Set(programs.map(p => p.cost).filter(Boolean))).sort()
   const allAcceptance = Array.from(new Set(programs.map(p => p.acceptanceRate).filter(Boolean))).sort()
-  const allDeadlines = Array.from(new Set(programs.map(p => p.applicationDeadline).filter(Boolean))).sort()
+  const allDeadlineMonths = Array.from(new Set(programs.map(p => groupDeadline(p.applicationDeadline)).filter(Boolean))).sort((a, b) => {
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return months.indexOf(a) - months.indexOf(b);
+  });
   const allTargeted = Array.from(new Set(programs.map(p => p.targeted).filter(Boolean))).sort()
-  const allCompetitive = Array.from(new Set(programs.map(p => p.competitive).filter(Boolean))).sort()
 
   // Filtering logic
   const filtered = programs.filter(p => {
@@ -68,8 +69,7 @@ export default function SummerProgramsPage() {
       (!filterCost || p.cost === filterCost) &&
       (!filterAcceptance || p.acceptanceRate === filterAcceptance) &&
       (!filterDeadline || p.applicationDeadline === filterDeadline) &&
-      (!filterTargeted || p.targeted === filterTargeted) &&
-      (!filterCompetitive || p.competitive === filterCompetitive)
+      (!filterTargeted || p.targeted === filterTargeted)
     )
   })
 
@@ -79,7 +79,6 @@ export default function SummerProgramsPage() {
     setFilterAcceptance("");
     setFilterDeadline("");
     setFilterTargeted("");
-    setFilterCompetitive("");
   }
 
   return (
@@ -107,16 +106,25 @@ export default function SummerProgramsPage() {
           </div>
         </header>
 
+        {/* Title section */}
+        <section className="text-center mb-8 md:mb-16">
+          <h1 className="text-3xl md:text-6xl md:text-7xl font-black text-black mb-4 md:mb-8 leading-none">
+            Explore<br /><span className="text-gray-400">Summer Programs</span>
+          </h1>
+          <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Browse and discover top summer programs for high school students. Use the filters to find the right fit for your goals, interests, and background.
+          </p>
+        </section>
+
         {/* Filters & Search */}
         <section className="container mx-auto px-8 py-8">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 mt-8">Explore Summer Programs</h1>
-          <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6 mb-6">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-6 items-center justify-center">
             <Input
               type="text"
               placeholder="Search summer programs..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full md:w-80 border-2 border-gray-300 focus:border-blue-500"
+              className="w-full md:w-80 border-2 border-gray-300 focus:border-blue-500 h-10 md:h-11"
             />
             <select className={filterBoxClass} value={filterCost} onChange={e => setFilterCost(e.target.value)}>
               <option value="">Cost</option>
@@ -127,8 +135,8 @@ export default function SummerProgramsPage() {
               {allAcceptance.map((a, i) => <option key={i} value={a}>{groupAcceptance(a)}</option>)}
             </select>
             <select className={filterBoxClass} value={filterDeadline} onChange={e => setFilterDeadline(e.target.value)}>
-              <option value="">Deadline</option>
-              {allDeadlines.map((d, i) => <option key={i} value={d}>{groupDeadline(d)}</option>)}
+              <option value="">Deadline Month</option>
+              {allDeadlineMonths.map((m, i) => <option key={i} value={m}>{m}</option>)}
             </select>
             <select className={filterBoxClass} value={filterTargeted} onChange={e => setFilterTargeted(e.target.value)}>
               <option value="">Low-Income/First-Gen Focused</option>
@@ -136,11 +144,7 @@ export default function SummerProgramsPage() {
               <option value="No">No</option>
               <option value="Unknown">Unknown</option>
             </select>
-            <select className={filterBoxClass} value={filterCompetitive} onChange={e => setFilterCompetitive(e.target.value)}>
-              <option value="">Competitiveness</option>
-              {allCompetitive.map((c, i) => <option key={i} value={c}>{c}</option>)}
-            </select>
-            <Button variant="ghost" onClick={clearFilters} className="ml-2">Clear</Button>
+            <Button variant="outline" onClick={clearFilters} className="h-10 md:h-11">Clear</Button>
           </div>
         </section>
 
@@ -151,7 +155,7 @@ export default function SummerProgramsPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {filtered.map((program, idx) => (
-                <Card key={idx} className="hover:shadow-xl transition-shadow cursor-pointer" onClick={() => { setSelectedProgram(program); setIsModalOpen(true); }}>
+                <Card key={idx} className="border-2 border-red-200 shadow-lg hover:shadow-red-300/40 hover:border-red-400 ring-1 ring-red-100/40 transition hover:scale-105 cursor-pointer bg-white" onClick={() => { setSelectedProgram(program); setIsModalOpen(true); }}>
                   <CardHeader>
                     <CardTitle className="text-lg font-bold line-clamp-2">{program.title || program.name}</CardTitle>
                   </CardHeader>
@@ -162,7 +166,6 @@ export default function SummerProgramsPage() {
                       {program.acceptanceRate && <Badge variant="secondary">Acceptance: {program.acceptanceRate}</Badge>}
                       {program.applicationDeadline && <Badge variant="secondary"><Calendar className="h-4 w-4 mr-1 inline" />{program.applicationDeadline}</Badge>}
                       {program.targeted && <Badge variant="secondary">Targeted: {program.targeted}</Badge>}
-                      {program.competitive && <Badge variant="secondary">{program.competitive === 'Yes' ? <CheckCircle className="h-4 w-4 mr-1 inline text-green-600" /> : <AlertCircle className="h-4 w-4 mr-1 inline text-yellow-600" />}{program.competitive}</Badge>}
                     </div>
                     {program.sessions && <div className="text-xs text-gray-500 mb-1">{program.sessions}</div>}
                   </CardContent>
@@ -189,7 +192,6 @@ export default function SummerProgramsPage() {
                     {selectedProgram.acceptanceRate && <Badge variant="secondary">Acceptance: {selectedProgram.acceptanceRate}</Badge>}
                     {selectedProgram.applicationDeadline && <Badge variant="secondary"><Calendar className="h-4 w-4 mr-1 inline" />{selectedProgram.applicationDeadline}</Badge>}
                     {selectedProgram.targeted && <Badge variant="secondary">Targeted: {selectedProgram.targeted}</Badge>}
-                    {selectedProgram.competitive && <Badge variant="secondary">{selectedProgram.competitive === 'Yes' ? <CheckCircle className="h-4 w-4 mr-1 inline text-green-600" /> : <AlertCircle className="h-4 w-4 mr-1 inline text-yellow-600" />}{selectedProgram.competitive}</Badge>}
                   </div>
                   {selectedProgram.sessions && <div className="text-sm text-gray-600">Sessions: {selectedProgram.sessions}</div>}
                   {selectedProgram.officialUrl && (
