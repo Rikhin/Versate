@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth, SignInButton, SignUpButton } from "@clerk/nextjs";
 
 const exampleQueries = [
   "Students interested in robotics in California",
@@ -29,6 +30,14 @@ export default function AISearchPage() {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { isSignedIn, isLoaded } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Show modal for unauthenticated users
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) setShowAuthModal(true);
+    else setShowAuthModal(false);
+  }, [isSignedIn, isLoaded]);
 
   const handleSearch = async (q?: string) => {
     setLoading(true);
@@ -52,6 +61,23 @@ export default function AISearchPage() {
 
   return (
     <div className="min-h-screen flex bg-[#f6f6fb]">
+      {/* Modal for unauthenticated users */}
+      {showAuthModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">Sign in or Sign up</h2>
+            <p className="text-gray-500 text-center mb-4">Sign in or create an account to access AI Search and discover opportunities.</p>
+            <div className="flex w-full">
+              <SignInButton mode="modal">
+                <button className="flex-1 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition">Sign In</button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="flex-1 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-900 transition">Sign Up</button>
+              </SignUpButton>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Sidebar */}
       <aside className="hidden md:flex w-64 bg-[#f3f0ff] border-r border-gray-200 flex-col justify-between py-8 px-6 min-h-screen">
         <div>

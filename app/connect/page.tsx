@@ -49,9 +49,18 @@ export default function ConnectPage() {
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
-    loadAllMentors().then(setMentors)
-    fetch("/api/profiles/search?limit=1000").then(res => res.json()).then(setStudents)
-  }, [])
+    let cancelled = false;
+    loadAllMentors().then(m => { if (!cancelled) setMentors(m) }).catch(() => setMentors([]));
+    if (isSignedIn) {
+      fetch("/api/profiles/search?limit=1000")
+        .then(res => res.ok ? res.json() : [])
+        .then(data => { if (!cancelled) setStudents(data) })
+        .catch(() => setStudents([]));
+    } else {
+      setStudents([]);
+    }
+    return () => { cancelled = true; };
+  }, [isSignedIn]);
 
   useEffect(() => {
     fetch('/state_abbreviations.csv')
