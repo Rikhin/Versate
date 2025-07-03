@@ -114,7 +114,7 @@ export default function PlansPage() {
           >
             {/* Most Popular Badge */}
             {i === 1 && (
-              <span className="absolute top-0 right-0 mt-4 mr-4 px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-semibold shadow">Most Popular</span>
+              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1 rounded-full bg-blue-600 text-white shadow">Most Popular</span>
             )}
             <h2 className="text-lg font-semibold text-black mb-2">{plan.name}</h2>
             <p className="text-gray-500 text-sm mb-4 text-center">{plan.description}</p>
@@ -140,7 +140,7 @@ export default function PlansPage() {
       {/* Continue Button */}
       <div className="w-full flex justify-center mt-8">
         <Button
-          className="mt-8 w-full py-3 rounded-lg font-semibold text-base bg-black text-white hover:bg-gray-900 flex items-center justify-center gap-2"
+          className="w-full max-w-5xl py-4 rounded-lg font-semibold text-lg bg-black text-white hover:bg-gray-900 flex items-center justify-center gap-2"
           onClick={handleContinue}
         >
           Continue
