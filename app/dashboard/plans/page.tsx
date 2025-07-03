@@ -110,11 +110,10 @@ export default function PlansPage() {
         {plans.map((plan, i) => (
           <div
             key={plan.name}
-            className={`flex-1 bg-white rounded-2xl shadow-xl border ${selected === i ? 'border-2 border-blue-500' : 'border-gray-100'} p-8 flex flex-col items-center min-w-[280px] max-w-sm relative transition-all duration-200`}
+            className={`flex-1 bg-white rounded-2xl shadow-xl border p-8 flex flex-col items-center min-w-[280px] max-w-sm relative transition-all duration-200 ${i === 1 ? 'border-2 border-blue-500' : selected === i ? 'border-2 border-blue-500' : 'border-gray-100'}`}
           >
-            {/* Most Popular Badge */}
             {i === 1 && (
-              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1 rounded-full bg-blue-600 text-white shadow">Most Popular</span>
+              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1 rounded-full bg-blue-600 text-white shadow border-2 border-blue-500">Most Popular</span>
             )}
             <h2 className="text-lg font-semibold text-black mb-2">{plan.name}</h2>
             <p className="text-gray-500 text-sm mb-4 text-center">{plan.description}</p>
@@ -129,7 +128,7 @@ export default function PlansPage() {
               ))}
             </ul>
             <button
-              className={`mt-4 w-full py-2 rounded-lg font-semibold text-base transition-all duration-150 ${selected === i ? versaGradient + ' text-white shadow-lg' : 'bg-gray-100 text-black hover:bg-gray-200'}`}
+              className={`mt-4 w-full py-2 rounded-lg font-semibold text-base transition-all duration-150 ${selected === i ? 'bg-black text-white shadow-lg' : 'bg-gray-100 text-black hover:bg-gray-200'}`}
               onClick={() => setSelected(i)}
             >
               {selected === i ? "Selected" : plan.cta}
