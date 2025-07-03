@@ -14,27 +14,6 @@ import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
 import { MessageButton } from '@/components/messaging/MessageButton'
 
-// Add Profile type for students
-interface Profile {
-  id: string
-  user_id: string
-  first_name: string
-  last_name: string
-  email: string
-  school: string
-  grade_level: string
-  bio: string
-  skills: string[]
-  roles: string[]
-  experience_level: string
-  time_commitment: string
-  collaboration_style: string[]
-  location: string
-  avatar_url?: string
-  created_at: string
-  updated_at: string
-}
-
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCompetition, setSelectedCompetition] = useState("all")
@@ -60,11 +39,6 @@ export default function ExplorePage() {
   const cities = useMemo(() => ["all", ...Array.from(new Set(isefProjects.map(p => p.city).filter(Boolean)))], [isefProjects])
   const awards = useMemo(() => ["all", ...Array.from(new Set(isefProjects.map(p => p.awards).filter(Boolean)))], [isefProjects])
 
-  // Add state for students
-  const [students, setStudents] = useState<Profile[]>([])
-  const [loadingStudents, setLoadingStudents] = useState(false)
-  const [studentsError, setStudentsError] = useState<string | null>(null)
-
   const competitions = useMemo(() => [
     "all",
     ...Array.from(new Set(isefProjects.map(p => p.competition || "ISEF")))
@@ -87,19 +61,6 @@ export default function ExplorePage() {
     }
   }, [activeTab])
 
-  // Always fetch students on mount
-  useEffect(() => {
-    if (students.length === 0 && !loadingStudents) {
-      setLoadingStudents(true)
-      setStudentsError(null)
-      fetch("/api/profiles/search?limit=50")
-        .then(res => res.json())
-        .then(data => setStudents(data || []))
-        .catch(err => setStudentsError("Failed to load students"))
-        .finally(() => setLoadingStudents(false))
-    }
-  }, [])
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -121,235 +82,58 @@ export default function ExplorePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Header Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">Explore Projects & Students</h1>
-          <p className="text-slate-600">Discover amazing competition projects and find your perfect teammates</p>
+          <h1 className="text-3xl font-bold text-slate-800 mb-2">Explore Projects</h1>
+          <p className="text-slate-600">Browse and join exciting student projects</p>
         </div>
-
-        {/* Search and Filters */}
-        <div className="mb-8 space-y-4">
-          <div className="flex flex-col md:flex-row gap-4 items-center">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
-              <Input
-                placeholder="Search projects by title..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button
-              variant="outline"
-              className="flex items-center gap-2"
-              onClick={() => setShowFilters((v) => !v)}
-              aria-label="Toggle filters"
-            >
-              <Filter className="h-4 w-4" />
-              Filter
-            </Button>
-          </div>
-          {showFilters && (
-            <div className="flex flex-wrap gap-2 items-center">
-              <Select value={selectedCompetition} onValueChange={setSelectedCompetition}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="All Competitions" />
-                </SelectTrigger>
-                <SelectContent>
-                  {competitions.map((competition) => (
-                    <SelectItem key={competition} value={competition}>{competition === "all" ? "All Competitions" : competition}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="w-32">
-                  <SelectValue placeholder="All Years" />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map((year) => (
-                    <SelectItem key={year} value={year}>{year === "all" ? "All Years" : year}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="All Countries" />
-                </SelectTrigger>
-                <SelectContent>
-                  {countries.map((country) => (
-                    <SelectItem key={country} value={country}>{country === "all" ? "All Countries" : country}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={selectedState} onValueChange={setSelectedState}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="All States" />
-                </SelectTrigger>
-                <SelectContent>
-                  {states.map((state) => (
-                    <SelectItem key={state} value={state}>{state === "all" ? "All States" : state}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={selectedCity} onValueChange={setSelectedCity}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="All Cities" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cities.map((city) => (
-                    <SelectItem key={city} value={city}>{city === "all" ? "All Cities" : city}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={selectedAward} onValueChange={setSelectedAward}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="All Awards" />
-                </SelectTrigger>
-                <SelectContent>
-                  {awards.map((award) => (
-                    <SelectItem key={award} value={award}>{award === "all" ? "All Awards" : award}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-        </div>
-
-        {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="projects">Projects ({filteredProjects.length})</TabsTrigger>
-            <TabsTrigger value="students">Students ({students.length})</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="projects" className="space-y-6">
-            {loadingProjects ? (
-              <div className="text-center text-gray-500 py-12">Loading ISEF projects...</div>
-            ) : projectsError ? (
-              <div className="text-center text-red-500 py-12">Error loading projects: {projectsError}</div>
-            ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredProjects.map((project) => (
-                  <Link key={project.id} href={`/explore/projects/${project.id}`} className="block group">
-                    <Card className="hover:shadow-lg transition-shadow group-hover:border-blue-600">
+        {/* Only show projects grid, no tabs for people/profiles */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {loadingProjects ? (
+            <div className="col-span-full text-center text-gray-500">Loading projects...</div>
+          ) : projectsError ? (
+            <div className="col-span-full text-center text-red-500">{projectsError}</div>
+          ) : filteredProjects.length === 0 ? (
+            <div className="col-span-full text-center text-gray-500">No projects found.</div>
+          ) : (
+            filteredProjects.map((project) => (
+              <Card key={project.id} className="hover:shadow-lg transition-shadow">
+                <Link href={`/explore/projects/${project.id}`}>
                   <CardHeader>
-                    <div className="flex justify-between items-start mb-2">
-                          <Badge variant="secondary">ISEF</Badge>
-                      <div className="flex items-center space-x-1">
-                        <Zap className="h-4 w-4 text-green-600" />
-                      </div>
-                    </div>
-                        <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">{project.title}</CardTitle>
-                    <CardDescription className="line-clamp-2">{project.description}</CardDescription>
+                    <CardTitle className="text-lg font-bold">{project.title}</CardTitle>
+                    <CardDescription>{project.category}</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center space-x-3">
                       <Avatar className="h-8 w-8">
-                            <AvatarImage src={"/placeholder-user.jpg"} alt={project.authors?.[0] || "?"} />
-                            <AvatarFallback>{project.authors?.[0] || "?"}</AvatarFallback>
+                        <AvatarImage src={"/placeholder-user.jpg"} alt={project.authors?.[0] || "?"} />
+                        <AvatarFallback>{project.authors?.[0] || "?"}</AvatarFallback>
                       </Avatar>
                       <div>
-                            <p className="text-sm font-medium">{project.authors}</p>
-                          </div>
-                        </div>
+                        <p className="text-sm font-medium">{project.authors}</p>
+                      </div>
+                    </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-sm text-slate-600">
                         <div className="flex items-center space-x-1">
                           <Users className="h-4 w-4" />
-                              <span>ISEF Project</span>
+                          <span>ISEF Project</span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-4 w-4" />
-                              <span>{new Date(project.created_at).toLocaleDateString()}</span>
+                          <span>{new Date(project.created_at).toLocaleDateString()}</span>
                         </div>
                       </div>
                       <div className="flex items-center space-x-1 text-sm text-slate-600">
                         <TrendingUp className="h-4 w-4" />
-                            <span>{project.awards || "No awards"}</span>
+                        <span>{project.awards || "No awards"}</span>
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-                  </Link>
-              ))}
-            </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="students" className="space-y-6">
-            {loadingStudents ? (
-              <div className="text-center text-gray-500 py-12">Loading students...</div>
-            ) : studentsError ? (
-              <div className="text-center text-red-500 py-12">Error loading students: {studentsError}</div>
-            ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {students.map((student: Profile) => {
-                  const bioPreview = student.bio.length > 120 ? student.bio.slice(0, 120) + '...' : student.bio;
-                  return (
-                <Card key={student.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-center space-x-4">
-                      <Avatar className="h-12 w-12">
-                              <AvatarImage src={student.avatar_url || "/placeholder.svg"} alt={student.first_name} />
-                              <AvatarFallback>{student.first_name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                              <CardTitle className="text-lg">{student.first_name} {student.last_name}</CardTitle>
-                              <CardDescription>{student.grade_level}</CardDescription>
-                        <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-                          <MapPin className="h-3 w-3" />
-                              <span>{student.location || "Location not specified"}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <p className="text-sm text-slate-600 mb-2">Skills:</p>
-                      <div className="flex flex-wrap gap-1">
-                              {student.skills.slice(0, 3).map((skill: string) => (
-                          <Badge key={skill} variant="secondary" className="text-xs">
-                            {skill}
-                          </Badge>
-                        ))}
-                        {student.skills.length > 3 && (
-                          <Badge variant="secondary" className="text-xs">
-                            +{student.skills.length - 3} more
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                            <p className="text-sm text-slate-600 mb-2">Looking for:</p>
-                            <Badge variant="outline" className="text-xs">
-                              {student.roles.join(", ")}
-                          </Badge>
-                      </div>
-                          <div>
-                            <p className="text-sm text-slate-600 mb-2">Bio:</p>
-                            <p className="text-sm text-slate-600">
-                              {bioPreview}
-                              {student.bio.length > 120 && (
-                                <Link href={`/profiles/${student.user_id}`} className="text-blue-600 hover:underline ml-1">View Profile</Link>
-                              )}
-                            </p>
-                    </div>
-                        <div className="flex gap-2 mt-4">
-                          <MessageButton recipientId={student.user_id} recipientName={`${student.first_name} ${student.last_name}`} />
-                          <Link href={`/profiles/${student.user_id}`}>
-                            <Button variant="outline" size="sm" className="flex items-center">
-                              View Profile
-                    </Button>
-                          </Link>
-                        </div>
-                  </CardContent>
-                </Card>
-                  );
-                })}
-            </div>
-            )}
-          </TabsContent>
-        </Tabs>
+                </Link>
+              </Card>
+            ))
+          )}
+        </div>
       </div>
     </div>
   )

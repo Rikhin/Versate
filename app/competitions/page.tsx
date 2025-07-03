@@ -45,6 +45,7 @@ interface Competition {
   requirements: string[]
   tags: string[]
   icon: string
+  teamRequired: boolean
 }
 
 const categories = [
@@ -59,6 +60,7 @@ export default function CompetitionsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedStatus, setSelectedStatus] = useState("all")
+  const [teamFilter, setTeamFilter] = useState("all")
 
   const filteredCompetitions = useMemo(() => {
     return competitions.filter(competition => {
@@ -68,10 +70,14 @@ export default function CompetitionsPage() {
       
       const matchesCategory = selectedCategory === "all" || competition.category === selectedCategory
       const matchesStatus = selectedStatus === "all" || competition.status === selectedStatus
+      const matchesTeam =
+        teamFilter === "all" ||
+        (teamFilter === "team" && competition.teamRequired) ||
+        (teamFilter === "individual" && competition.teamRequired === false)
       
-      return matchesSearch && matchesCategory && matchesStatus
+      return matchesSearch && matchesCategory && matchesStatus && matchesTeam
     })
-  }, [searchTerm, selectedCategory, selectedStatus])
+  }, [searchTerm, selectedCategory, selectedStatus, teamFilter])
 
   const activeCompetitions = filteredCompetitions.filter(c => c.status === "active")
   const upcomingCompetitions = filteredCompetitions.filter(c => c.status === "upcoming")
@@ -146,28 +152,28 @@ export default function CompetitionsPage() {
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
             {/* Header Section */}
             <div className="text-center mb-8 md:mb-16">
-              <h1 className="text-3xl md:text-6xl md:text-7xl font-black text-black mb-4 md:mb-8 leading-none">
+              <h1 className="text-2xl sm:text-3xl md:text-6xl md:text-7xl font-black text-black mb-4 md:mb-8 leading-none">
                 Academic<br /><span className="text-gray-400">Competitions</span>
               </h1>
-              <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-sm sm:text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 Discover prestigious competitions and opportunities to showcase your skills and win amazing prizes
               </p>
             </div>
 
             {/* Search and Filters */}
             <div className="mb-8 md:mb-12 space-y-4 md:space-y-6">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
+              <div className="flex flex-col md:flex-row gap-4 w-full">
+                <div className="flex-1 relative w-full">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input
                     placeholder="Search competitions..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-12 h-12 md:h-14 text-base md:text-lg border-2 border-gray-300 focus:border-black"
+                    className="pl-12 h-10 sm:h-12 md:h-14 text-base md:text-lg border-2 border-gray-300 focus:border-black w-full"
                   />
                 </div>
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="h-12 md:h-14 text-base md:text-lg border-2 border-gray-300 focus:border-black min-w-[140px] md:min-w-[200px]">
+                  <SelectTrigger className="h-10 sm:h-12 md:h-14 text-base md:text-lg border-2 border-gray-300 focus:border-black min-w-[120px] sm:min-w-[140px] md:min-w-[200px] w-full sm:w-auto">
                     <SelectValue placeholder="Category..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -180,7 +186,7 @@ export default function CompetitionsPage() {
                   </SelectContent>
                 </Select>
                 <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                  <SelectTrigger className="h-12 md:h-14 text-base md:text-lg border-2 border-gray-300 focus:border-black min-w-[140px] md:min-w-[200px]">
+                  <SelectTrigger className="h-10 sm:h-12 md:h-14 text-base md:text-lg border-2 border-gray-300 focus:border-black min-w-[120px] sm:min-w-[140px] md:min-w-[200px] w-full sm:w-auto">
                     <SelectValue placeholder="Status..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -188,6 +194,16 @@ export default function CompetitionsPage() {
                     <SelectItem value="active">Active</SelectItem>
                     <SelectItem value="upcoming">Upcoming</SelectItem>
                     <SelectItem value="past">Past</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={teamFilter} onValueChange={setTeamFilter}>
+                  <SelectTrigger className="h-10 sm:h-12 md:h-14 text-base md:text-lg border-2 border-gray-300 focus:border-black min-w-[120px] sm:min-w-[140px] md:min-w-[200px] w-full sm:w-auto">
+                    <SelectValue placeholder="Team..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="team">Team</SelectItem>
+                    <SelectItem value="individual">Individual</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -202,68 +218,45 @@ export default function CompetitionsPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                   {activeCompetitions.map((competition) => (
-                    <Card key={competition.id} className="border-0 shadow-none bg-transparent hover:scale-105 transition-transform cursor-pointer">
-                      <CardHeader className="pb-6">
-                        <div className="flex justify-between items-start mb-4">
-                          <Badge className={`border-2 ${getStatusColor(competition.status)} px-4 py-2 text-sm font-bold uppercase tracking-widest`}>
-                            {getStatusText(competition.status)}
-                          </Badge>
-                          <div className="text-3xl">{competition.icon}</div>
-                        </div>
-                        <CardTitle className="text-2xl font-black text-black">{competition.name}</CardTitle>
-                        <CardDescription className="text-lg text-gray-600">{competition.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-6">
-                        <div className="flex items-center justify-between text-lg text-gray-600">
-                          <div className="flex items-center space-x-2">
-                            <Calendar className="h-5 w-5" />
-                            <span>Deadline: {formatDeadline(competition.deadline)}</span>
+                    <Link key={competition.id} href={`/competitions/${competition.id}`} className="focus:outline-none focus:ring-4 focus:ring-black/30 rounded-xl">
+                      <Card className="border-0 shadow-none bg-transparent hover:scale-105 transition-transform cursor-pointer">
+                        <CardHeader className="pb-6">
+                          <div className="flex justify-between items-start mb-4">
+                            <Badge className={`border-2 ${getStatusColor(competition.status)} px-4 py-2 text-sm font-bold uppercase tracking-widest`}>
+                              {getStatusText(competition.status)}
+                            </Badge>
+                            <div className="text-3xl">{competition.icon}</div>
                           </div>
-                        </div>
-
-                        <div className="flex items-center justify-between text-lg text-gray-600">
-                          <div className="flex items-center space-x-2">
-                            <DollarSign className="h-5 w-5" />
-                            <span>{competition.prize}</span>
+                          <CardTitle className="text-2xl font-black text-black">{competition.name}</CardTitle>
+                          <CardDescription className="text-lg text-gray-600">{competition.description}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div>
+                            <h4 className="text-lg font-bold text-black mb-3">Tags</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {competition.tags.map((tag) => (
+                                <Badge key={tag} variant="outline" className="border-2 border-gray-300 text-gray-700 px-3 py-1 text-sm font-bold">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-
-                        <div className="flex items-center justify-between text-lg text-gray-600">
-                          <div className="flex items-center space-x-2">
-                            <Users className="h-5 w-5" />
-                            <span>{competition.participants}/{competition.maxParticipants} participants</span>
+                          <div className="flex gap-3">
+                            <a
+                              href={competition.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-1"
+                            >
+                              <Button className="w-full bg-black text-white hover:bg-gray-800 py-4 text-lg font-bold">
+                                <ExternalLink className="h-5 w-5 mr-3" />
+                                Official Website
+                              </Button>
+                            </a>
                           </div>
-                        </div>
-
-                        <div className="flex items-center justify-between text-lg text-gray-600">
-                          <div className="flex items-center space-x-2">
-                            <MapPin className="h-5 w-5" />
-                            <span>{competition.location}</span>
-                          </div>
-                        </div>
-
-                        <div>
-                          <h4 className="text-lg font-bold text-black mb-3">Tags</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {competition.tags.map((tag) => (
-                              <Badge key={tag} variant="outline" className="border-2 border-gray-300 text-gray-700 px-3 py-1 text-sm font-bold">
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="flex gap-3">
-                          <Button className="flex-1 bg-black text-white hover:bg-gray-800 py-4 text-lg font-bold">
-                            <ExternalLink className="h-5 w-5 mr-3" />
-                            Learn More
-                          </Button>
-                          <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white py-4 text-lg font-bold">
-                            <Users className="h-5 w-5" />
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -431,6 +424,7 @@ export default function CompetitionsPage() {
                     setSearchTerm("")
                     setSelectedCategory("all")
                     setSelectedStatus("all")
+                    setTeamFilter("all")
                   }}
                   className="bg-black text-white hover:bg-gray-800 px-6 md:px-8 py-2 md:py-4 text-base md:text-lg font-bold"
                 >

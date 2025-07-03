@@ -42,6 +42,7 @@ interface OnboardingFormData {
   otherNeedPartner?: boolean;
   otherNeedMentor?: boolean;
   profileImageUrl?: string;
+  state: string;
 }
 
 function CityDropdown({ value, onChange }: { value: string, onChange: (val: string) => void }) {
@@ -97,6 +98,49 @@ function CityDropdown({ value, onChange }: { value: string, onChange: (val: stri
   );
 }
 
+function StateDropdown({ value, onChange }: { value: string, onChange: (val: string) => void }) {
+  const [states, setStates] = useState<{ abbr: string, name: string }[]>([]);
+  const [search, setSearch] = useState('');
+  useEffect(() => {
+    fetch('/state_abbreviations.csv')
+      .then(res => res.text())
+      .then(text => {
+        const parsed = Papa.parse(text, { header: false });
+        setStates(parsed.data.filter((row: any) => row[0] && row[1]).map((row: any) => ({ abbr: row[0].replace(/"/g, ''), name: row[1].replace(/"/g, '') })));
+      });
+  }, []);
+  const filtered = states.filter(({ abbr, name }) =>
+    abbr.toLowerCase().includes(search.toLowerCase()) || name.toLowerCase().includes(search.toLowerCase())
+  );
+  return (
+    <div className="relative">
+      <Input
+        value={search || value}
+        onChange={e => setSearch(e.target.value)}
+        placeholder="Type state or abbreviation..."
+        aria-label="Type state or abbreviation (e.g., CA or California)"
+        className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4 mb-2"
+      />
+      <span className="sr-only">Type state or abbreviation (e.g., CA or California)</span>
+      <div className="max-h-40 overflow-y-auto border rounded-xl bg-white shadow-md">
+        {filtered.length === 0 ? (
+          <div className="p-2 text-gray-500">No results</div>
+        ) : (
+          filtered.map(({ abbr, name }) => (
+            <div
+              key={abbr}
+              className={`p-2 cursor-pointer hover:bg-indigo-100 ${name === value ? 'bg-indigo-200 font-bold' : ''}`}
+              onClick={() => { onChange(name); setSearch(name); }}
+            >
+              {name} ({abbr})
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function OnboardingForm() {
   const router = useRouter();
   const { user, isLoaded } = useUser();
@@ -125,6 +169,7 @@ export function OnboardingForm() {
     collaborationStyle: [],
     location: "",
     competitions: [],
+    state: "",
   });
 
   const totalSteps = 5;
@@ -160,7 +205,7 @@ export function OnboardingForm() {
   const isStepValid = () => {
     switch (currentStep) {
       case 1:
-        return formData.firstName && formData.lastName && formData.email && formData.school;
+        return formData.firstName && formData.lastName && formData.email && formData.school && formData.state;
       case 2:
         return formData.skills.length > 0 && formData.roles.length > 0;
       case 3:
@@ -381,8 +426,8 @@ export function OnboardingForm() {
                       </div>
                     </div>
                       <div className="space-y-3">
-                        <Label htmlFor="location" className="text-base font-medium text-black">Location</Label>
-                        <CityDropdown value={formData.location} onChange={val => setFormData(prev => ({ ...prev, location: val }))} />
+                        <Label htmlFor="state" className="text-base font-medium text-black">State *</Label>
+                        <StateDropdown value={formData.state || ''} onChange={val => setFormData(prev => ({ ...prev, state: val }))} />
                     </div>
                   </div>
                 )}

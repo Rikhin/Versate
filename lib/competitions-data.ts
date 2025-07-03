@@ -13,9 +13,10 @@ export interface Competition {
   requirements: string[];
   tags: string[];
   icon: string;
+  teamRequired?: boolean;
 }
 
-export const competitions: Competition[] = [
+const competitions: Competition[] = [
   {
     id: "1",
     name: "Congressional App Challenge",
@@ -144,4 +145,21 @@ export const competitions: Competition[] = [
     tags: ["STEM", "Middle School", "Science"],
     icon: "🔬"
   }
-]; 
+];
+
+import competitionsFromCSV from './competitions-csv.json';
+
+// Ensure CSV competitions are typed correctly
+const normalizedCSV = (competitionsFromCSV as any[]).map((c) => ({
+  ...c,
+  status: c.status === 'upcoming' || c.status === 'past' ? c.status : 'active',
+  requirements: Array.isArray(c.requirements) ? c.requirements : [],
+  tags: Array.isArray(c.tags) ? c.tags : [],
+}));
+
+const mergedCompetitions: Competition[] = [
+  ...competitions,
+  ...normalizedCSV
+];
+
+export { mergedCompetitions as competitions }; 

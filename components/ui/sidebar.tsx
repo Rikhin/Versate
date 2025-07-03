@@ -198,15 +198,14 @@ const Sidebar = React.forwardRef<
           <SheetContent
             data-sidebar="sidebar"
             data-mobile="true"
-            className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-            style={
-              {
-                "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-              } as React.CSSProperties
-            }
+            className="px-6 py-8 flex flex-col gap-4 rounded-t-2xl shadow-2xl w-full max-w-[90vw] mx-auto bg-sidebar text-sidebar-foreground"
+            style={{ minHeight: '60vh' }}
             side={side}
           >
-            <div className="flex h-full w-full flex-col">{children}</div>
+            <div className="flex flex-col gap-4 w-full h-full items-center justify-start">
+              {/* NOTE: Sidebar links should call setOpenMobile(false) on mobile to close the drawer after navigation. */}
+              {children}
+            </div>
           </SheetContent>
         </Sheet>
       )

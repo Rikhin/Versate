@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     const partnerIdList = Array.from(partnerIds);
 
     // Fetch partner profiles
-    let profilesMap = {};
+    let profilesMap: Record<string, any> = {};
     if (partnerIdList.length > 0) {
       const { data: profiles } = await supabase
         .from("profiles")
@@ -72,5 +72,41 @@ export async function GET(request: NextRequest) {
       { error: "Internal server error" },
       { status: 500 }
     );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const { userId: senderId } = await auth();
+    if (!senderId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const { userId: recipientId } = await request.json();
+    if (!recipientId) {
+      return NextResponse.json({ error: "Recipient userId required" }, { status: 400 });
+    }
+    if (recipientId === senderId) {
+      return NextResponse.json({ error: "Cannot message yourself" }, { status: 400 });
+    }
+    // Optionally, check if the recipient exists in profiles
+    const supabase = createServerClient();
+    const { data: recipientProfile } = await supabase
+      .from("profiles")
+      .select("user_id")
+      .eq("user_id", recipientId)
+      .single();
+    if (!recipientProfile) {
+      return NextResponse.json({ error: "Recipient not found" }, { status: 404 });
+    }
+    // Check if any messages exist between sender and recipient
+    const { data: messages } = await supabase
+      .from("messages")
+      .select("id")
+      .or(`and(sender_id.eq.${senderId},recipient_id.eq.${recipientId}),and(sender_id.eq.${recipientId},recipient_id.eq.${senderId})`);
+    // No need to create a message, just return the conversationId (partnerId)
+    return NextResponse.json({ conversationId: recipientId });
+  } catch (error) {
+    console.error("Conversation start error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 } 

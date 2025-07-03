@@ -146,25 +146,25 @@ export default function ProfilesPage() {
         <div className="container mx-auto px-4 py-8">
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-slate-800 mb-2">Find Your Perfect Teammate</h1>
-              <p className="text-slate-600">Connect with talented students and build amazing teams together</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">Find Your Perfect Teammate</h1>
+              <p className="text-slate-600 text-sm sm:text-base">Connect with talented students and professionals and build amazing teams together</p>
             </div>
 
             {user && recommended.length > 0 && (
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-lg font-semibold text-slate-800">Recommended Teammates</h2>
+                  <h2 className="text-base sm:text-lg font-semibold text-slate-800">Recommended Teammates</h2>
                   <button className="text-xs text-gray-500 underline" onClick={() => setShowRecommended(true)}>See all</button>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex gap-4 overflow-x-auto pb-2">
                   {recommended.map((m, i) => (
-                    <Card key={m.user_id} className="flex items-center gap-3 p-3 shadow-none border-gray-100 w-1/3 min-w-[180px]">
+                    <Card key={m.user_id} className="flex items-center gap-3 p-3 shadow-none border-gray-100 min-w-[220px] max-w-xs w-full">
                       <Avatar>
                         <AvatarImage src={m.avatar_url} alt={m.first_name} />
                         <AvatarFallback>{m.first_name?.[0]}{m.last_name?.[0]}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <div className="font-medium text-gray-900">{m.first_name} {m.last_name}</div>
+                        <div className="font-medium text-gray-900 text-sm sm:text-base">{m.first_name} {m.last_name}</div>
                         <div className="text-xs text-gray-500 truncate max-w-xs">{m.bio}</div>
                       </div>
                       <span className="text-xs bg-gray-100 rounded-full px-2 py-1 font-mono text-gray-600">{(m.similarity * 100).toFixed(0)}%</span>
@@ -178,28 +178,28 @@ export default function ProfilesPage() {
 
             {/* Search and Filters */}
             <div className="mb-8 space-y-4">
-              <div className="flex flex-col md:flex-row gap-4 items-center">
-                <div className="flex-1 relative">
+              <div className="flex flex-col sm:flex-row gap-4 items-center w-full">
+                <div className="flex-1 relative w-full">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
                   <Input
                     placeholder="Search by name, school, skills, or bio..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 w-full"
                   />
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 w-full sm:w-auto">
                   <ArrowUpDown className="h-4 w-4 text-slate-400" />
-                <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-40">
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-full sm:w-40">
                       <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
+                    </SelectTrigger>
+                    <SelectContent>
                       <SelectItem value="recent">Most Recent</SelectItem>
-                    <SelectItem value="name">Name</SelectItem>
+                      <SelectItem value="name">Name</SelectItem>
                       <SelectItem value="experience">Experience</SelectItem>
-                  </SelectContent>
-                </Select>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 

@@ -140,7 +140,7 @@ export default function NewProjectPage() {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-800 mb-2">Create New Project</h1>
-          <p className="text-slate-600">Start a competition project and find your perfect teammates</p>
+          <p className="text-slate-600">Start a competition project and fect teammates</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">

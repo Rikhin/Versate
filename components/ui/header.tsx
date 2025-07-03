@@ -17,6 +17,7 @@ export function Header() {
   const [unreadCount, setUnreadCount] = useState(0);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { showModal } = useOnboardingModal();
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -76,17 +77,42 @@ export function Header() {
           <div className="flex items-center flex-shrink-0 min-w-[120px] md:min-w-[160px] lg:min-w-[180px] justify-start">
             <Link href="/" className="flex items-center gap-2 group">
               <Trophy className="h-6 w-6 md:h-7 md:w-7 text-black group-hover:scale-110 transition-transform" />
-          <div>
-                <span className="text-base md:text-xl font-bold text-black leading-tight">Versa</span>
-                <p className="text-xs md:text-sm text-gray-500 -mt-1 font-medium hidden sm:block">built by Rikhin Kavuru</p>
+              <div>
+                <span className="text-base md:text-xl font-bold text-black leading-tight max-w-[120px] sm:max-w-none truncate">Versa</span>
+                <p className="text-xs md:text-sm text-gray-500 -mt-1 font-medium hidden sm:block max-w-[100px] sm:max-w-none truncate">built by Rikhin Kavuru</p>
               </div>
             </Link>
           </div>
           {/* Center: Nav links */}
-          <nav className="flex-grow flex items-center gap-4 md:gap-8 text-sm md:text-base font-semibold uppercase tracking-wider justify-center">
-            <Link href="/#works" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Features</Link>
-            <Link href="/#about" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Projects</Link>
-            <Link href="/#competitions" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Competitions</Link>
+          <nav className="flex-grow items-center gap-4 md:gap-8 text-sm md:text-base font-semibold uppercase tracking-wider justify-center hidden sm:flex">
+            {/* <Link href="/#works" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Features</Link> */}
+            <div className="relative group">
+              <button
+                className="hover:opacity-60 transition pointer-events-auto flex items-center gap-1"
+                tabIndex={showModal ? -1 : 0}
+                aria-disabled={showModal}
+                style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
+                onClick={e => {
+                  e.preventDefault();
+                  const dropdown = document.getElementById('find-dropdown');
+                  if (dropdown) dropdown.classList.toggle('hidden');
+                }}
+              >
+                Find <ChevronDown className="h-4 w-4 inline" />
+              </button>
+              <div id="find-dropdown" className="hidden absolute left-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-50 group-hover:block" onMouseLeave={e => { (e.currentTarget as HTMLElement).classList.add('hidden'); }}>
+                <button
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
+                  onClick={() => { window.location.href = '/competitions'; }}
+                >Competitions</button>
+                <button
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
+                  onClick={() => { window.location.href = '/summer-programs'; }}
+                >Summer Programs</button>
+              </div>
+            </div>
+            <Link href="/connect" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Connect</Link>
+            <Link href="/ai-search" className="hover:opacity-60 transition pointer-events-auto text-indigo-700" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>AI Search</Link>
             <Link href="/dashboard/plans" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Plans</Link>
             {isSignedIn && (
               <Link href="/messages" className="hover:opacity-60 transition relative pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>
@@ -99,9 +125,22 @@ export function Header() {
                     {unreadCount > 99 ? '99+' : unreadCount}
                   </Badge>
                 )}
-        </Link>
+              </Link>
             )}
-        </nav>
+          </nav>
+          {/* Hamburger menu for mobile */}
+          <button
+            className="sm:hidden flex items-center justify-center p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 ml-2 w-10 h-10"
+            onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
+            aria-label="Open menu"
+            aria-expanded={mobileDropdownOpen}
+          >
+            <span className="flex flex-col items-center justify-center w-6 h-6 gap-1">
+              <span className="block w-6 h-0.5 bg-black rounded"></span>
+              <span className="block w-6 h-0.5 bg-black rounded"></span>
+              <span className="block w-6 h-0.5 bg-black rounded"></span>
+            </span>
+          </button>
           {/* Right: User actions/profile */}
           <div className="flex items-center flex-shrink-0 min-w-[120px] md:min-w-[160px] lg:min-w-[180px] justify-end">
           {isSignedIn ? (
@@ -202,65 +241,47 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white">
-          <nav className="px-4 py-4 space-y-3">
-            <Link 
-              href="/#works" 
-              className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition"
-              onClick={() => setIsMobileMenuOpen(false)}
+      {/* Mobile dropdown nav */}
+      {mobileDropdownOpen && (
+        <div className="absolute left-0 top-full w-full bg-white border-b border-gray-200 shadow-lg z-40 flex flex-col items-center py-4 sm:hidden">
+          {/* <Link href="/#works" className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100" onClick={() => setMobileDropdownOpen(false)}>Features</Link> */}
+          <div className="w-full">
+            <button
+              className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100 flex items-center justify-center gap-2"
+              onClick={() => {
+                const dropdown = document.getElementById('mobile-find-dropdown');
+                if (dropdown) dropdown.classList.toggle('hidden');
+              }}
             >
-              Features
-            </Link>
-            <Link 
-              href="/#about" 
-              className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Projects
-            </Link>
-            <Link 
-              href="/#competitions" 
-              className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Competitions
-            </Link>
-            <Link 
-              href="/dashboard/plans" 
-              className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Plans
-            </Link>
-            {isSignedIn && (
-              <>
-              <Link 
-                href="/dashboard" 
-                className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Dashboard
-              </Link>
-                <Link 
-                  href="/messages" 
-                  className="block py-2 text-base font-bold uppercase tracking-widest hover:opacity-60 transition relative"
-                  onClick={() => setIsMobileMenuOpen(false)}
+              Find <ChevronDown className="h-4 w-4 inline" />
+            </button>
+            <div id="mobile-find-dropdown" className="hidden w-full bg-white border-t border-gray-100">
+              <button
+                className="py-3 px-6 w-full text-left text-base font-normal hover:bg-gray-100"
+                onClick={() => { window.location.href = '/competitions'; setMobileDropdownOpen(false); }}
+              >Competitions</button>
+              <button
+                className="py-3 px-6 w-full text-left text-base font-normal hover:bg-gray-100"
+                onClick={() => { window.location.href = '/summer-programs'; setMobileDropdownOpen(false); }}
+              >Summer Programs</button>
+            </div>
+          </div>
+          <Link href="/connect" className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100" onClick={() => setMobileDropdownOpen(false)}>Connect</Link>
+          <Link href="/ai-search" className="py-3 px-6 w-full text-center text-base font-semibold text-indigo-700 hover:bg-indigo-50" onClick={() => setMobileDropdownOpen(false)}>AI Search</Link>
+          <Link href="/dashboard/plans" className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100" onClick={() => setMobileDropdownOpen(false)}>Plans</Link>
+          {isSignedIn && (
+            <Link href="/messages" className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100" onClick={() => setMobileDropdownOpen(false)}>
+              Messages
+              {unreadCount > 0 && (
+                <Badge 
+                  variant="destructive" 
+                  className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
                 >
-                  Messages
-                  {unreadCount > 0 && (
-                    <Badge 
-                      variant="destructive" 
-                      className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                    >
-                      {unreadCount > 99 ? '99+' : unreadCount}
-                    </Badge>
-                  )}
-                </Link>
-              </>
-            )}
-          </nav>
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </Badge>
+              )}
+            </Link>
+          )}
         </div>
       )}
     </header>
