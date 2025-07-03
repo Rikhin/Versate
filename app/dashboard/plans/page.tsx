@@ -13,6 +13,7 @@ const plans = [
     name: "Starter - Free",
     price: 0,
     oldPrice: null,
+    priceId: null,
     description: "Get started with Versa's core features and discover your first opportunities.",
     features: [
       "✔️ Unlimited search of public competitions and programs",
@@ -27,6 +28,7 @@ const plans = [
     name: "Plus - Lifetime Access",
     price: 49.99,
     oldPrice: 99.99,
+    priceId: "price_xxx_plus",
     description: "Unlock advanced analytics, premium matching, and exclusive resources.",
     features: [
       "✔️ All Starter features",
@@ -41,6 +43,7 @@ const plans = [
     name: "Pro - Lifetime Access",
     price: 99.99,
     oldPrice: 199.99,
+    priceId: "price_xxx_pro",
     description: "For power users: full access to Versa's ecosystem, integrations, and custom tools.",
     features: [
       "✔️ All Plus features",
@@ -65,15 +68,23 @@ export default function PlansPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const router = useRouter();
 
-  function handleContinue() {
+  async function handleContinue() {
     const plan = plans[selected];
     if (plan.price === 0) {
       setShowSuccess(true);
-      // Optionally, handle free plan signup logic here
     } else {
-      // Redirect to Stripe checkout (placeholder)
-      // Replace with your actual Stripe integration logic
-      window.location.href = `/api/stripe/checkout?plan=${encodeURIComponent(plan.name)}`;
+      // POST to /api/stripe/checkout
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceId: plan.priceId }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || "Failed to start checkout");
+      }
     }
   }
 
