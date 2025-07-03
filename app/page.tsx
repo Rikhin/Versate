@@ -73,7 +73,7 @@ export default function LandingPage() {
         <section id="home" className="container mx-auto px-4 md:px-8 py-8 md:py-20 text-left">
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.2}>
             <div className="max-w-6xl mx-auto relative flex flex-col items-center justify-center text-center">
-              <div className="text-3xl sm:text-4xl md:text-7xl font-semibold text-black mb-6 sm:mb-8 md:mb-14 flex flex-col items-center leading-tight">
+              <div className="text-3xl sm:text-4xl md:text-7xl font-semibold text-black mb-6 sm:mb-8 md:mb-14 flex flex-col items-center leading-snug">
                 <span>Find Your</span>
                 <span>Perfect</span>
                 <span className="inline-block">

@@ -13,6 +13,31 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 
 const filterBoxClass = "h-10 md:h-11 text-sm md:text-base font-normal border border-gray-300 focus:border-blue-500 focus:bg-blue-50/30 hover:bg-gray-50 rounded-lg px-3 transition-colors duration-150 min-w-[120px] md:min-w-[160px] bg-white appearance-none"
 
+// Helper functions for filter grouping
+function groupCost(cost: string) {
+  if (!cost || cost.toLowerCase().includes('free')) return 'Free';
+  const num = parseInt(cost.replace(/[^\d]/g, ''));
+  if (isNaN(num)) return 'Other';
+  if (num < 1000) return '<$1000';
+  if (num <= 5000) return '$1000-$5000';
+  return '$5000<';
+}
+function groupAcceptance(rate: string) {
+  if (!rate) return 'Unknown';
+  const num = parseFloat(rate.replace(/[^\d.]/g, ''));
+  if (isNaN(num)) return 'Unknown';
+  if (num < 5) return '<5%';
+  if (num < 10) return '5%-10%';
+  if (num < 30) return '10%-30%';
+  if (num < 50) return '30%-50%';
+  return '50%<';
+}
+function groupDeadline(deadline: string) {
+  if (!deadline) return 'Unknown';
+  const monthMatch = deadline.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/i);
+  return monthMatch ? monthMatch[0] : 'Other';
+}
+
 export default function SummerProgramsPage() {
   const [programs, setPrograms] = useState<SummerProgram[]>([])
   const [search, setSearch] = useState("")
@@ -84,6 +109,7 @@ export default function SummerProgramsPage() {
 
         {/* Filters & Search */}
         <section className="container mx-auto px-8 py-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 mt-8">Explore Summer Programs</h1>
           <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6 mb-6">
             <Input
               type="text"
@@ -94,19 +120,21 @@ export default function SummerProgramsPage() {
             />
             <select className={filterBoxClass} value={filterCost} onChange={e => setFilterCost(e.target.value)}>
               <option value="">Cost</option>
-              {allCosts.map((c, i) => <option key={i} value={c}>{c}</option>)}
+              {allCosts.map((c, i) => <option key={i} value={c}>{groupCost(c)}</option>)}
             </select>
             <select className={filterBoxClass} value={filterAcceptance} onChange={e => setFilterAcceptance(e.target.value)}>
               <option value="">Acceptance Rate</option>
-              {allAcceptance.map((a, i) => <option key={i} value={a}>{a}</option>)}
+              {allAcceptance.map((a, i) => <option key={i} value={a}>{groupAcceptance(a)}</option>)}
             </select>
             <select className={filterBoxClass} value={filterDeadline} onChange={e => setFilterDeadline(e.target.value)}>
               <option value="">Deadline</option>
-              {allDeadlines.map((d, i) => <option key={i} value={d}>{d}</option>)}
+              {allDeadlines.map((d, i) => <option key={i} value={d}>{groupDeadline(d)}</option>)}
             </select>
             <select className={filterBoxClass} value={filterTargeted} onChange={e => setFilterTargeted(e.target.value)}>
-              <option value="">Targeted Group</option>
-              {allTargeted.map((t, i) => <option key={i} value={t}>{t}</option>)}
+              <option value="">Low-Income/First-Gen Focused</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="Unknown">Unknown</option>
             </select>
             <select className={filterBoxClass} value={filterCompetitive} onChange={e => setFilterCompetitive(e.target.value)}>
               <option value="">Competitiveness</option>

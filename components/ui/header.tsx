@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Badge } from "./badge";
 import { createClient } from "@/lib/supabase";
 import { useOnboardingModal } from "@/components/onboarding/OnboardingScrollEnforcer";
+import { useRouter } from "next/navigation";
 
 export function Header() {
   const { isSignedIn, user } = useUser();
@@ -18,6 +19,8 @@ export function Header() {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { showModal } = useOnboardingModal();
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
+  const [findDropdownOpen, setFindDropdownOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -86,30 +89,31 @@ export function Header() {
           {/* Center: Nav links */}
           <nav className="flex-grow items-center gap-4 md:gap-8 text-sm md:text-base font-semibold uppercase tracking-wider justify-center hidden sm:flex">
             {/* <Link href="/#works" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Features</Link> */}
-            <div className="relative group">
+            <div
+              className="relative group"
+              onMouseEnter={() => setFindDropdownOpen(true)}
+              onMouseLeave={() => setFindDropdownOpen(false)}
+            >
               <button
-                className="hover:opacity-60 transition pointer-events-auto flex items-center gap-1"
+                className="hover:opacity-60 transition pointer-events-auto flex items-center gap-1 uppercase"
                 tabIndex={showModal ? -1 : 0}
                 aria-disabled={showModal}
                 style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
-                onClick={e => {
-                  e.preventDefault();
-                  const dropdown = document.getElementById('find-dropdown');
-                  if (dropdown) dropdown.classList.toggle('hidden');
-                }}
+                onClick={() => setFindDropdownOpen((open) => !open)}
               >
-                Find <ChevronDown className="h-4 w-4 inline" />
+                FIND
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
-              <div id="find-dropdown" className="hidden absolute left-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-50 group-hover:block" onMouseLeave={e => { (e.currentTarget as HTMLElement).classList.add('hidden'); }}>
-                <button
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
-                  onClick={() => { window.location.href = '/competitions'; }}
-                >Competitions</button>
-                <button
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
-                  onClick={() => { window.location.href = '/summer-programs'; }}
-                >Summer Programs</button>
-              </div>
+              {findDropdownOpen && (
+                <div
+                  className="absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg z-50 flex flex-col"
+                  onMouseEnter={() => setFindDropdownOpen(true)}
+                  onMouseLeave={() => setFindDropdownOpen(false)}
+                >
+                  <button className="py-3 px-6 text-left hover:bg-gray-100" onClick={() => { router.push('/competitions'); setFindDropdownOpen(false); }}>Competitions</button>
+                  <button className="py-3 px-6 text-left hover:bg-gray-100" onClick={() => { router.push('/summer-programs'); setFindDropdownOpen(false); }}>Summer Programs</button>
+                </div>
+              )}
             </div>
             <Link href="/connect" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Connect</Link>
             <Link href="/ai-search" className="hover:opacity-60 transition pointer-events-auto text-indigo-700" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>AI Search</Link>
