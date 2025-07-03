@@ -27,7 +27,7 @@ interface OnboardingFormData {
   firstName: string;
   lastName: string;
   email: string;
-  school: string;
+  city: string;
   gradeLevel: string;
   bio: string;
   skills: string[];
@@ -159,7 +159,7 @@ export function OnboardingForm() {
     firstName: user.firstName || "",
     lastName: user.lastName || "",
     email: user.emailAddresses?.[0]?.emailAddress || "",
-    school: "",
+    city: "",
     gradeLevel: "",
     bio: "",
     skills: [],
@@ -205,7 +205,7 @@ export function OnboardingForm() {
   const isStepValid = () => {
     switch (currentStep) {
       case 1:
-        return formData.firstName && formData.lastName && formData.email && formData.school && formData.state;
+        return formData.firstName && formData.lastName && formData.email && formData.city && formData.state;
       case 2:
         return formData.skills.length > 0 && formData.roles.length > 0;
       case 3:
@@ -273,7 +273,7 @@ export function OnboardingForm() {
           first_name: formData.firstName,
           last_name: formData.lastName,
           email: formData.email,
-          school: formData.school,
+          city: formData.city,
           grade_level: formData.gradeLevel,
           bio: formData.bio,
           skills: formData.skills,
@@ -386,6 +386,10 @@ export function OnboardingForm() {
                           }}
                         />
                       </div>
+                      <div className="space-y-3">
+                        <Label htmlFor="city" className="text-base font-normal text-black">City *</Label>
+                        <CityDropdown value={formData.city || ''} onChange={val => setFormData(prev => ({ ...prev, city: val }))} />
+                      </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-3">
                           <Label htmlFor="firstName" className="text-base font-normal text-black">First Name *</Label>
@@ -400,15 +404,14 @@ export function OnboardingForm() {
                         <Label htmlFor="email" className="text-base font-normal text-black">Email *</Label>
                         <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))} placeholder="Enter your email" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-3">
-                          <Label htmlFor="school" className="text-base font-normal text-black">School *</Label>
-                          <Input id="school" value={formData.school} onChange={(e) => setFormData((prev) => ({ ...prev, school: e.target.value }))} placeholder="Enter your school name (City, ST)" aria-label="Enter your school name in the format: City, ST" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
-                        </div>
-                        <div className="space-y-3">
-                          <Label htmlFor="gradeLevel" className="text-base font-normal text-black">Grade Level</Label>
+                      <div className="space-y-3">
+                        <Label htmlFor="state" className="text-base font-normal text-black">State *</Label>
+                        <StateDropdown value={formData.state || ''} onChange={val => setFormData(prev => ({ ...prev, state: val }))} />
+                      </div>
+                      <div className="space-y-3">
+                        <Label htmlFor="gradeLevel" className="text-base font-normal text-black">Grade Level</Label>
                         <Select value={formData.gradeLevel} onValueChange={(value) => setFormData((prev) => ({ ...prev, gradeLevel: value }))}>
-                            <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
+                          <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
                             <SelectValue placeholder="Select your grade level" />
                           </SelectTrigger>
                           <SelectContent>
@@ -425,12 +428,7 @@ export function OnboardingForm() {
                         </Select>
                       </div>
                     </div>
-                      <div className="space-y-3">
-                        <Label htmlFor="state" className="text-base font-normal text-black">State *</Label>
-                        <StateDropdown value={formData.state || ''} onChange={val => setFormData(prev => ({ ...prev, state: val }))} />
-                    </div>
-                  </div>
-                )}
+                  )}
                 {/* Step 2: Skills & Roles */}
                 {currentStep === 2 && (
                     <div className="space-y-10 animate-fadeIn">
