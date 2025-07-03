@@ -390,7 +390,7 @@ export default function ConnectPage() {
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">Sign in or Sign up</h2>
             <p className="text-gray-500 text-center mb-4">Sign in or create an account to access Connect and start collaborating with mentors and students.</p>
-            <div className="flex w-full">
+            <div className="flex w-full gap-2">
               <SignInButton mode="modal">
                 <button className="flex-1 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition">Sign In</button>
               </SignInButton>
