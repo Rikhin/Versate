@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -71,53 +72,78 @@ export default function PlansPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center py-16 px-4">
-      <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">Choose Your Plan</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
-        {plans.map((plan) => {
-          const isCurrent = userSub.plan === plan.name;
-          return (
-            <div key={plan.name} className={`rounded-2xl bg-white shadow-lg border border-gray-100 p-8 flex flex-col items-center ${isCurrent ? 'ring-2 ring-indigo-500' : ''}`}>
-              <h2 className="text-2xl font-bold mb-2">{plan.name}</h2>
-              <div className="text-4xl font-extrabold mb-2">{plan.price === 0 ? "Free" : `$${plan.price}/mo`}</div>
-              <div className="text-gray-500 mb-4 text-center">{plan.description}</div>
-              <ul className="mb-6 space-y-2 w-full">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span className="inline-block w-2 h-2 bg-indigo-500 rounded-full"></span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              {isCurrent ? (
-                <Button className="w-full" disabled>Current Plan</Button>
-              ) : plan.price === 0 ? (
-                <Button className="w-full" disabled>Switch to Free</Button>
-              ) : (
-                <Button
-                  className="w-full"
-                  onClick={() => handleSubscribe(plan.stripePriceId)}
-                  disabled={loading === plan.stripePriceId}
-                >
-                  {loading === plan.stripePriceId ? "Redirecting..." : "Subscribe"}
-                </Button>
-              )}
-            </div>
-          );
-        })}
+    <div className="min-h-screen bg-white flex flex-col items-center justify-start py-12 px-4 md:px-0">
+      {/* Orange badge */}
+      <div className="flex justify-center mb-4">
+        <span className="inline-block text-sm md:text-base font-semibold text-orange-500 bg-orange-100 rounded-full px-4 py-1 tracking-wide">One-Time Purchase, Lifetime Access</span>
       </div>
-      {userSub.plan !== "Free" && (
-        <div className="mt-10">
-          <Button
-            variant="outline"
-            className="px-8 py-3 text-base font-semibold"
-            onClick={handleManageBilling}
-            disabled={loading === "billing"}
-          >
-            {loading === "billing" ? "Loading..." : "Manage Billing"}
-          </Button>
+      {/* Title */}
+      <h1 className="text-4xl md:text-6xl font-black text-black text-center mb-4">Skip Months of Research</h1>
+      {/* Subtitle */}
+      <p className="text-lg md:text-xl text-gray-500 text-center mb-10 max-w-2xl">
+        Get instant access to validated business opportunities and market insights. Start finding your next big idea today.
+      </p>
+      {/* Pricing Cards */}
+      <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-stretch">
+        {/* Lite Card */}
+        <div className="flex-1 bg-white rounded-2xl shadow-xl border border-gray-100 p-8 flex flex-col items-center min-w-[280px] max-w-sm">
+          <h2 className="text-xl font-bold text-black mb-2">Lite - Lifetime Access</h2>
+          <p className="text-gray-500 text-sm mb-4 text-center">Lifetime access to our continuously updating database of pain points and SaaS ideas</p>
+          <div className="mb-2 flex items-center gap-2">
+            <span className="text-gray-400 line-through text-lg">$99.99</span>
+            <span className="text-3xl font-black text-black">$49.99</span>
+            <span className="text-xs text-gray-400 font-semibold">USD</span>
+          </div>
+          <ul className="text-left text-gray-700 text-sm space-y-2 mt-4 mb-2 w-full max-w-xs">
+            <li>✔️ Database updates with fresh market insights</li>
+            <li>✔️ Limited to 10 queries per day</li>
+            <li>✔️ Access to G2 and Upwork Analysis Database</li>
+            <li>✔️ Access to database of 3000+ Products</li>
+            <li>✔️ Access to curated SaaS Solutions database</li>
+            <li>✔️ Access to curated Pain Points database</li>
+          </ul>
         </div>
-      )}
+        {/* Basic Card */}
+        <div className="flex-1 bg-white rounded-2xl shadow-xl border-2 border-orange-400 p-8 flex flex-col items-center min-w-[280px] max-w-sm relative">
+          {/* Most Popular Badge */}
+          <span className="absolute -top-5 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-xs font-bold px-4 py-1 rounded-full shadow-md tracking-wide">MOST POPULAR</span>
+          <h2 className="text-xl font-bold text-black mb-2">Basic - Lifetime Access</h2>
+          <p className="text-gray-500 text-sm mb-4 text-center">Lifetime access to our continuously updating databases and Micro SaaS Boilerplate</p>
+          <div className="mb-2 flex items-center gap-2">
+            <span className="text-gray-400 line-through text-lg">$149.99</span>
+            <span className="text-3xl font-black text-black">$99.99</span>
+            <span className="text-xs text-gray-400 font-semibold">USD</span>
+          </div>
+          <ul className="text-left text-gray-700 text-sm space-y-2 mt-4 mb-2 w-full max-w-xs">
+            <li>✔️ Database updates with fresh market insights</li>
+            <li>✔️ Access to Micro SaaS BoilerPlate ✨</li>
+            <li>✔️ Limited to 20 queries per day</li>
+            <li>✔️ Access to G2 and Upwork Analysis Database</li>
+            <li>✔️ Access to database of 3000+ Products</li>
+            <li>✔️ Access to curated SaaS Solutions database</li>
+            <li>✔️ Access to curated Pain Points database</li>
+          </ul>
+        </div>
+        {/* Pro Card */}
+        <div className="flex-1 bg-white rounded-2xl shadow-xl border border-gray-100 p-8 flex flex-col items-center min-w-[280px] max-w-sm">
+          <h2 className="text-xl font-bold text-black mb-2">Pro - Lifetime Access</h2>
+          <p className="text-gray-500 text-sm mb-4 text-center">Everything in Basic + Create custom AI agent pipelines to automatically extract pain points and generate SaaS ideas from any subreddit. Access every database and feature.</p>
+          <div className="mb-2 flex items-center gap-2">
+            <span className="text-gray-400 line-through text-lg">$299.99</span>
+            <span className="text-3xl font-black text-black">$199.99</span>
+            <span className="text-xs text-gray-400 font-semibold">USD</span>
+          </div>
+          <ul className="text-left text-gray-700 text-sm space-y-2 mt-4 mb-2 w-full max-w-xs">
+            <li>✔️ Database updates with fresh market insights</li>
+            <li>✔️ Access to Micro SaaS BoilerPlate ✨</li>
+            <li>✔️ Unlimited queries</li>
+            <li>✔️ Access to G2 and Upwork Analysis Database</li>
+            <li>✔️ Access to database of 3000+ Products</li>
+            <li>✔️ Access to curated SaaS Solutions database</li>
+            <li>✔️ Access to curated Pain Points database</li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 } 
