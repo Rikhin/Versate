@@ -361,7 +361,7 @@ export function OnboardingForm() {
                         <p className="text-lg text-gray-500">Tell us about yourself to help us find the perfect teammates</p>
                       </div>
                       <div className="flex flex-col items-center mb-6">
-                        <Label className="text-base font-medium text-black mb-2">Profile Picture (optional)</Label>
+                        <Label className="text-base font-normal text-black mb-2">Profile Picture (optional)</Label>
                         <div className="mb-2">
                           <img
                             src={imagePreview || "/placeholder-user.jpg"}
@@ -388,25 +388,25 @@ export function OnboardingForm() {
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-3">
-                          <Label htmlFor="firstName" className="text-base font-medium text-black">First Name *</Label>
+                          <Label htmlFor="firstName" className="text-base font-normal text-black">First Name *</Label>
                           <Input id="firstName" value={formData.firstName} onChange={(e) => setFormData((prev) => ({ ...prev, firstName: e.target.value }))} placeholder="Enter your first name" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
                         </div>
                         <div className="space-y-3">
-                          <Label htmlFor="lastName" className="text-base font-medium text-black">Last Name *</Label>
+                          <Label htmlFor="lastName" className="text-base font-normal text-black">Last Name *</Label>
                           <Input id="lastName" value={formData.lastName} onChange={(e) => setFormData((prev) => ({ ...prev, lastName: e.target.value }))} placeholder="Enter your last name" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
                         </div>
                       </div>
                       <div className="space-y-3">
-                        <Label htmlFor="email" className="text-base font-medium text-black">Email *</Label>
+                        <Label htmlFor="email" className="text-base font-normal text-black">Email *</Label>
                         <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))} placeholder="Enter your email" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-3">
-                          <Label htmlFor="school" className="text-base font-medium text-black">School *</Label>
+                          <Label htmlFor="school" className="text-base font-normal text-black">School *</Label>
                           <Input id="school" value={formData.school} onChange={(e) => setFormData((prev) => ({ ...prev, school: e.target.value }))} placeholder="Enter your school name (City, ST)" aria-label="Enter your school name in the format: City, ST" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
                         </div>
                         <div className="space-y-3">
-                          <Label htmlFor="gradeLevel" className="text-base font-medium text-black">Grade Level</Label>
+                          <Label htmlFor="gradeLevel" className="text-base font-normal text-black">Grade Level</Label>
                         <Select value={formData.gradeLevel} onValueChange={(value) => setFormData((prev) => ({ ...prev, gradeLevel: value }))}>
                             <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
                             <SelectValue placeholder="Select your grade level" />
@@ -426,7 +426,7 @@ export function OnboardingForm() {
                       </div>
                     </div>
                       <div className="space-y-3">
-                        <Label htmlFor="state" className="text-base font-medium text-black">State *</Label>
+                        <Label htmlFor="state" className="text-base font-normal text-black">State *</Label>
                         <StateDropdown value={formData.state || ''} onChange={val => setFormData(prev => ({ ...prev, state: val }))} />
                     </div>
                   </div>
@@ -443,12 +443,12 @@ export function OnboardingForm() {
                       </div>
                     <div className="space-y-8">
                       <div>
-                          <Label className="text-base font-medium text-black mb-2 block">Select Your Skills *</Label>
+                          <Label className="text-base font-normal text-black mb-2 block">Select Your Skills *</Label>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                           {skillOptions.map((skill) => (
                             <div key={skill} className="flex items-center space-x-3">
                                 <Checkbox id={skill} checked={formData.skills.includes(skill)} onCheckedChange={() => toggleArrayItem(formData.skills, skill, (skills) => setFormData((prev) => ({ ...prev, skills })))} className="border-2 border-gray-200 data-[state=checked]:border-indigo-500" />
-                                <Label htmlFor={skill} className="text-sm font-medium text-black cursor-pointer">
+                                <Label htmlFor={skill} className="text-sm font-normal text-black cursor-pointer">
                                 {skill}
                               </Label>
                             </div>
@@ -456,12 +456,12 @@ export function OnboardingForm() {
                         </div>
                       </div>
                       <div>
-                          <Label className="text-base font-medium text-black mb-2 block">Preferred Roles *</Label>
+                          <Label className="text-base font-normal text-black mb-2 block">Preferred Roles *</Label>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                           {roleOptions.map((role) => (
                             <div key={role} className="flex items-center space-x-3">
                                 <Checkbox id={role} checked={formData.roles.includes(role)} onCheckedChange={() => toggleArrayItem(formData.roles, role, (roles) => setFormData((prev) => ({ ...prev, roles })))} className="border-2 border-gray-200 data-[state=checked]:border-indigo-500" />
-                                <Label htmlFor={role} className="text-sm font-medium text-black cursor-pointer">
+                                <Label htmlFor={role} className="text-sm font-normal text-black cursor-pointer">
                                 {role}
                               </Label>
                             </div>
@@ -469,7 +469,7 @@ export function OnboardingForm() {
                         </div>
                       </div>
                         <div className="space-y-3">
-                          <Label htmlFor="experienceLevel" className="text-base font-medium text-black">Experience Level</Label>
+                          <Label className="text-base font-normal text-black">Experience Level</Label>
                         <Select value={formData.experienceLevel} onValueChange={(value) => setFormData((prev) => ({ ...prev, experienceLevel: value }))}>
                             <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
                             <SelectValue placeholder="Select your experience level" />
@@ -497,7 +497,7 @@ export function OnboardingForm() {
                       </div>
                     <div className="space-y-8">
                         <div className="space-y-3">
-                          <Label htmlFor="timeCommitment" className="text-base font-medium text-black">Time Commitment *</Label>
+                          <Label className="text-base font-normal text-black">Time Commitment *</Label>
                         <Select value={formData.timeCommitment} onValueChange={(value) => setFormData((prev) => ({ ...prev, timeCommitment: value }))}>
                             <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
                             <SelectValue placeholder="Select your time commitment" />
@@ -511,12 +511,12 @@ export function OnboardingForm() {
                         </Select>
                       </div>
                       <div>
-                          <Label className="text-base font-medium text-black mb-2 block">Collaboration Style *</Label>
+                          <Label className="text-base font-normal text-black">Collaboration Style *</Label>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                           {collaborationStyleOptions.map((style) => (
                             <div key={style} className="flex items-center space-x-3">
                                 <Checkbox id={style} checked={formData.collaborationStyle.includes(style)} onCheckedChange={() => toggleArrayItem(formData.collaborationStyle, style, (collaborationStyle) => setFormData((prev) => ({ ...prev, collaborationStyle })))} className="border-2 border-gray-200 data-[state=checked]:border-indigo-500" />
-                                <Label htmlFor={style} className="text-sm font-medium text-black cursor-pointer">
+                                <Label htmlFor={style} className="text-sm font-normal text-black cursor-pointer">
                                 {style}
                               </Label>
                             </div>
@@ -599,7 +599,7 @@ export function OnboardingForm() {
                         <p className="text-lg text-gray-500">Share a bit about yourself and what you're passionate about</p>
                       </div>
                       <div className="space-y-3">
-                        <Label htmlFor="bio" className="text-base font-medium text-black">Bio *</Label>
+                        <Label className="text-base font-normal text-black">Bio *</Label>
                         <Textarea id="bio" value={formData.bio} onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))} placeholder="Tell us about yourself, your interests, goals, and what you're looking for in a team..." className="min-h-32 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4 resize-none" />
                         <p className="text-sm text-gray-500">This will help other students understand who you are and what you bring to a team.</p>
                     </div>
@@ -610,16 +610,16 @@ export function OnboardingForm() {
                 {error && (
                     <div className="flex items-center space-x-2 p-4 bg-red-50 border border-red-200 rounded-lg mt-6 animate-fadeIn">
                       <AlertCircle className="h-5 w-5 text-red-400" />
-                      <p className="text-red-500 font-semibold">{error}</p>
+                      <p className="text-red-500 font-normal">{error}</p>
                   </div>
                 )}
 
                 {/* Navigation Buttons */}
                   <div className="flex flex-col md:flex-row justify-between items-center pt-10 gap-4 animate-fadeIn">
-                    <Button variant="outline" size="lg" className="rounded-xl px-8 py-3 text-base font-semibold border-gray-300 hover:bg-gray-100 transition-all" onClick={handleBack} disabled={currentStep === 1 || isSubmitting}>
+                    <Button variant="outline" size="lg" className="rounded-xl px-8 py-3 text-base font-normal border-gray-300 hover:bg-gray-100 transition-all" onClick={handleBack} disabled={currentStep === 1 || isSubmitting}>
                       <ArrowLeft className="mr-2 h-5 w-5" /> Back
                   </Button>
-                    <Button size="lg" className="rounded-xl px-8 py-3 text-base font-semibold bg-indigo-500 hover:bg-indigo-600 text-white shadow-md transition-all" onClick={handleNext} disabled={!isStepValid() || isSubmitting}>
+                    <Button size="lg" className="rounded-xl px-8 py-3 text-base font-normal bg-indigo-500 hover:bg-indigo-600 text-white shadow-md transition-all" onClick={handleNext} disabled={!isStepValid() || isSubmitting}>
                       {isSubmitting ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : currentStep === totalSteps ? "Finish" : "Next"}
                       {currentStep !== totalSteps && <ArrowRight className="ml-2 h-5 w-5" />}
                   </Button>

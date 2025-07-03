@@ -146,7 +146,7 @@ export function Header() {
             </span>
           </button>
           {/* Right: User actions/profile */}
-          <div className="flex items-center flex-shrink-0 min-w-[120px] md:min-w-[160px] lg:min-w-[180px] justify-end">
+          <div className="flex items-center flex-shrink-0 min-w-[120px] md:min-w-[160px] lg:min-w-[180px] justify-end gap-4 md:gap-6">
           {isSignedIn ? (
             <>
                 <Link href="/dashboard" className="hidden sm:block pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>
@@ -236,6 +236,7 @@ export function Header() {
               <SignInButton mode="modal">
                   <button className="px-2 md:px-4 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition text-xs md:text-sm" disabled={showModal}>Sign In</button>
               </SignInButton>
+              <span className="w-2 md:w-4" />
               <SignUpButton mode="modal">
                   <button className="px-2 md:px-4 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-900 transition text-xs md:text-sm" disabled={showModal}>Sign Up</button>
               </SignUpButton>

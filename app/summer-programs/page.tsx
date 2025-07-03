@@ -61,14 +61,21 @@ export default function SummerProgramsPage() {
   });
   const allTargeted = Array.from(new Set(programs.map(p => p.targeted).filter(Boolean))).sort()
 
+  // Grouped filter options for cost and acceptance
+  const costGroups = ["Free", "<$1000", "$1000-$5000", "$5000<"];
+  const acceptanceGroups = ["<5%", "5%-10%", "10%-30%", "30%-50%", "50%<"];
+
   // Filtering logic
   const filtered = programs.filter(p => {
     const s = search.toLowerCase()
+    const costGroup = groupCost(p.cost)
+    const acceptanceGroup = groupAcceptance(p.acceptanceRate)
+    const deadlineGroup = groupDeadline(p.applicationDeadline)
     return (
       (!s || p.title.toLowerCase().includes(s) || p.name.toLowerCase().includes(s) || p.description.toLowerCase().includes(s)) &&
-      (!filterCost || p.cost === filterCost) &&
-      (!filterAcceptance || p.acceptanceRate === filterAcceptance) &&
-      (!filterDeadline || p.applicationDeadline === filterDeadline) &&
+      (!filterCost || costGroup === filterCost) &&
+      (!filterAcceptance || acceptanceGroup === filterAcceptance) &&
+      (!filterDeadline || deadlineGroup === filterDeadline) &&
       (!filterTargeted || p.targeted === filterTargeted)
     )
   })
@@ -105,6 +112,7 @@ export default function SummerProgramsPage() {
             </div>
           </div>
         </header>
+        <div className="h-8 md:h-12" />
 
         {/* Title section */}
         <section className="text-center mb-8 md:mb-16">
@@ -118,7 +126,7 @@ export default function SummerProgramsPage() {
 
         {/* Filters & Search */}
         <section className="container mx-auto px-8 py-8">
-          <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-6 items-center justify-center">
+          <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-4 md:gap-6 mb-6 items-center justify-center">
             <Input
               type="text"
               placeholder="Search summer programs..."
@@ -128,11 +136,11 @@ export default function SummerProgramsPage() {
             />
             <select className={filterBoxClass} value={filterCost} onChange={e => setFilterCost(e.target.value)}>
               <option value="">Cost</option>
-              {allCosts.map((c, i) => <option key={i} value={c}>{groupCost(c)}</option>)}
+              {costGroups.map((c, i) => <option key={i} value={c}>{c}</option>)}
             </select>
             <select className={filterBoxClass} value={filterAcceptance} onChange={e => setFilterAcceptance(e.target.value)}>
               <option value="">Acceptance Rate</option>
-              {allAcceptance.map((a, i) => <option key={i} value={a}>{groupAcceptance(a)}</option>)}
+              {acceptanceGroups.map((a, i) => <option key={i} value={a}>{a}</option>)}
             </select>
             <select className={filterBoxClass} value={filterDeadline} onChange={e => setFilterDeadline(e.target.value)}>
               <option value="">Deadline Month</option>
