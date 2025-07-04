@@ -51,8 +51,7 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
         body: JSON.stringify({
           to: profile.email,
           subject: emailSubject,
-          body: emailBody,
-          from: 'noreply@colabboard.com'
+          text: emailBody
         }),
       })
 
@@ -236,7 +235,7 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
                 
                 <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
                   <p><strong>Email will be sent to:</strong> {profile.email}</p>
-                  <p><strong>From:</strong> noreply@colabboard.com</p>
+                  <p><strong>From:</strong> info@versate.pro</p>
                 </div>
                 
                 <div className="flex gap-2">
