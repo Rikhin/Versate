@@ -5,7 +5,8 @@ const NVIDIA_API_URL = "https://integrate.api.nvidia.com/v1/chat/completions" //
 
 export async function POST(req: NextRequest) {
   try {
-    const { message } = await req.json()
+    const body = await req.json()
+    const message = body.query || body.message
     if (!message) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 })
     }
@@ -25,8 +26,15 @@ export async function POST(req: NextRequest) {
     if (!nvidiaRes.ok) {
       return NextResponse.json({ error: nvidiaData.error || "Nvidia API error" }, { status: 500 })
     }
-    // Assume response is { result: string }
-    return NextResponse.json({ response: nvidiaData.result })
+    // Wrap the result in a results array for the frontend
+    const text = nvidiaData.result || nvidiaData.response || ""
+    const results = [
+      {
+        title: "AI Search Result",
+        description: text
+      }
+    ]
+    return NextResponse.json({ results })
   } catch (error: any) {
     return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 })
   }
