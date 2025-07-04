@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useAuth, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { useAuth, SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer";
 import ReactMarkdown from 'react-markdown';
 
@@ -31,8 +31,26 @@ export default function AISearchPage() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { isSignedIn, isLoaded } = useAuth();
+  const { isSignedIn, isLoaded, user } = useUser();
   const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Placeholder: Replace with actual plan fetch logic
+  const userPlan = isSignedIn ? (user?.publicMetadata?.plan || "Free") : "Free";
+
+  // Marquee animation for pills
+  // We'll use a simple CSS animation for now
+  const marqueePills = [
+    "Students interested in robotics in California",
+    "Mentors with experience in AI",
+    "Competitions for high schoolers in Texas",
+    "Teammates who know React",
+    "People looking for hackathons this month",
+    "Founders offering open-source developer tools",
+    "Researchers in quantum computing",
+    "Entrepreneurs in biotech",
+    "People currently based in Europe",
+    "Who works at a VC firm?",
+  ];
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) setShowAuthModal(true);
@@ -83,13 +101,26 @@ export default function AISearchPage() {
           </div>
         </aside>
         {/* Main Content - Centered Search UI */}
-        <main className="flex-1 flex flex-col items-center justify-center py-24 px-2 sm:px-4">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-black text-center mb-4 leading-tight tracking-tight">Prioritize Efficiency. Search Smartly.</h1>
+        <main className="flex-1 flex flex-col items-center justify-center py-24 px-2 sm:px-4 relative">
+          {/* Move header higher */}
+          <div className="w-full flex flex-col items-center" style={{ marginTop: '-3rem', marginBottom: '2.5rem' }}>
+            <h1 className="text-5xl md:text-6xl font-extrabold text-black text-center leading-tight tracking-tight mb-2">Prioritize Efficiency. Search Smartly.</h1>
+          </div>
           <div className="w-full max-w-xl mx-auto flex flex-col items-center">
             <div className="w-full flex flex-col items-center mb-6">
               <div className="w-full max-w-xl bg-white rounded-2xl shadow-lg border border-gray-200 p-6 flex flex-col items-center relative">
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-50 border border-gray-200 rounded-full px-4 py-1 text-xs text-gray-500 flex items-center gap-2">
-                  You're on the free plan. Upgrade for unlimited searches. <button className="ml-2 text-purple-600 font-semibold hover:underline">Upgrade Plan</button>
+                {/* Upgrade plan tab, dynamic */}
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-50 border border-gray-200 rounded-full px-4 py-1 text-xs text-gray-500 flex items-center gap-2 z-10">
+                  {userPlan === "Free" ? (
+                    <>
+                      You're on the free plan. Upgrade for unlimited searches.
+                      <button className="ml-2 text-purple-600 font-semibold hover:underline">Upgrade Plan</button>
+                    </>
+                  ) : (
+                    <>
+                      You're on the <span className="ml-1 font-bold text-indigo-600">{userPlan}</span> plan.
+                    </>
+                  )}
                 </div>
                 <input
                   className="w-full text-lg px-6 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-200 bg-gray-50 text-gray-500 placeholder-gray-400 outline-none mt-8"
@@ -106,17 +137,31 @@ export default function AISearchPage() {
                 </div>
               </div>
             </div>
-            {/* Example queries as pills */}
-            <div className="flex flex-wrap gap-3 justify-center mt-2">
-              {exampleQueries.slice(0, 6).map((ex, i) => (
-                <span
-                  key={i}
-                  className="bg-white border border-gray-200 px-4 py-2 rounded-full text-gray-700 text-sm font-medium shadow-sm cursor-pointer hover:bg-gray-50 transition"
-                  onClick={() => setQuery(ex)}
-                >
-                  {ex}
-                </span>
-              ))}
+            {/* Marquee pills */}
+            <div className="relative w-full max-w-2xl overflow-x-hidden" style={{ height: '56px' }}>
+              <div className="absolute left-0 top-0 w-16 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+              <div className="absolute right-0 top-0 w-16 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+              <div className="flex gap-3 animate-marquee whitespace-nowrap" style={{ animation: 'marquee 18s linear infinite' }}>
+                {marqueePills.map((pill, i) => (
+                  <span
+                    key={i}
+                    className="bg-white border border-gray-200 px-4 py-2 rounded-full text-gray-700 text-sm font-medium shadow-sm cursor-pointer hover:bg-gray-50 transition mx-1"
+                    onClick={() => setQuery(pill)}
+                  >
+                    {pill}
+                  </span>
+                ))}
+                {/* Duplicate for seamless loop */}
+                {marqueePills.map((pill, i) => (
+                  <span
+                    key={i + marqueePills.length}
+                    className="bg-white border border-gray-200 px-4 py-2 rounded-full text-gray-700 text-sm font-medium shadow-sm cursor-pointer hover:bg-gray-50 transition mx-1"
+                    onClick={() => setQuery(pill)}
+                  >
+                    {pill}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </main>
