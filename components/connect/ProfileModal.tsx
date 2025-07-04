@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Mail, ExternalLink, Building, MapPin, Clock, User, GraduationCap } from "lucide-react"
 import { MessageButton } from "@/components/messaging/MessageButton"
+import { useRequireProfile } from "@/hooks/use-require-profile"
 
 interface ProfileData {
   name: string
@@ -37,6 +38,8 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
   const [emailBody, setEmailBody] = useState("")
   const [isSending, setIsSending] = useState(false)
   const [showEmailForm, setShowEmailForm] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const { profile: userProfile } = useRequireProfile()
 
   const handleSendEmail = async () => {
     if (!profile?.email || !emailSubject || !emailBody) return
@@ -77,6 +80,29 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
   const handleExternalEmail = () => {
     if (profile?.email) {
       window.open(`mailto:${profile.email}?subject=Hello from ColabBoard`, "_blank")
+    }
+  }
+
+  const handleGenerateAIEmail = async () => {
+    if (!userProfile || !profile) return
+    setIsGenerating(true)
+    try {
+      const res = await fetch("/api/email/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userProfile, mentorProfile: profile })
+      })
+      const data = await res.json()
+      if (res.ok && data.subject && data.body) {
+        setEmailSubject(data.subject)
+        setEmailBody(data.body)
+      } else {
+        alert(data.error || "Failed to generate email. Please try again.")
+      }
+    } catch (e) {
+      alert("Failed to generate email. Please try again.")
+    } finally {
+      setIsGenerating(false)
     }
   }
 
@@ -187,57 +213,67 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
           </Card>
 
           {/* Email Actions */}
-          <div className="flex gap-2">
-            {profile.type === "student" && profile.userId && (
-              <MessageButton recipientId={profile.userId} recipientName={profile.name} />
-            )}
-            <Button
-              onClick={() => setShowEmailForm(!showEmailForm)}
-              className="flex items-center gap-2"
-            >
-              <Mail className="h-4 w-4" />
-              Send In-App Email
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleExternalEmail}
-              className="flex items-center gap-2"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Send External Email
-            </Button>
-          </div>
+          {profile.email && (
+            <div className="flex gap-2">
+              {profile.type === "student" && profile.userId && (
+                <MessageButton recipientId={profile.userId} recipientName={profile.name} />
+              )}
+              <Button
+                onClick={() => setShowEmailForm(!showEmailForm)}
+                className="flex items-center gap-2"
+              >
+                <Mail className="h-4 w-4" />
+                Send In-App Email
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleExternalEmail}
+                className="flex items-center gap-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Send External Email
+              </Button>
+            </div>
+          )}
 
           {/* Email Form */}
           {showEmailForm && (
             <Card>
               <CardContent className="pt-6 space-y-4">
-                <div>
+                <div className="flex items-center gap-2 mb-2">
                   <Label htmlFor="email-subject">Subject</Label>
-                  <Input
-                    id="email-subject"
-                    value={emailSubject}
-                    onChange={(e) => setEmailSubject(e.target.value)}
-                    placeholder="Enter email subject..."
-                  />
+                  <button
+                    type="button"
+                    onClick={handleGenerateAIEmail}
+                    disabled={isGenerating}
+                    className="ml-2 px-2 py-1 text-xs rounded bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 text-yellow-700 flex items-center gap-1 transition"
+                    style={{ fontWeight: 500 }}
+                    title="Let AI draft your email!"
+                  >
+                    ✨ Generate with AI
+                  </button>
+                  {isGenerating && <span className="text-xs text-gray-400 ml-2">Generating...</span>}
                 </div>
-                
+                <Input
+                  id="email-subject"
+                  value={emailSubject}
+                  onChange={(e) => setEmailSubject(e.target.value)}
+                  placeholder="Enter email subject..."
+                />
                 <div>
                   <Label htmlFor="email-body">Message</Label>
                   <Textarea
                     id="email-body"
                     value={emailBody}
                     onChange={(e) => setEmailBody(e.target.value)}
-                    placeholder={`Hi ${profile.name.split(' ')[0]},\n\nI found your profile on ColabBoard and would love to connect...`}
+                    placeholder={`Hi ${profile.name.split(' ')[0]},\n\nI found your profile on Versate and would love to connect...`}
                     rows={8}
                   />
                 </div>
-                
                 <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
                   <p><strong>Email will be sent to:</strong> {profile.email}</p>
                   <p><strong>From:</strong> Versate &lt;info@versate.pro&gt;</p>
                 </div>
-                
                 <div className="flex gap-2">
                   <Button
                     onClick={handleSendEmail}
@@ -247,7 +283,6 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
                     <Mail className="h-4 w-4" />
                     {isSending ? "Sending..." : "Send Email"}
                   </Button>
-                  
                   <Button
                     variant="outline"
                     onClick={() => {
