@@ -10,7 +10,7 @@ import { BackgroundGradient, FloatingShapes } from "@/components/scroll-animatio
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink, Search, Calendar, DollarSign, MapPin, CheckCircle, AlertCircle } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { SignInButton, SignUpButton } from "@clerk/nextjs"
+import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs"
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
 
 const filterBoxClass = "h-10 md:h-11 text-sm md:text-base font-normal border border-gray-300 focus:border-blue-500 focus:bg-blue-50/30 hover:bg-gray-50 rounded-lg px-3 transition-colors duration-150 min-w-[120px] md:min-w-[160px] bg-white appearance-none"
@@ -41,6 +41,7 @@ function groupDeadline(deadline: string) {
 }
 
 export default function SummerProgramsPage() {
+  const { isSignedIn, isLoaded } = useUser()
   const [programs, setPrograms] = useState<SummerProgram[]>([])
   const [search, setSearch] = useState("")
   const [filterCost, setFilterCost] = useState("")
@@ -49,17 +50,22 @@ export default function SummerProgramsPage() {
   const [filterTargeted, setFilterTargeted] = useState("")
   const [selectedProgram, setSelectedProgram] = useState<SummerProgram|null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [showAuthModal, setShowAuthModal] = useState(false)
-  const [isSignedIn, setIsSignedIn] = useState(false)
+
+  // Prevent hydration mismatch by not rendering until loaded
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   useEffect(() => {
     loadAllSummerPrograms().then(setPrograms)
   }, [])
-
-  useEffect(() => {
-    if (!isSignedIn) setShowAuthModal(true);
-    else setShowAuthModal(false);
-  }, [isSignedIn])
 
   // Extract unique filter values
   const allCosts = Array.from(new Set(programs.map(p => p.cost).filter(Boolean))).sort()
@@ -223,23 +229,6 @@ export default function SummerProgramsPage() {
               )}
             </DialogContent>
           </Dialog>
-
-          {showAuthModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
-              <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-2">Sign in or Sign up</h2>
-                <p className="text-gray-500 text-center mb-4">Sign in or create an account to access Summer Programs and start discovering opportunities.</p>
-                <div className="flex gap-2 w-full">
-                  <SignInButton mode="modal">
-                    <button className="flex-1 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition">Sign In</button>
-                  </SignInButton>
-                  <SignUpButton mode="modal">
-                    <button className="flex-1 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-900 transition">Sign Up</button>
-                  </SignUpButton>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </OnboardingScrollEnforcer>

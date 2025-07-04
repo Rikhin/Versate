@@ -29,7 +29,7 @@ import {
 import Link from "next/link"
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
 import { competitions } from "@/lib/competitions-data"
-import { SignInButton, SignUpButton } from "@clerk/nextjs"
+import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs"
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
 
 interface Competition {
@@ -59,12 +59,23 @@ const categories = [
 ]
 
 export default function CompetitionsPage() {
+  const { isSignedIn, isLoaded } = useUser()
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedStatus, setSelectedStatus] = useState("all")
   const [teamFilter, setTeamFilter] = useState("all")
-  const [showAuthModal, setShowAuthModal] = useState(false)
-  const [isSignedIn, setIsSignedIn] = useState(false)
+
+  // Prevent hydration mismatch by not rendering until loaded
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   const filteredCompetitions = useMemo(() => {
     return competitions.filter(competition => {
@@ -113,11 +124,6 @@ export default function CompetitionsPage() {
       default: return status
     }
   }
-
-  useEffect(() => {
-    if (!isSignedIn) setShowAuthModal(true)
-    else setShowAuthModal(false)
-  }, [isSignedIn])
 
   return (
     <OnboardingScrollEnforcer>
@@ -445,23 +451,6 @@ export default function CompetitionsPage() {
             </TextFade>
           </div>
         </div>
-
-        {showAuthModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Sign in or Sign up</h2>
-              <p className="text-gray-500 text-center mb-4">Sign in or create an account to access Competitions and start discovering opportunities.</p>
-              <div className="flex gap-2 w-full">
-                <SignInButton mode="modal">
-                  <button className="flex-1 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition">Sign In</button>
-                </SignInButton>
-                <SignUpButton mode="modal">
-                  <button className="flex-1 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-900 transition">Sign Up</button>
-                </SignUpButton>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </OnboardingScrollEnforcer>
   )
