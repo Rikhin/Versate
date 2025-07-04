@@ -10,9 +10,9 @@ export async function POST(req: NextRequest) {
     if (!message) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 })
     }
-    // Add a system prompt for context
+    // General system prompt for a helpful, conversational assistant
     const messages = [
-      { role: "system", content: "You are an expert AI assistant for natural language to SQL and data search." },
+      { role: "system", content: "You are a friendly, helpful, and conversational AI assistant. Respond in natural, human-like language and format your answers clearly for the user." },
       { role: "user", content: message }
     ]
     const nvidiaRes = await fetch(NVIDIA_API_URL, {
@@ -24,9 +24,9 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         model: "nvidia/llama-3.1-nemotron-ultra-253b-v1",
         messages,
-        temperature: 0.6,
+        temperature: 0.7,
         top_p: 0.95,
-        max_tokens: 4096,
+        max_tokens: 1024,
         frequency_penalty: 0,
         presence_penalty: 0,
         stream: false
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     const text = nvidiaData.choices?.[0]?.message?.content || "No response"
     const results = [
       {
-        title: "AI Search Result",
+        title: "AI Assistant",
         description: text
       }
     ]
