@@ -15,14 +15,14 @@ import React, { useState, useEffect } from 'react'
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '700'] })
 
-const versaGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600";
-const versaTextGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent";
+const versateGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600";
+const versateTextGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent";
 const plans = [
   {
     name: "Starter - Free",
     price: 0,
     oldPrice: null,
-    description: "Get started with Versa's core features and discover your first opportunities.",
+    description: "Get started with Versate's core features and discover your first opportunities.",
     features: [
       "\u2714\ufe0f Unlimited search of public competitions and programs",
       "\u2714\ufe0f Smart filters and recommendations",
@@ -50,7 +50,7 @@ const plans = [
     name: "Pro - Lifetime Access",
     price: 99.99,
     oldPrice: 199.99,
-    description: "For power users: full access to Versa's ecosystem, integrations, and custom tools.",
+    description: "For power users: full access to Versate's ecosystem, integrations, and custom tools.",
     features: [
       "\u2714\ufe0f All Plus features",
       "\u2714\ufe0f Custom integrations (Slack, Notion, etc.)",
@@ -174,10 +174,10 @@ export default function LandingPage() {
 
         {/* Wrap all main sections in a very light, airy glass container */}
         <div className="w-full max-w-[1400px] mx-auto px-6 md:px-16 py-16 md:py-24 my-10 rounded-[32px] border border-white/20 shadow-[0_4px_20px_0_rgba(0,0,0,0.05),inset_0_1px_8px_rgba(255,255,255,0.15)] backdrop-blur-sm bg-white/5 flex flex-col gap-20 relative">
-          {/* Why Versa Section - reduce top margin even more */}
+          {/* Why Versate Section - reduce top margin even more */}
           <div className="px-8 md:px-20 py-6 md:py-8 flex flex-col items-center">
-            <h2 className={`text-3xl sm:text-4xl md:text-5xl font-semibold text-black text-center mb-8 pt-8 ${inter.className}`}>Why <span className={versaTextGradient}>Versa?</span></h2>
-            <p className={`text-lg md:text-xl text-gray-700 text-center mb-12 max-w-2xl ${inter.className}`}>Versa provides info and access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.</p>
+            <h2 className={`text-3xl sm:text-4xl md:text-5xl font-semibold text-black text-center mb-8 pt-8 ${inter.className}`}>Why <span className={versateTextGradient}>Versate?</span></h2>
+            <p className={`text-lg md:text-xl text-gray-700 text-center mb-12 max-w-2xl ${inter.className}`}>Versate provides info and access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.</p>
             <div className="flex flex-wrap justify-center gap-6 w-full">
               <div className={`rounded-full border-2 border-indigo-100 bg-white/80 shadow px-6 py-3 text-base font-semibold text-indigo-700 whitespace-nowrap ${inter.className}`}>Researchers</div>
               <div className={`rounded-full border-2 border-green-100 bg-white/80 shadow px-6 py-3 text-base font-semibold text-green-700 whitespace-nowrap ${inter.className}`}>Admission Counselors</div>
@@ -190,7 +190,7 @@ export default function LandingPage() {
 
           {/* Everything You Need to Succeed (Features) */}
           <div className="px-8 md:px-20 py-12 md:py-16 flex flex-col items-center">
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>Everything You Need to <span className={versaTextGradient}>Succeed</span></h2>
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>Everything You Need to <span className={versateTextGradient}>Succeed</span></h2>
             <p className={`text-lg md:text-xl text-gray-700 text-center mb-12 max-w-3xl ${inter.className}`}>Access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.</p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 w-full max-w-5xl">
@@ -229,7 +229,7 @@ export default function LandingPage() {
           {/* How It Works */}
           <div className="px-8 md:px-20 pt-6 md:pt-8 pb-12 md:pb-16 flex flex-col items-center">
             <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-8 ${inter.className}`}>
-              <span className={versaTextGradient}>How</span> It Works
+              <span className={versateTextGradient}>How</span> It Works
             </h2>
             <div className="flex flex-col md:flex-row gap-8 md:gap-12 w-full justify-center items-stretch max-w-6xl">
               <Card className="flex-1 bg-white/90 border-2 border-indigo-100 rounded-3xl shadow-xl p-8 flex flex-col items-center text-center">
@@ -245,7 +245,7 @@ export default function LandingPage() {
               <Card className="flex-1 bg-white/90 border-2 border-purple-100 rounded-3xl shadow-xl p-8 flex flex-col items-center text-center">
                 <span className="text-3xl font-bold mb-2">3</span>
                 <CardTitle className="text-lg font-bold mb-2">Achieve & Grow</CardTitle>
-                <CardDescription className="text-gray-600 text-base">Win competitions, publish research, and build your network with Versa's support.</CardDescription>
+                <CardDescription className="text-gray-600 text-base">Win competitions, publish research, and build your network with Versate's support.</CardDescription>
               </Card>
             </div>
             </div>
@@ -253,7 +253,7 @@ export default function LandingPage() {
           {/* Supported Competitions */}
           <div className="px-8 md:px-20 py-12 md:py-16 flex flex-col items-center">
             <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>
-              Supported <span className={versaTextGradient}>Competitions</span>
+              Supported <span className={versateTextGradient}>Competitions</span>
             </h2>
             <p className="text-lg md:text-xl text-gray-700 text-center mb-12 max-w-2xl">We support teams participating in prestigious academic competitions worldwide</p>
             <div className="flex flex-wrap justify-center gap-6 md:gap-8 w-full max-w-6xl">
@@ -280,7 +280,7 @@ export default function LandingPage() {
           {/* Pricing */}
           <div className="px-8 md:px-20 pt-12 md:pt-16 pb-12 md:pb-16 flex flex-col items-center">
             <div className="flex justify-center mb-8">
-              <span className={`inline-flex items-center text-sm md:text-base font-semibold text-white ${versaGradient} rounded-full px-4 py-1 tracking-wide`}>
+              <span className={`inline-flex items-center text-sm md:text-base font-semibold text-white ${versateGradient} rounded-full px-4 py-1 tracking-wide`}>
                 <Rocket className="w-4 h-4 mr-2" />
                 One-Time Purchase, Lifetime Access
               </span>
@@ -319,11 +319,11 @@ export default function LandingPage() {
             <div className="flex justify-center">
               {isSignedIn ? (
                 <Button size="lg" className="bg-gray-200 text-gray-400 font-semibold text-lg px-10 py-5 rounded-full shadow-lg cursor-not-allowed" disabled>
-                  Join Versa Now
+                  Join Versate Now
                 </Button>
               ) : (
                 <Link href="/sign-up">
-                  <Button size="lg" className="bg-black text-white hover:bg-gray-900 font-semibold text-lg px-10 py-5 rounded-full shadow-lg">Join Versa Now</Button>
+                  <Button size="lg" className="bg-black text-white hover:bg-gray-900 font-semibold text-lg px-10 py-5 rounded-full shadow-lg">Join Versate Now</Button>
                 </Link>
               )}
             </div>
@@ -331,7 +331,7 @@ export default function LandingPage() {
 
           {/* Newsletter Signup */}
           <div className="px-8 md:px-20 py-12 md:py-16 flex flex-col items-center">
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>Join the Versa Newsletter</h2>
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>Join the Versate Newsletter</h2>
             <p className="text-lg text-gray-700 text-center mb-8 max-w-xl">Get the latest research, competitions, and team-building tips delivered to your inbox.</p>
             <form onSubmit={async (e) => {
               e.preventDefault();
@@ -348,7 +348,7 @@ export default function LandingPage() {
                 });
                 
                 if (response.ok) {
-                  alert('Welcome to Versa! Check your email for a complete guide to our platform.');
+                  alert('Welcome to Versate! Check your email for a complete guide to our platform.');
                   e.currentTarget.reset();
                 } else {
                   alert('Something went wrong. Please try again.');
@@ -405,7 +405,7 @@ export default function LandingPage() {
           <div className="container mx-auto px-8 flex flex-col items-center justify-center">
             <div className="flex flex-col items-center mb-8">
               <Trophy className="h-8 w-8 text-black mb-2" />
-                  <span className="text-2xl font-black text-black">Versa</span>
+                  <span className="text-2xl font-black text-black">Versate</span>
                   <p className="text-sm text-gray-600">built by Rikhin Kavuru</p>
                 </div>
             <div className="flex flex-wrap justify-center gap-6 mb-6 text-sm text-gray-600">
@@ -419,7 +419,7 @@ export default function LandingPage() {
               <a href="#" aria-label="Email" className="text-gray-400 hover:text-indigo-600 transition"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 13.065l-11.99-7.065v14h24v-14l-12.01 7.065zm11.99-9.065h-23.98l11.99 7.065 11.99-7.065z"/></svg></a>
             </div>
             <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
-              <p>&copy; 2024 Versa. All rights reserved. Empowering students to achieve excellence together.</p>
+              <p>&copy; 2024 Versate. All rights reserved. Empowering students to achieve excellence together.</p>
             </div>
           </div>
         </footer>

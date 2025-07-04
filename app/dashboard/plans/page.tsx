@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Rocket, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-const versaGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600";
-const versaTextGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent";
+const versateGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600";
+const versateTextGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent";
 
 const plans = [
   {
@@ -14,7 +14,7 @@ const plans = [
     price: 0,
     oldPrice: null,
     priceId: null,
-    description: "Get started with Versa's core features and discover your first opportunities.",
+    description: "Get started with Versate's core features and discover your first opportunities.",
     features: [
       "✔️ Unlimited search of public competitions and programs",
       "✔️ Smart filters and recommendations",
@@ -44,7 +44,7 @@ const plans = [
     price: 99.99,
     oldPrice: 199.99,
     priceId: "price_xxx_pro",
-    description: "For power users: full access to Versa's ecosystem, integrations, and custom tools.",
+    description: "For power users: full access to Versate's ecosystem, integrations, and custom tools.",
     features: [
       "✔️ All Plus features",
       "✔️ Custom integrations (Slack, Notion, etc.)",
@@ -90,20 +90,20 @@ export default function PlansPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-start py-12 px-4 md:px-0">
-      {/* Versa pill with icon */}
+      {/* Versate pill with icon */}
       <div className="flex justify-center mb-4">
-        <span className={`inline-flex items-center text-sm md:text-base font-semibold text-white ${versaGradient} rounded-full px-4 py-1 tracking-wide`}>
+        <span className={`inline-flex items-center text-sm md:text-base font-semibold text-white ${versateGradient} rounded-full px-4 py-1 tracking-wide`}>
           <Rocket className="w-4 h-4 mr-2" />
           One-Time Purchase, Lifetime Access
         </span>
       </div>
       {/* Title */}
       <h1 className="text-3xl md:text-5xl font-extrabold text-black text-center mb-4">
-        <span className={versaTextGradient}>Accelerate</span> Search. Boost <span className={versaTextGradient}>Success.</span>
+        <span className={versateTextGradient}>Accelerate</span> Search. Boost <span className={versateTextGradient}>Success.</span>
       </h1>
       {/* Subtitle */}
       <p className="text-lg md:text-xl text-gray-600 text-center mb-10 max-w-2xl">
-        Versa empowers students and teams to discover, connect, and win. Enjoy smart matching, curated opportunities, and a supportive community—built to help you reach your goals faster.
+        Versate empowers students and teams to discover, connect, and win. Enjoy smart matching, curated opportunities, and a supportive community—built to help you reach your goals faster.
       </p>
       {/* Pricing Cards */}
       <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-stretch">

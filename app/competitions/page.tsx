@@ -150,7 +150,7 @@ export default function CompetitionsPage() {
                 <div className="flex items-center space-x-4">
                   <Trophy className="h-8 w-8 text-black" />
                   <div>
-                    <span className="text-2xl font-black text-black">Versa</span>
+                    <span className="text-2xl font-black text-black">Versate</span>
                     <p className="text-sm text-gray-600">Competitions</p>
                   </div>
                 </div>

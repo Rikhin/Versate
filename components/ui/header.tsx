@@ -81,7 +81,7 @@ export function Header() {
             <Link href="/" className="flex items-center gap-2 group">
               <Trophy className="h-6 w-6 md:h-7 md:w-7 text-black group-hover:scale-110 transition-transform" />
               <div>
-                <span className="text-base md:text-xl font-bold text-black leading-tight max-w-[120px] sm:max-w-none truncate">Versa</span>
+                <span className="text-base md:text-xl font-bold text-black leading-tight max-w-[120px] sm:max-w-none truncate">Versate</span>
                 <p className="text-xs md:text-sm text-gray-500 -mt-1 font-medium hidden sm:block max-w-[100px] sm:max-w-none truncate">built by Rikhin Kavuru</p>
               </div>
             </Link>

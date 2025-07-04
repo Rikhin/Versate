@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   }
 
   const payload: any = {
-    from: 'info@versate.pro', // Use your verified sender
+    from: 'Versate <info@versate.pro>', // Use your verified sender
     to,
     subject,
     text,

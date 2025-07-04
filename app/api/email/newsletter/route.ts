@@ -11,11 +11,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
-    // Send welcome email with Versa information
+    // Send welcome email with Versate information
     const { data, error } = await resend.emails.send({
-      from: "Versa <info@versate.pro>",
+      from: "Versate <info@versate.pro>",
       to: [email],
-      subject: "Welcome to Versa! 🚀 Your Complete Guide to Success",
+      subject: "Welcome to Versate! 🚀 Your Complete Guide to Success",
       replyTo: email,
       html: `
         <!DOCTYPE html>
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Welcome to Versa</title>
+          <title>Welcome to Versate</title>
           <style>
             body {
               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -148,13 +148,13 @@ export async function POST(request: NextRequest) {
         <body>
           <div class="container">
             <div class="header">
-              <div class="logo">Versa</div>
+              <div class="logo">Versate</div>
               <div class="subtitle">Your Gateway to Academic Excellence</div>
             </div>
 
             <div class="section">
-              <h3>🎯 What is Versa?</h3>
-              <p>Versa is the ultimate platform connecting ambitious students with researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and a thriving community of like-minded peers.</p>
+              <h3>🎯 What is Versate?</h3>
+              <p>Versate is the ultimate platform connecting ambitious students with researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and a thriving community of like-minded peers.</p>
             </div>
 
             <div class="section">
@@ -232,14 +232,14 @@ export async function POST(request: NextRequest) {
             </div>
 
             <div style="text-align: center; margin: 40px 0;">
-              <a href="https://colabboard-zf.vercel.app/sign-up" class="cta-button">Join Versa Now</a>
+              <a href="https://colabboard-zf.vercel.app/sign-up" class="cta-button">Join Versate Now</a>
             </div>
 
             <div class="footer">
-              <p>Thank you for joining the Versa community! We're excited to help you achieve your academic and professional goals.</p>
+              <p>Thank you for joining the Versate community! We're excited to help you achieve your academic and professional goals.</p>
               <p style="margin-top: 15px; font-size: 0.9em;">
-                <a href="https://colabboard-zf.vercel.app" style="color: #667eea;">Visit Versa</a> | 
-                <a href="mailto:hello@versa.com" style="color: #667eea;">Contact Us</a>
+                <a href="https://colabboard-zf.vercel.app" style="color: #667eea;">Visit Versate</a> | 
+                <a href="mailto:info@versate.pro" style="color: #667eea;">Contact Us</a>
               </p>
             </div>
           </div>

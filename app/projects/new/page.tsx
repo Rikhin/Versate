@@ -123,7 +123,7 @@ export default function NewProjectPage() {
             <Link href="/" className="flex items-center space-x-2">
               <Trophy className="h-8 w-8 text-slate-600" />
               <div>
-                <span className="text-2xl font-bold text-slate-800">Versa</span>
+                <span className="text-2xl font-bold text-slate-800">Versate</span>
                 <p className="text-xs text-slate-500 -mt-1">built by Rikhin Kavuru</p>
               </div>
             </Link>

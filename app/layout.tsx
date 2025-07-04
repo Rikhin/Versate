@@ -12,7 +12,7 @@ import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEn
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Versa - Competition Team Formation Platform",
+  title: "Versate - Competition Team Formation Platform",
   description: "Find teammates for academic competitions and collaborative projects",
   generator: 'v0.dev'
 }

@@ -328,7 +328,7 @@ export function OnboardingForm() {
             {/* Header */}
                 <div ref={topRef} className="text-center mb-10">
                   <div className="text-5xl md:text-6xl font-extrabold text-black mb-6 leading-tight tracking-tight">
-                    Welcome to <span className="text-indigo-400">Versa</span>
+                    Welcome to <span className="text-indigo-400">Versate</span>
               </div>
                   <p className="text-lg md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 Let's get to know you better so we can match you with the perfect teammates

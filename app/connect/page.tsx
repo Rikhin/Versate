@@ -208,7 +208,7 @@ export default function ConnectPage() {
                     <div className="flex items-center space-x-4">
                       <Users className="h-8 w-8 text-black" />
                       <div>
-                        <span className="text-2xl font-black text-black">Versa</span>
+                        <span className="text-2xl font-black text-black">Versate</span>
                         <p className="text-sm text-gray-600">Connect</p>
                       </div>
                     </div>
