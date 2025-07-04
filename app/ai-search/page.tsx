@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth, SignInButton, SignUpButton } from "@clerk/nextjs";
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer";
+import ReactMarkdown from 'react-markdown';
 
 const exampleQueries = [
   "Students interested in robotics in California",
@@ -28,33 +29,42 @@ const savedSearches: string[] = [
 
 export default function AISearchPage() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]); // {role: 'user'|'assistant', content: string}
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { isSignedIn, isLoaded } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Show modal for unauthenticated users
   useEffect(() => {
     if (isLoaded && !isSignedIn) setShowAuthModal(true);
     else setShowAuthModal(false);
   }, [isSignedIn, isLoaded]);
 
-  const handleSearch = async (q?: string) => {
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  const handleSend = async (q?: string) => {
+    const userMessage = q || query;
+    if (!userMessage.trim()) return;
+    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+    setQuery("");
     setLoading(true);
     setError("");
-    setResults([]);
     try {
       const res = await fetch("/api/ai-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: q || query }),
+        body: JSON.stringify({ query: userMessage }),
       });
       if (!res.ok) throw new Error("Search failed");
       const data = await res.json();
-      setResults(data.results || []);
+      const aiContent = data.results?.[0]?.description || "(No response)";
+      setMessages(prev => [...prev, { role: "assistant", content: aiContent }]);
     } catch (e: any) {
       setError(e.message || "Unknown error");
+      setMessages(prev => [...prev, { role: "assistant", content: "Sorry, something went wrong." }]);
     } finally {
       setLoading(false);
     }
@@ -68,7 +78,7 @@ export default function AISearchPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
             <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">Sign in or Sign up</h2>
-              <p className="text-gray-500 text-center mb-4">Sign in or create an account to access AI Search and discover opportunities.</p>
+              <p className="text-gray-500 text-center mb-4">Sign in or create an account to access AI Chat and discover opportunities.</p>
               <div className="flex w-full gap-2">
                 <SignInButton mode="modal">
                   <button className="flex-1 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition">Sign In</button>
@@ -97,7 +107,7 @@ export default function AISearchPage() {
                   <button
                     key={i}
                     className="w-full text-left py-2 px-3 rounded-lg bg-white hover:bg-indigo-50 text-sm text-gray-700 border border-indigo-50 transition"
-                    onClick={() => { setQuery(search); handleSearch(search); }}
+                    onClick={() => { setQuery(search); handleSend(search); }}
                     disabled={loading}
                     style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}
                   >
@@ -116,73 +126,81 @@ export default function AISearchPage() {
             <span className="text-sm font-medium text-gray-700">Rikhin Kavuru</span>
           </div>
         </aside>
-        {/* Main Content */}
+        {/* Main Content - Chat UI */}
         <main className="flex-1 flex flex-col items-center justify-center py-12 sm:py-24 px-2 sm:px-4">
-          <div className="w-full max-w-lg sm:max-w-2xl mx-auto">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-4 text-gray-900 leading-tight" style={{lineHeight: '1.18'}}>
-              <span className="inline-block">Discover Endless</span><br/>
-              <span className="inline-block bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent font-semibold" style={{fontSize: '1.1em', lineHeight: '1.1'}}>Opportunities</span>
-            </h1>
-            <p className="text-center text-base sm:text-lg mb-8 sm:mb-12" style={{color: '#111', maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto', lineHeight: '1.6'}}>Search for people, competitions, mentors, or teammates using natural language.</p>
-            <Card className="p-0 flex flex-col gap-0 shadow-none bg-white rounded-full border-2 border-indigo-100" style={{ boxShadow: '0 4px 32px 0 rgba(80, 112, 255, 0.07)', borderRadius: '2.5rem', minHeight: '180px', justifyContent: 'center', alignItems: 'center', marginBottom: '2.5rem', maxWidth: '700px', marginLeft: 'auto', marginRight: 'auto' }}>
-              <div className="flex flex-col items-center w-full px-4 sm:px-10 py-6 sm:py-10 gap-4 sm:gap-6">
-                <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full">
-                  <Input
-                    className="flex-1 text-base sm:text-lg px-4 sm:px-6 py-3 sm:py-4 border-0 focus:ring-2 focus:ring-indigo-200 rounded-full bg-white shadow-none"
-                    placeholder="Search for people, competitions, mentors..."
-                    value={query}
-                    onChange={e => setQuery(e.target.value)}
-                    onKeyDown={e => { if (e.key === "Enter") handleSearch(); }}
-                    disabled={loading}
-                    style={{ borderRadius: '2rem' }}
-                  />
-                  <Button
-                    className="w-full sm:w-auto mt-3 sm:mt-0 ml-0 sm:ml-2 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-none"
-                    onClick={() => handleSearch()}
-                    disabled={loading || !query.trim()}
-                    style={{ borderRadius: '2rem' }}
-                  >
-                    {loading ? "Searching..." : "Search"}
-                  </Button>
+          <div className="w-full max-w-lg sm:max-w-2xl mx-auto flex flex-col h-[70vh] sm:h-[80vh] bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden">
+            {/* Chat header */}
+            <div className="px-6 py-4 border-b border-indigo-50 bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 text-white font-bold text-xl">AI Assistant</div>
+            {/* Chat messages */}
+            <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 bg-[#f6f6fb]">
+              {messages.length === 0 && (
+                <div className="text-center text-gray-400 text-base mt-12">Start a conversation or try an example below!</div>
+              )}
+              {messages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}> 
+                  {msg.role === "assistant" && (
+                    <div className="flex items-end gap-2">
+                      <Avatar className="h-8 w-8"><AvatarFallback>AI</AvatarFallback></Avatar>
+                      <div className="bg-white border border-indigo-100 rounded-2xl px-4 py-3 max-w-[80vw] sm:max-w-[70%] shadow-sm prose prose-indigo text-sm sm:text-base">
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      </div>
+                    </div>
+                  )}
+                  {msg.role === "user" && (
+                    <div className="flex items-end gap-2 flex-row-reverse">
+                      <Avatar className="h-8 w-8"><AvatarFallback>U</AvatarFallback></Avatar>
+                      <div className="bg-indigo-600 text-white rounded-2xl px-4 py-3 max-w-[80vw] sm:max-w-[70%] shadow-sm text-sm sm:text-base">
+                        {msg.content}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {/* Marquee-style horizontally scrolling example queries */}
-                <div className="relative overflow-x-auto w-full">
-                  <div className="flex gap-3 animate-marquee whitespace-nowrap" style={{ animation: 'marquee 30s linear infinite' }}>
-                    {exampleQueries.concat(exampleQueries).map((ex, i) => (
-                      <button
-                        key={i}
-                        className="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-indigo-100 border border-indigo-100 mx-1 shadow-none"
-                        onClick={() => { setQuery(ex); handleSearch(ex); }}
-                        disabled={loading}
-                        style={{ borderRadius: '2rem' }}
-                      >
-                        {ex}
-                      </button>
-                    ))}
+              ))}
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="flex items-end gap-2">
+                    <Avatar className="h-8 w-8"><AvatarFallback>AI</AvatarFallback></Avatar>
+                    <div className="bg-white border border-indigo-100 rounded-2xl px-4 py-3 max-w-[80vw] sm:max-w-[70%] shadow-sm text-sm sm:text-base text-gray-400 italic">Thinking...</div>
                   </div>
-                  <style>{`
-                    @keyframes marquee {
-                      0% { transform: translateX(0%); }
-                      100% { transform: translateX(-50%); }
-                    }
-                  `}</style>
-                </div>
-              </div>
-            </Card>
-            {/* Results */}
-            <div className="mt-10 sm:mt-14" style={{maxWidth: '700px', marginLeft: 'auto', marginRight: 'auto'}}>
-              {error && <div className="text-red-500 text-center mb-4">{error}</div>}
-              {results.length > 0 && (
-                <div className="space-y-6 sm:space-y-8">
-                  {results.map((result, i) => (
-                    <Card key={i} className="p-4 sm:p-6 flex flex-col gap-2 rounded-2xl border border-indigo-50 bg-white shadow-sm">
-                      <div className="font-semibold text-base sm:text-lg text-gray-900">{result.title || result.name || result.competition || "Result"}</div>
-                      <div className="text-gray-700 text-xs sm:text-sm">{result.description || result.bio || result.details || JSON.stringify(result)}</div>
-                    </Card>
-                  ))}
                 </div>
               )}
+              <div ref={chatEndRef} />
             </div>
+            {/* Chat input */}
+            <div className="px-6 py-4 border-t border-indigo-50 bg-white flex items-center gap-3">
+              <Input
+                className="flex-1 text-base px-4 py-3 border-0 focus:ring-2 focus:ring-indigo-200 rounded-full bg-white shadow-none"
+                placeholder="Type your message..."
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter") handleSend(); }}
+                disabled={loading}
+                style={{ borderRadius: '2rem' }}
+              />
+              <Button
+                className="px-6 py-3 text-base bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-none"
+                onClick={() => handleSend()}
+                disabled={loading || !query.trim()}
+                style={{ borderRadius: '2rem' }}
+              >
+                {loading ? "Sending..." : "Send"}
+              </Button>
+            </div>
+            {/* Example queries below input */}
+            <div className="px-6 py-2 bg-white border-t border-indigo-50 flex flex-wrap gap-2">
+              {exampleQueries.slice(0, 5).map((ex, i) => (
+                <button
+                  key={i}
+                  className="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-xs font-medium hover:bg-indigo-100 border border-indigo-100 shadow-none"
+                  onClick={() => { setQuery(ex); handleSend(ex); }}
+                  disabled={loading}
+                  style={{ borderRadius: '2rem' }}
+                >
+                  {ex}
+                </button>
+              ))}
+            </div>
+            {error && <div className="text-red-500 text-center py-2">{error}</div>}
           </div>
         </main>
       </div>
