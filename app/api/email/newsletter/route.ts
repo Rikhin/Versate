@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
       from: "Versa <info@versate.pro>",
       to: [email],
       subject: "Welcome to Versa! 🚀 Your Complete Guide to Success",
+      replyTo: email,
       html: `
         <!DOCTYPE html>
         <html>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
+import * as Clerk from '@clerk/clerk-sdk-node';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -8,7 +9,7 @@ const supabase = createClient(
 );
 
 export async function POST(req: NextRequest) {
-  const { to, subject, text, replyTo } = await req.json();
+  const { to, subject, text } = await req.json();
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
   // Clerk Auth
@@ -25,13 +26,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
+  // Fetch user email from Clerk
+  let userEmail = null;
+  try {
+    const user = await Clerk.users.getUser(userId);
+    userEmail = user.emailAddresses[0]?.emailAddress || null;
+  } catch (e) {
+    return NextResponse.json({ error: 'Failed to fetch user email from Clerk' }, { status: 500 });
+  }
+
   const payload: any = {
     from: 'info@versate.pro', // Use your verified sender
     to,
     subject,
     text,
+    reply_to: userEmail,
   };
-  if (replyTo) payload.reply_to = replyTo;
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -54,7 +64,7 @@ export async function POST(req: NextRequest) {
       to,
       subject,
       text,
-      reply_to: replyTo || null,
+      reply_to: userEmail,
       sent_at: new Date().toISOString(),
     },
   ]);
