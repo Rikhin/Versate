@@ -21,9 +21,9 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // Validate required fields
-    if (!user_id || !first_name || !last_name || !email || !school) {
+    if (!user_id || !first_name || !last_name || !email) {
       return NextResponse.json(
-        { error: `Missing required fields. Received: user_id=${!!user_id}, first_name=${!!first_name}, last_name=${!!last_name}, email=${!!email}, school=${!!school}` },
+        { error: `Missing required fields. Received: user_id=${!!user_id}, first_name=${!!first_name}, last_name=${!!last_name}, email=${!!email}` },
         { status: 400 }
       );
     }

@@ -42,7 +42,6 @@ interface OnboardingFormData {
   otherNeedPartner?: boolean;
   otherNeedMentor?: boolean;
   profileImageUrl?: string;
-  state: string;
 }
 
 function CityDropdown({ value, onChange }: { value: string, onChange: (val: string) => void }) {
@@ -169,7 +168,6 @@ export function OnboardingForm() {
     collaborationStyle: [],
     location: "",
     competitions: [],
-    state: "",
   });
 
   const totalSteps = 5;
@@ -205,7 +203,7 @@ export function OnboardingForm() {
   const isStepValid = () => {
     switch (currentStep) {
       case 1:
-        return formData.firstName && formData.lastName && formData.email && formData.city && formData.state;
+        return formData.firstName && formData.lastName && formData.email && formData.city;
       case 2:
         return formData.skills.length > 0 && formData.roles.length > 0;
       case 3:
@@ -403,10 +401,6 @@ export function OnboardingForm() {
                       <div className="space-y-3">
                         <Label htmlFor="email" className="text-base font-normal text-black">Email *</Label>
                         <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))} placeholder="Enter your email" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
-                      </div>
-                      <div className="space-y-3">
-                        <Label htmlFor="state" className="text-base font-normal text-black">State *</Label>
-                        <StateDropdown value={formData.state || ''} onChange={val => setFormData(prev => ({ ...prev, state: val }))} />
                       </div>
                       <div className="space-y-3">
                         <Label htmlFor="gradeLevel" className="text-base font-normal text-black">Grade Level</Label>
