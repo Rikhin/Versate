@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   }
 
   const payload: any = {
-    from: 'onboarding@resend.dev', // Use Resend's test sender for dev
+    from: 'info@versate.pro', // Use your verified sender
     to,
     subject,
     text,

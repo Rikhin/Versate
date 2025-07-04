@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     // Send welcome email with Versa information
     const { data, error } = await resend.emails.send({
-      from: "Versa <hello@versa.com>",
+      from: "Versa <info@versate.pro>",
       to: [email],
       subject: "Welcome to Versa! 🚀 Your Complete Guide to Success",
       html: `
