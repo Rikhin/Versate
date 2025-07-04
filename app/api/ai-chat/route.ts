@@ -10,7 +10,11 @@ export async function POST(req: NextRequest) {
     if (!message) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 })
     }
-    // Nvidia expects a 'messages' array with role/content
+    // Add a system prompt for context
+    const messages = [
+      { role: "system", content: "You are an expert AI assistant for natural language to SQL and data search." },
+      { role: "user", content: message }
+    ]
     const nvidiaRes = await fetch(NVIDIA_API_URL, {
       method: "POST",
       headers: {
@@ -18,17 +22,30 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "nvidia/llama-3_1-nemotron-ultra-253b-v1",
-        messages: [
-          { role: "user", content: message }
-        ]
+        model: "nvidia/llama-3.1-nemotron-ultra-253b-v1",
+        messages,
+        temperature: 0.6,
+        top_p: 0.95,
+        max_tokens: 4096,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+        stream: false
       })
     })
-    const nvidiaData = await nvidiaRes.json()
+    // Try to parse as JSON, fallback to NDJSON if needed
+    let nvidiaData
+    const contentType = nvidiaRes.headers.get('content-type') || ''
+    if (contentType.includes('application/json')) {
+      nvidiaData = await nvidiaRes.json()
+    } else {
+      // Try to parse as NDJSON (newline-delimited JSON)
+      const text = await nvidiaRes.text()
+      const firstLine = text.split('\n').find(line => line.trim().startsWith('{'))
+      nvidiaData = firstLine ? JSON.parse(firstLine) : { error: text }
+    }
     if (!nvidiaRes.ok) {
       return NextResponse.json({ error: nvidiaData.error || JSON.stringify(nvidiaData) || "Nvidia API error" }, { status: 500 })
     }
-    // Parse the response: choices[0].message.content
     const text = nvidiaData.choices?.[0]?.message?.content || "No response"
     const results = [
       {
