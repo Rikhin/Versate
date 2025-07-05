@@ -24,16 +24,13 @@ import {
   Lightbulb,
   TrendingUp,
   Filter,
-  ExternalLink,
-  UserCheck
+  ExternalLink
 } from "lucide-react"
 import Link from "next/link"
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
 import { competitions } from "@/lib/competitions-data"
 import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs"
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
 
 interface Competition {
   id: string
@@ -53,11 +50,6 @@ interface Competition {
   teamRequired: boolean
 }
 
-interface CompetitionInterest {
-  competitionId: string
-  interest: 'competing' | 'looking_for_partner' | 'looking_for_mentor'
-}
-
 const categories = [
   { id: "all", name: "All Categories", icon: "🏆" },
   { id: "Technology", name: "Technology", icon: "💻" },
@@ -68,8 +60,10 @@ const categories = [
 
 export default function CompetitionsPage() {
   const { isSignedIn, isLoaded } = useUser()
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCompetitions, setSelectedCompetitions] = useState<{ [key: string]: CompetitionInterest[] }>({})
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("all")
+  const [selectedStatus, setSelectedStatus] = useState("all")
+  const [teamFilter, setTeamFilter] = useState("all")
 
   // Prevent hydration mismatch by not rendering until loaded
   if (!isLoaded) {
@@ -85,64 +79,24 @@ export default function CompetitionsPage() {
 
   const filteredCompetitions = useMemo(() => {
     return competitions.filter(competition => {
-      const matchesSearch = competition.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           competition.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           competition.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      const matchesSearch = competition.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           competition.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           competition.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
       
-      return matchesSearch
+      const matchesCategory = selectedCategory === "all" || competition.category === selectedCategory
+      const matchesStatus = selectedStatus === "all" || competition.status === selectedStatus
+      const matchesTeam =
+        teamFilter === "all" ||
+        (teamFilter === "team" && competition.teamRequired) ||
+        (teamFilter === "individual" && competition.teamRequired === false)
+      
+      return matchesSearch && matchesCategory && matchesStatus && matchesTeam
     })
-  }, [searchQuery])
+  }, [searchTerm, selectedCategory, selectedStatus, teamFilter])
 
-  const handleCompetitionToggle = (competitionId: string, interest: 'competing' | 'looking_for_partner' | 'looking_for_mentor', checked: boolean) => {
-    setSelectedCompetitions(prev => {
-      const current = prev[competitionId] || []
-      let updated
-      
-      if (checked) {
-        updated = [...current, { competitionId, interest }]
-      } else {
-        updated = current.filter(c => !(c.competitionId === competitionId && c.interest === interest))
-      }
-      
-      return {
-        ...prev,
-        [competitionId]: updated
-      }
-    })
-  }
-
-  const isChecked = (competitionId: string, interest: string) => {
-    return selectedCompetitions[competitionId]?.some(c => c.interest === interest) || false
-  }
-
-  const getSelectedCount = (competitionId: string) => {
-    return selectedCompetitions[competitionId]?.length || 0
-  }
-
-  const saveSelections = async () => {
-    try {
-      const competitionsArray = Object.values(selectedCompetitions).flat()
-      
-      const response = await fetch("/api/profiles/competitions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          competitions: competitionsArray,
-        }),
-      })
-
-      if (response.ok) {
-        alert("Competition interests saved successfully!")
-      } else {
-        throw new Error("Failed to save competition interests")
-      }
-    } catch (error) {
-      console.error("Error saving competition interests:", error)
-      alert("Failed to save competition interests. Please try again.")
-    }
-  }
+  const activeCompetitions = filteredCompetitions.filter(c => c.status === "active")
+  const upcomingCompetitions = filteredCompetitions.filter(c => c.status === "upcoming")
+  const pastCompetitions = filteredCompetitions.filter(c => c.status === "past")
 
   const formatDeadline = (deadline: string) => {
     const date = new Date(deadline)
@@ -200,153 +154,321 @@ export default function CompetitionsPage() {
                     <p className="text-sm text-gray-600">Competitions</p>
                   </div>
                 </div>
-                <Link href="/dashboard">
-                  <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
-                    Back to Dashboard
-                  </Button>
-                </Link>
+                <div className="flex items-center space-x-4">
+                  {!isSignedIn ? (
+                    <>
+                      <SignInButton mode="modal">
+                        <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
+                          Sign In
+                        </Button>
+                      </SignInButton>
+                      <SignUpButton mode="modal">
+                        <Button className="bg-black text-white hover:bg-gray-800">
+                          Get Started
+                        </Button>
+                      </SignUpButton>
+                    </>
+                  ) : (
+                    <Link href="/dashboard">
+                      <Button className="bg-black text-white hover:bg-gray-800">
+                        Dashboard
+                      </Button>
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           </header>
 
-          {/* Main Content */}
-          <div className="container mx-auto px-4 md:px-8 py-8 md:py-16">
-            <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
-              {/* Header Section */}
-              <div className="text-center mb-8 md:mb-16">
-                <h1 className="text-2xl sm:text-3xl md:text-6xl md:text-7xl font-black text-black mb-4 md:mb-8 leading-none">
-                  Academic<br /><span className="text-gray-400">Competitions</span>
-                </h1>
-                <p className="text-sm sm:text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                  Discover prestigious competitions and opportunities to showcase your skills and win amazing prizes
-                </p>
+          {/* Hero Section */}
+          <section className="py-16 md:py-24">
+            <div className="container mx-auto px-8">
+              <div className="text-center mb-12 md:mb-16">
+                <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
+                  <div className="text-4xl md:text-6xl font-black text-black mb-6 leading-tight">
+                    Find Your <span className="text-indigo-600">Competition</span>
+                  </div>
+                  <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    Discover exciting competitions, hackathons, and challenges. Connect with teammates, 
+                    showcase your skills, and win amazing prizes.
+                  </p>
+                </TextFade>
               </div>
 
-              {/* Search Bar */}
-              <div className="max-w-2xl mx-auto mb-8">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <Input
-                    type="text"
-                    placeholder="Search competitions by name, category, or description..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl"
-                  />
+              {/* Search and Filters */}
+              <div className="mb-8 md:mb-12 space-y-4 md:space-y-6">
+                <div className="flex flex-col md:flex-row gap-4 w-full">
+                  <div className="flex-1 relative w-full">
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input
+                      placeholder="Search competitions..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-12 h-10 sm:h-12 md:h-14 text-base md:text-lg border-2 border-gray-300 focus:border-black w-full"
+                    />
+                  </div>
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger className="h-10 sm:h-12 md:h-14 text-base md:text-lg border-2 border-gray-300 focus:border-black min-w-[120px] sm:min-w-[140px] md:min-w-[200px] w-full sm:w-auto">
+                      <SelectValue placeholder="Category..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map(category => (
+                        <SelectItem key={category.id} value={category.id}>
+                          <span className="mr-2">{category.icon}</span>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                    <SelectTrigger className="h-10 sm:h-12 md:h-14 text-base md:text-lg border-2 border-gray-300 focus:border-black min-w-[120px] sm:min-w-[140px] md:min-w-[200px] w-full sm:w-auto">
+                      <SelectValue placeholder="Status..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="upcoming">Upcoming</SelectItem>
+                      <SelectItem value="past">Past</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={teamFilter} onValueChange={setTeamFilter}>
+                    <SelectTrigger className="h-10 sm:h-12 md:h-14 text-base md:text-lg border-2 border-gray-300 focus:border-black min-w-[120px] sm:min-w-[140px] md:min-w-[200px] w-full sm:w-auto">
+                      <SelectValue placeholder="Team..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="team">Team</SelectItem>
+                      <SelectItem value="individual">Individual</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
-              {/* Competition Results */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {filteredCompetitions.map((competition) => (
-                  <Card key={competition.id} className="hover:shadow-lg transition-shadow duration-200">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-2xl">{competition.icon}</span>
-                          <CardTitle className="text-lg font-semibold">{competition.name}</CardTitle>
-                        </div>
-                        {getSelectedCount(competition.id) > 0 && (
-                          <Badge variant="secondary" className="bg-indigo-100 text-indigo-800">
-                            {getSelectedCount(competition.id)} selected
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-600">{competition.category}</p>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-sm text-gray-700 line-clamp-3">{competition.description}</p>
-                      
-                      <div className="space-y-3">
-                        <Label className="text-sm font-medium text-gray-900">What are you interested in?</Label>
-                        <div className="space-y-2">
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`${competition.id}-competing`}
-                              checked={isChecked(competition.id, 'competing')}
-                              onCheckedChange={(checked) => 
-                                handleCompetitionToggle(competition.id, 'competing', checked as boolean)
-                              }
-                              className="border-2 border-gray-200 data-[state=checked]:border-indigo-500"
-                            />
-                            <Label 
-                              htmlFor={`${competition.id}-competing`} 
-                              className="text-sm font-normal cursor-pointer flex items-center space-x-1"
-                            >
-                              <Target className="h-4 w-4" />
-                              <span>Competing</span>
-                            </Label>
-                          </div>
-                          
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`${competition.id}-partner`}
-                              checked={isChecked(competition.id, 'looking_for_partner')}
-                              onCheckedChange={(checked) => 
-                                handleCompetitionToggle(competition.id, 'looking_for_partner', checked as boolean)
-                              }
-                              className="border-2 border-gray-200 data-[state=checked]:border-indigo-500"
-                            />
-                            <Label 
-                              htmlFor={`${competition.id}-partner`} 
-                              className="text-sm font-normal cursor-pointer flex items-center space-x-1"
-                            >
-                              <Users className="h-4 w-4" />
-                              <span>Need Partner</span>
-                            </Label>
-                          </div>
-                          
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`${competition.id}-mentor`}
-                              checked={isChecked(competition.id, 'looking_for_mentor')}
-                              onCheckedChange={(checked) => 
-                                handleCompetitionToggle(competition.id, 'looking_for_mentor', checked as boolean)
-                              }
-                              className="border-2 border-gray-200 data-[state=checked]:border-indigo-500"
-                            />
-                            <Label 
-                              htmlFor={`${competition.id}-mentor`} 
-                              className="text-sm font-normal cursor-pointer flex items-center space-x-1"
-                            >
-                              <UserCheck className="h-4 w-4" />
-                              <span>Need Mentor</span>
-                            </Label>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="pt-2 border-t border-gray-100">
-                        <div className="flex justify-between text-xs text-gray-500">
-                          <span>Deadline: {formatDeadline(competition.deadline)}</span>
-                          <span>{competition.participants}/{competition.maxParticipants} participants</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Save Button */}
-              <div className="text-center">
-                <Button 
-                  onClick={saveSelections}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl text-base font-medium"
-                >
-                  Save Competition Interests
-                </Button>
-              </div>
-
-              {/* No Results */}
-              {filteredCompetitions.length === 0 && searchQuery && (
-                <div className="text-center py-12">
-                  <Trophy className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No competitions found</h3>
-                  <p className="text-gray-600">Try adjusting your search terms or browse all competitions</p>
+              {/* Active Competitions */}
+              {activeCompetitions.length > 0 && (
+                <div className="mb-8 md:mb-16">
+                  <div className="text-center mb-6 md:mb-12">
+                    <div className="text-2xl md:text-4xl font-black text-black mb-2 md:mb-4">Active Competitions</div>
+                    <p className="text-base md:text-xl text-gray-600">Don't miss these ongoing opportunities</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+                    {activeCompetitions.map((competition) => (
+                      <Link key={competition.id} href={`/competitions/${competition.id}`} className="focus:outline-none focus:ring-4 focus:ring-black/30 rounded-xl">
+                        <Card className="border-0 shadow-none bg-transparent hover:scale-105 transition-transform cursor-pointer">
+                          <CardHeader className="pb-6">
+                            <div className="flex justify-between items-start mb-4">
+                              <Badge className={`border-2 ${getStatusColor(competition.status)} px-4 py-2 text-sm font-bold uppercase tracking-widest`}>
+                                {getStatusText(competition.status)}
+                              </Badge>
+                              <div className="text-3xl">{competition.icon}</div>
+                            </div>
+                            <CardTitle className="text-2xl font-black text-black">{competition.name}</CardTitle>
+                            <CardDescription className="text-lg text-gray-600">{competition.description}</CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div>
+                              <h4 className="text-lg font-bold text-black mb-3">Tags</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {competition.tags.map((tag) => (
+                                  <Badge key={tag} variant="outline" className="border-2 border-gray-300 text-gray-700 px-3 py-1 text-sm font-bold">
+                                    {tag}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="flex gap-3">
+                              <a
+                                href={competition.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1"
+                              >
+                                <Button className="w-full bg-black text-white hover:bg-gray-800 py-4 text-lg font-bold">
+                                  <ExternalLink className="h-5 w-5 mr-3" />
+                                  Official Website
+                                </Button>
+                              </a>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               )}
-            </TextFade>
-          </div>
+
+              {/* Upcoming Competitions */}
+              {upcomingCompetitions.length > 0 && (
+                <div className="mb-8 md:mb-16">
+                  <div className="text-center mb-6 md:mb-12">
+                    <div className="text-2xl md:text-4xl font-black text-black mb-2 md:mb-4">Upcoming Competitions</div>
+                    <p className="text-base md:text-xl text-gray-600">Start preparing for these exciting opportunities</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+                    {upcomingCompetitions.map((competition) => (
+                      <Card key={competition.id} className="border-0 shadow-none bg-transparent hover:scale-105 transition-transform cursor-pointer">
+                        <CardHeader className="pb-6">
+                          <div className="flex justify-between items-start mb-4">
+                            <Badge className={`border-2 ${getStatusColor(competition.status)} px-4 py-2 text-sm font-bold uppercase tracking-widest`}>
+                              {getStatusText(competition.status)}
+                            </Badge>
+                            <div className="text-3xl">{competition.icon}</div>
+                          </div>
+                          <CardTitle className="text-2xl font-black text-black">{competition.name}</CardTitle>
+                          <CardDescription className="text-lg text-gray-600">{competition.description}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                          <div className="flex items-center justify-between text-lg text-gray-600">
+                            <div className="flex items-center space-x-2">
+                              <Calendar className="h-5 w-5" />
+                              <span>Deadline: {formatDeadline(competition.deadline)}</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between text-lg text-gray-600">
+                            <div className="flex items-center space-x-2">
+                              <DollarSign className="h-5 w-5" />
+                              <span>{competition.prize}</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between text-lg text-gray-600">
+                            <div className="flex items-center space-x-2">
+                              <Users className="h-5 w-5" />
+                              <span>{competition.participants}/{competition.maxParticipants} participants</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between text-lg text-gray-600">
+                            <div className="flex items-center space-x-2">
+                              <MapPin className="h-5 w-5" />
+                              <span>{competition.location}</span>
+                            </div>
+                          </div>
+
+                          <div>
+                            <h4 className="text-lg font-bold text-black mb-3">Tags</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {competition.tags.map((tag) => (
+                                <Badge key={tag} variant="outline" className="border-2 border-gray-300 text-gray-700 px-3 py-1 text-sm font-bold">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="flex gap-3">
+                            <Button className="flex-1 bg-black text-white hover:bg-gray-800 py-4 text-lg font-bold">
+                              <ExternalLink className="h-5 w-5 mr-3" />
+                              Learn More
+                            </Button>
+                            <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white py-4 text-lg font-bold">
+                              <Users className="h-5 w-5" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Past Competitions */}
+              {pastCompetitions.length > 0 && (
+                <div className="mb-8 md:mb-16">
+                  <div className="text-center mb-6 md:mb-12">
+                    <div className="text-2xl md:text-4xl font-black text-black mb-2 md:mb-4">Past Competitions</div>
+                    <p className="text-base md:text-xl text-gray-600">Learn from previous competitions and prepare for next year</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+                    {pastCompetitions.map((competition) => (
+                      <Card key={competition.id} className="border-0 shadow-none bg-transparent hover:scale-105 transition-transform cursor-pointer opacity-75">
+                        <CardHeader className="pb-6">
+                          <div className="flex justify-between items-start mb-4">
+                            <Badge className={`border-2 ${getStatusColor(competition.status)} px-4 py-2 text-sm font-bold uppercase tracking-widest`}>
+                              {getStatusText(competition.status)}
+                            </Badge>
+                            <div className="text-3xl">{competition.icon}</div>
+                          </div>
+                          <CardTitle className="text-2xl font-black text-black">{competition.name}</CardTitle>
+                          <CardDescription className="text-lg text-gray-600">{competition.description}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                          <div className="flex items-center justify-between text-lg text-gray-600">
+                            <div className="flex items-center space-x-2">
+                              <Calendar className="h-5 w-5" />
+                              <span>Deadline: {formatDeadline(competition.deadline)}</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between text-lg text-gray-600">
+                            <div className="flex items-center space-x-2">
+                              <DollarSign className="h-5 w-5" />
+                              <span>{competition.prize}</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between text-lg text-gray-600">
+                            <div className="flex items-center space-x-2">
+                              <Users className="h-5 w-5" />
+                              <span>{competition.participants}/{competition.maxParticipants} participants</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between text-lg text-gray-600">
+                            <div className="flex items-center space-x-2">
+                              <MapPin className="h-5 w-5" />
+                              <span>{competition.location}</span>
+                            </div>
+                          </div>
+
+                          <div>
+                            <h4 className="text-lg font-bold text-black mb-3">Tags</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {competition.tags.map((tag) => (
+                                <Badge key={tag} variant="outline" className="border-2 border-gray-300 text-gray-700 px-3 py-1 text-sm font-bold">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="flex gap-3">
+                            <Button className="flex-1 bg-gray-600 text-white hover:bg-gray-700 py-4 text-lg font-bold">
+                              <ExternalLink className="h-5 w-5 mr-3" />
+                              View Results
+                            </Button>
+                            <Button variant="outline" className="border-2 border-gray-400 text-gray-600 hover:bg-gray-400 hover:text-white py-4 text-lg font-bold">
+                              <Users className="h-5 w-5" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* No Results */}
+              {filteredCompetitions.length === 0 && (
+                <div className="text-center py-8 md:py-16">
+                  <div className="text-2xl md:text-4xl font-black text-gray-400 mb-2 md:mb-4">No competitions found</div>
+                  <p className="text-base md:text-xl text-gray-600 mb-4 md:mb-8">Try adjusting your search or filters</p>
+                  <Button 
+                    onClick={() => {
+                      setSearchTerm("")
+                      setSelectedCategory("all")
+                      setSelectedStatus("all")
+                      setTeamFilter("all")
+                    }}
+                    className="bg-black text-white hover:bg-gray-800 px-6 md:px-8 py-2 md:py-4 text-base md:text-lg font-bold"
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              )}
+            </div>
+          </section>
         </div>
       </div>
     </OnboardingScrollEnforcer>
