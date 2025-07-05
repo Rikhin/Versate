@@ -9,10 +9,13 @@ import { BackgroundGradient, FloatingShapes } from "@/components/scroll-animatio
 import { Badge } from "@/components/ui/badge"
 import { MapPin, DollarSign, GraduationCap, Search } from "lucide-react"
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
+import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs"
+import Link from "next/link"
 
 const filterBoxClass = "h-10 md:h-11 text-sm md:text-base font-normal border border-gray-300 focus:border-blue-500 focus:bg-blue-50/30 hover:bg-gray-50 rounded-lg px-3 transition-colors duration-150 min-w-[120px] md:min-w-[160px] bg-white appearance-none"
 
 export default function ScholarshipsPage() {
+  const { isSignedIn, isLoaded } = useUser()
   const [scholarships, setScholarships] = useState<Scholarship[]>([])
   const [search, setSearch] = useState("")
   const [filterDegree, setFilterDegree] = useState("")
@@ -123,9 +126,28 @@ export default function ScholarshipsPage() {
                     <p className="text-sm text-gray-600">Scholarships & Grants</p>
                   </div>
                 </div>
-                <Button asChild variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
-                  <a href="/dashboard">Back to Dashboard</a>
-                </Button>
+                <div className="flex items-center space-x-4">
+                  {!isSignedIn ? (
+                    <>
+                      <SignInButton mode="modal">
+                        <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
+                          Sign In
+                        </Button>
+                      </SignInButton>
+                      <SignUpButton mode="modal">
+                        <Button className="bg-black text-white hover:bg-gray-800">
+                          Get Started
+                        </Button>
+                      </SignUpButton>
+                    </>
+                  ) : (
+                    <Link href="/dashboard">
+                      <Button className="bg-black text-white hover:bg-gray-800">
+                        Dashboard
+                      </Button>
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           </header>

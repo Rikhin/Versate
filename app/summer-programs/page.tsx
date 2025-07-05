@@ -120,11 +120,28 @@ export default function SummerProgramsPage() {
                     <p className="text-sm text-gray-600">Summer Programs</p>
                   </div>
                 </div>
-                <Link href="/dashboard">
-                  <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
-                    Back to Dashboard
-                  </Button>
-                </Link>
+                <div className="flex items-center space-x-4">
+                  {!isSignedIn ? (
+                    <>
+                      <SignInButton mode="modal">
+                        <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
+                          Sign In
+                        </Button>
+                      </SignInButton>
+                      <SignUpButton mode="modal">
+                        <Button className="bg-black text-white hover:bg-gray-800">
+                          Get Started
+                        </Button>
+                      </SignUpButton>
+                    </>
+                  ) : (
+                    <Link href="/dashboard">
+                      <Button className="bg-black text-white hover:bg-gray-800">
+                        Dashboard
+                      </Button>
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           </header>
