@@ -10,7 +10,7 @@ import { BackgroundGradient, FloatingShapes } from "@/components/scroll-animatio
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink, Search, Calendar, DollarSign, MapPin, CheckCircle, AlertCircle } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs"
+import { SignInButton, SignUpButton, useUser, SignIn, SignUp } from "@clerk/nextjs"
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
 
 const filterBoxClass = "h-10 md:h-11 text-sm md:text-base font-normal border border-gray-300 focus:border-blue-500 focus:bg-blue-50/30 hover:bg-gray-50 rounded-lg px-3 transition-colors duration-150 min-w-[120px] md:min-w-[160px] bg-white appearance-none"
@@ -133,6 +133,8 @@ export default function SummerProgramsPage() {
                           Get Started
                         </Button>
                       </SignUpButton>
+                      <SignIn />
+                      <SignUp />
                     </>
                   ) : (
                     <Link href="/dashboard">

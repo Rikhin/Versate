@@ -29,7 +29,7 @@ import {
 import Link from "next/link"
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
 import { competitions } from "@/lib/competitions-data"
-import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs"
+import { SignInButton, SignUpButton, useUser, SignIn, SignUp } from "@clerk/nextjs"
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
 
 interface Competition {
@@ -167,6 +167,8 @@ export default function CompetitionsPage() {
                           Get Started
                         </Button>
                       </SignUpButton>
+                      <SignIn />
+                      <SignUp />
                     </>
                   ) : (
                     <Link href="/dashboard">

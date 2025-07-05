@@ -9,7 +9,7 @@ import { BackgroundGradient, FloatingShapes } from "@/components/scroll-animatio
 import { Badge } from "@/components/ui/badge"
 import { MapPin, DollarSign, GraduationCap, Search } from "lucide-react"
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
-import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs"
+import { SignInButton, SignUpButton, useUser, SignIn, SignUp } from "@clerk/nextjs"
 import Link from "next/link"
 
 const filterBoxClass = "h-10 md:h-11 text-sm md:text-base font-normal border border-gray-300 focus:border-blue-500 focus:bg-blue-50/30 hover:bg-gray-50 rounded-lg px-3 transition-colors duration-150 min-w-[120px] md:min-w-[160px] bg-white appearance-none"
@@ -139,6 +139,8 @@ export default function ScholarshipsPage() {
                           Get Started
                         </Button>
                       </SignUpButton>
+                      <SignIn />
+                      <SignUp />
                     </>
                   ) : (
                     <Link href="/dashboard">
