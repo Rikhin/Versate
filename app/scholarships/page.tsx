@@ -11,6 +11,7 @@ import { MapPin, DollarSign, GraduationCap, Search } from "lucide-react"
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
 import { SignInButton, SignUpButton, useUser, SignIn, SignUp } from "@clerk/nextjs"
 import Link from "next/link"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 
 const filterBoxClass = "h-10 md:h-11 text-sm md:text-base font-normal border border-gray-300 focus:border-blue-500 focus:bg-blue-50/30 hover:bg-gray-50 rounded-lg px-3 transition-colors duration-150 min-w-[120px] md:min-w-[160px] bg-white appearance-none"
 
@@ -21,10 +22,15 @@ export default function ScholarshipsPage() {
   const [filterDegree, setFilterDegree] = useState("")
   const [filterLocation, setFilterLocation] = useState("")
   const [filterCost, setFilterCost] = useState("")
+  const [showAuthModal, setShowAuthModal] = useState(false)
 
   useEffect(() => {
     loadAllScholarships().then(setScholarships)
   }, [])
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) setShowAuthModal(true)
+  }, [isLoaded, isSignedIn])
 
   // Extract unique filter values
   const allDegrees = Array.from(new Set(scholarships.flatMap(s => s.degrees.split(",").map(d => d.trim())).filter(Boolean))).sort()
@@ -110,116 +116,127 @@ export default function ScholarshipsPage() {
   )
 
   return (
-    <OnboardingScrollEnforcer>
-      <div className="min-h-screen bg-white relative overflow-hidden">
-        <BackgroundGradient startColor="from-gray-50/50" endColor="to-gray-100/50" triggerStart="top center" triggerEnd="center center" />
-        <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
-        <div className="relative z-10">
-          {/* Header */}
-          <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-            <div className="container mx-auto px-8 py-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <GraduationCap className="h-8 w-8 text-black" />
-                  <div>
-                    <span className="text-2xl font-black text-black">Versate</span>
-                    <p className="text-sm text-gray-600">Scholarships & Grants</p>
+    <>
+      <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
+        <DialogContent className="flex flex-col items-center justify-center gap-6 animate-fade-in">
+          <h2 className="text-2xl font-bold">Sign in to continue</h2>
+          <div className="flex gap-4">
+            <Button onClick={() => window.location.href = '/sign-in'}>Sign In</Button>
+            <Button onClick={() => window.location.href = '/sign-up'} variant="outline">Sign Up</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <OnboardingScrollEnforcer>
+        <div className="min-h-screen bg-white relative overflow-hidden">
+          <BackgroundGradient startColor="from-gray-50/50" endColor="to-gray-100/50" triggerStart="top center" triggerEnd="center center" />
+          <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
+          <div className="relative z-10">
+            {/* Header */}
+            <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+              <div className="container mx-auto px-8 py-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <GraduationCap className="h-8 w-8 text-black" />
+                    <div>
+                      <span className="text-2xl font-black text-black">Versate</span>
+                      <p className="text-sm text-gray-600">Scholarships & Grants</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    {!isSignedIn ? (
+                      <>
+                        <SignInButton mode="modal">
+                          <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
+                            Sign In
+                          </Button>
+                        </SignInButton>
+                        <SignUpButton mode="modal">
+                          <Button className="bg-black text-white hover:bg-gray-800">
+                            Get Started
+                          </Button>
+                        </SignUpButton>
+                        <SignIn />
+                        <SignUp />
+                      </>
+                    ) : (
+                      <Link href="/dashboard">
+                        <Button className="bg-black text-white hover:bg-gray-800">
+                          Dashboard
+                        </Button>
+                      </Link>
+                    )}
                   </div>
                 </div>
-                <div className="flex items-center space-x-4">
-                  {!isSignedIn ? (
-                    <>
-                      <SignInButton mode="modal">
-                        <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
-                          Sign In
-                        </Button>
-                      </SignInButton>
-                      <SignUpButton mode="modal">
-                        <Button className="bg-black text-white hover:bg-gray-800">
-                          Get Started
-                        </Button>
-                      </SignUpButton>
-                      <SignIn />
-                      <SignUp />
-                    </>
-                  ) : (
-                    <Link href="/dashboard">
-                      <Button className="bg-black text-white hover:bg-gray-800">
-                        Dashboard
-                      </Button>
-                    </Link>
-                  )}
+              </div>
+            </header>
+            <div className="h-8 md:h-12" />
+
+            {/* Title section */}
+            <section className="text-center mb-8 md:mb-16">
+              <h1 className="text-3xl md:text-6xl md:text-7xl font-black text-black mb-4 md:mb-8 leading-none">
+                Explore<br /><span className="text-gray-400">Scholarships & Grants</span>
+              </h1>
+              <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                Browse and discover scholarships and grants for students around the world. Use the filters to find the right fit for your degree, location, and funding needs.
+              </p>
+            </section>
+
+            {/* Filters & Search */}
+            <section className="container mx-auto px-8 py-8">
+              <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-4 md:gap-6 mb-6 items-center justify-center">
+                <div className="relative w-full md:w-80">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Search scholarships..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    className="w-full pl-10 border-2 border-gray-300 focus:border-blue-500 h-10 md:h-11"
+                  />
                 </div>
+                <select className={filterBoxClass} value={filterDegree} onChange={e => setFilterDegree(e.target.value)}>
+                  <option value="">Degree</option>
+                  {filteredDegrees.map((d, i) => <option key={i} value={d}>{d}</option>)}
+                </select>
+                <select className={filterBoxClass} value={filterLocation} onChange={e => setFilterLocation(e.target.value)}>
+                  <option value="">Location</option>
+                  {allLocations.map((l, i) => <option key={i} value={l}>{l.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</option>)}
+                </select>
+                <select className={filterBoxClass} value={filterCost} onChange={e => setFilterCost(e.target.value)}>
+                  {costOptions.map((option, i) => (
+                    <option key={i} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+                <Button variant="outline" onClick={clearFilters} className="h-10 md:h-11">Clear</Button>
               </div>
-            </div>
-          </header>
-          <div className="h-8 md:h-12" />
+            </section>
 
-          {/* Title section */}
-          <section className="text-center mb-8 md:mb-16">
-            <h1 className="text-3xl md:text-6xl md:text-7xl font-black text-black mb-4 md:mb-8 leading-none">
-              Explore<br /><span className="text-gray-400">Scholarships & Grants</span>
-            </h1>
-            <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Browse and discover scholarships and grants for students around the world. Use the filters to find the right fit for your degree, location, and funding needs.
-            </p>
-          </section>
-
-          {/* Filters & Search */}
-          <section className="container mx-auto px-8 py-8">
-            <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-4 md:gap-6 mb-6 items-center justify-center">
-              <div className="relative w-full md:w-80">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <Input
-                  type="text"
-                  placeholder="Search scholarships..."
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  className="w-full pl-10 border-2 border-gray-300 focus:border-blue-500 h-10 md:h-11"
-                />
-              </div>
-              <select className={filterBoxClass} value={filterDegree} onChange={e => setFilterDegree(e.target.value)}>
-                <option value="">Degree</option>
-                {filteredDegrees.map((d, i) => <option key={i} value={d}>{d}</option>)}
-              </select>
-              <select className={filterBoxClass} value={filterLocation} onChange={e => setFilterLocation(e.target.value)}>
-                <option value="">Location</option>
-                {allLocations.map((l, i) => <option key={i} value={l}>{l.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</option>)}
-              </select>
-              <select className={filterBoxClass} value={filterCost} onChange={e => setFilterCost(e.target.value)}>
-                {costOptions.map((option, i) => (
-                  <option key={i} value={option.value}>{option.label}</option>
-                ))}
-              </select>
-              <Button variant="outline" onClick={clearFilters} className="h-10 md:h-11">Clear</Button>
-            </div>
-          </section>
-
-          {/* Scholarship Cards */}
-          <section className="container mx-auto px-8 pb-16">
-            {filtered.length === 0 ? (
-              <div className="text-center text-gray-500 py-20">No scholarships found.</div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                {filtered.map((scholarship, idx) => (
-                  <Card key={idx} className="border-2 border-blue-200 shadow-lg hover:shadow-blue-300/40 hover:border-blue-400 ring-1 ring-blue-100/40 transition hover:scale-105 cursor-pointer bg-white">
-                    <CardHeader>
-                      <CardTitle className="text-lg font-bold line-clamp-2">{scholarship.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {scholarship.degrees && <Badge variant="secondary"><GraduationCap className="h-4 w-4 mr-1 inline" />{scholarship.degrees}</Badge>}
-                        {scholarship.funds && <Badge variant="secondary"><DollarSign className="h-4 w-4 mr-1 inline" />{scholarship.funds}</Badge>}
-                        {scholarship.location && <Badge variant="secondary"><MapPin className="h-4 w-4 mr-1 inline" />{scholarship.location.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</Badge>}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </section>
+            {/* Scholarship Cards */}
+            <section className="container mx-auto px-8 pb-16">
+              {filtered.length === 0 ? (
+                <div className="text-center text-gray-500 py-20">No scholarships found.</div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                  {filtered.map((scholarship, idx) => (
+                    <Card key={idx} className="border-2 border-blue-200 shadow-lg hover:shadow-blue-300/40 hover:border-blue-400 ring-1 ring-blue-100/40 transition hover:scale-105 cursor-pointer bg-white">
+                      <CardHeader>
+                        <CardTitle className="text-lg font-bold line-clamp-2">{scholarship.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {scholarship.degrees && <Badge variant="secondary"><GraduationCap className="h-4 w-4 mr-1 inline" />{scholarship.degrees}</Badge>}
+                          {scholarship.funds && <Badge variant="secondary"><DollarSign className="h-4 w-4 mr-1 inline" />{scholarship.funds}</Badge>}
+                          {scholarship.location && <Badge variant="secondary"><MapPin className="h-4 w-4 mr-1 inline" />{scholarship.location.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</Badge>}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
         </div>
-      </div>
-    </OnboardingScrollEnforcer>
+      </OnboardingScrollEnforcer>
+    </>
   )
 } 
