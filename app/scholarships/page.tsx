@@ -117,8 +117,12 @@ export default function ScholarshipsPage() {
 
   return (
     <>
-      <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
-        <DialogContent className="flex flex-col items-center justify-center gap-6 animate-fade-in">
+      <Dialog open={showAuthModal}>
+        <DialogContent
+          className="flex flex-col items-center justify-center gap-6 animate-fade-in [&>button[data-dialog-close]]:hidden"
+          onInteractOutside={e => e.preventDefault()}
+          onEscapeKeyDown={e => e.preventDefault()}
+        >
           <h2 className="text-2xl font-bold text-indigo-700">Welcome to Versate!</h2>
           <p className="text-center text-gray-600 max-w-xs">Sign in or create an account to discover scholarships, track your applications, and get personalized recommendations. We're here to help you succeed!</p>
           <div className="flex gap-4">
