@@ -1,40 +1,19 @@
-import { NextRequest, NextResponse } from "next/server"
-import OpenAI from "openai"
-
-const openai = new OpenAI({
-  apiKey: "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",
-  baseURL: "https://integrate.api.nvidia.com/v1",
-})
+import { NextRequest, NextResponse } from 'next/server';
+import { helixSearch, createEmbedding } from '../../../lib/helixdb';
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json()
-    const message = body.query || body.message
-    if (!message) {
-      return NextResponse.json({ error: "Message is required" }, { status: 400 })
-    }
-    const completion = await openai.chat.completions.create({
-      model: "nvidia/llama-3.1-nemotron-ultra-253b-v1",
-      messages: [
-        { role: "system", content: "You are a friendly, helpful, and conversational AI assistant. Respond in natural, human-like language and format your answers clearly for the user." },
-        { role: "user", content: message }
-      ],
-      temperature: 0.7,
-      top_p: 0.95,
-      max_tokens: 1024,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-      stream: false,
-    })
-    const text = completion.choices?.[0]?.message?.content || "No response"
-    const results = [
-      {
-        title: "AI Assistant",
-        description: text
-      }
-    ]
-    return NextResponse.json({ results })
+    const { message } = await req.json();
+    if (!message) return NextResponse.json({ error: 'Message required' }, { status: 400 });
+
+    // Generate embedding for the user query
+    const embedding = await createEmbedding(message);
+    // Search HelixDB for relevant results
+    const result = await helixSearch('mentors', embedding, 5);
+
+    return NextResponse.json({ results: result });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 })
+    console.error('RAG API error:', error);
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 } 

@@ -43,35 +43,102 @@ export async function POST(req: NextRequest) {
     reply_to: userEmail,
   };
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
+  let resendSuccess = false;
+  let resendError = null;
+  let resendData = null;
 
-  const data = await res.json();
-  if (!res.ok) {
-    return NextResponse.json({ error: data.error || 'Failed to send email', resendResponse: data, status: res.status }, { status: 500 });
+  // Try to send email via Resend
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    resendData = await res.json();
+    resendSuccess = res.ok;
+    
+    if (!res.ok) {
+      resendError = resendData.error || 'Failed to send email';
+      console.error('Resend API error:', resendData);
+    }
+  } catch (e) {
+    resendError = 'Network error when sending email';
+    console.error('Resend network error:', e);
   }
 
-  // Log to Supabase
-  const { error: logError, data: logData } = await supabase.from('sent_emails').insert([
-    {
+  // Always log to Supabase regardless of Resend success/failure
+  let logError = null;
+  let logData = null;
+  
+  try {
+    const emailLogData = {
       sender_id: userId,
-      to,
+      email_to: to,
       subject,
-      text,
+      body: text,
       reply_to: userEmail,
       sent_at: new Date().toISOString(),
-    },
-  ]);
+      // Add a status field to track if Resend succeeded
+      status: resendSuccess ? 'sent' : 'failed',
+      resend_error: resendError,
+    };
+    
+    console.log('Email send API - Logging email to database:', emailLogData);
+    
+    const { error, data } = await supabase.from('sent_emails').insert([emailLogData]);
 
-  if (logError) {
-    return NextResponse.json({ success: true, data, logError }, { status: 200 });
+    console.log('Email send API - Database insert result:', { error, data });
+
+    if (error) {
+      logError = error;
+      console.error('Supabase logging error:', error);
+    } else {
+      logData = data;
+      console.log('Email send API - Successfully logged email to database');
+    }
+  } catch (e) {
+    logError = e;
+    console.error('Supabase logging exception:', e);
   }
 
-  return NextResponse.json({ success: true, data, log: logData });
+  // Return appropriate response based on what happened
+  if (resendSuccess) {
+    if (logError) {
+      // Email sent but logging failed
+      return NextResponse.json({ 
+        success: true, 
+        data: resendData, 
+        warning: 'Email sent but failed to log to database',
+        logError 
+      }, { status: 200 });
+    } else {
+      // Everything worked
+      return NextResponse.json({ 
+        success: true, 
+        data: resendData, 
+        log: logData 
+      }, { status: 200 });
+    }
+  } else {
+    if (logError) {
+      // Both Resend and logging failed
+      return NextResponse.json({ 
+        error: resendError || 'Failed to send email',
+        logError,
+        resendResponse: resendData 
+      }, { status: 500 });
+    } else {
+      // Resend failed but logging succeeded
+      return NextResponse.json({ 
+        error: resendError || 'Failed to send email',
+        warning: 'Email logged but failed to send',
+        resendResponse: resendData,
+        log: logData 
+      }, { status: 500 });
+    }
+  }
 } 

@@ -41,6 +41,8 @@ export default function MessagesPage() {
   const [sendError, setSendError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const { loading, profile } = useRequireProfile()
+  const [conversationsError, setConversationsError] = useState<string | null>(null)
+  const [messagesError, setMessagesError] = useState<string | null>(null)
 
   useEffect(() => {
     if (user) {
@@ -122,14 +124,18 @@ export default function MessagesPage() {
     if (!user) return
     
     setIsLoading(true)
+    setConversationsError(null)
     try {
       const response = await fetch("/api/messages/conversations")
       if (response.ok) {
         const data = await response.json()
         setConversations(data)
+      } else {
+        setConversationsError("Failed to load conversations. Please try again later.")
       }
     } catch (error) {
       console.error("Error fetching conversations:", error)
+      setConversationsError("Failed to load conversations. Please check your connection.")
     } finally {
       setIsLoading(false)
     }
@@ -137,22 +143,27 @@ export default function MessagesPage() {
 
   const fetchMessages = async (partnerId: string) => {
     setIsLoadingMessages(true)
+    setMessagesError(null)
     try {
       const response = await fetch(`/api/messages?with=${partnerId}`)
       if (response.ok) {
         const data = await response.json()
         setMessages(data)
+      } else {
+        setMessagesError("Failed to load messages. Please try again later.")
       }
     } catch (error) {
       setMessages([])
+      setMessagesError("Failed to load messages. Please check your connection.")
     } finally {
       setIsLoadingMessages(false)
     }
   }
 
   const filteredConversations = conversations.filter(conversation => {
-    const fullName = `${conversation.partner.first_name} ${conversation.partner.last_name}`.toLowerCase()
-    return fullName.includes(searchQuery.toLowerCase())
+    if (!conversation.partner) return false;
+    const fullName = `${conversation.partner.first_name || "Unknown"} ${conversation.partner.last_name || "User"}`.toLowerCase();
+    return fullName.includes(searchQuery.toLowerCase());
   })
 
   const openConversation = (conversation: Conversation) => {
@@ -213,6 +224,26 @@ export default function MessagesPage() {
     }
   }
 
+  // Defensive fallback for partner name and avatar
+  const getPartnerName = (partner: any) => {
+    if (!partner) return "Unknown User";
+    const first = partner.first_name || "Unknown";
+    const last = partner.last_name || "User";
+    return `${first} ${last}`;
+  };
+  const getPartnerInitials = (partner: any) => {
+    if (!partner) return "U";
+    return `${(partner.first_name?.[0] || "U")}${(partner.last_name?.[0] || "U")}`;
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 50);
+  }, [messages]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -223,7 +254,15 @@ export default function MessagesPage() {
   }
 
   if (!profile) {
-    return null; // Will redirect, don't render anything
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Profile Missing</h1>
+          <p className="text-gray-600 mb-4">Your user profile could not be loaded. Please create or fix your profile to use messages.</p>
+          <a href="/profile" className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition">Go to Profile</a>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -254,7 +293,9 @@ export default function MessagesPage() {
                 </div>
               </CardHeader>
               <CardContent className="p-0">
-                {isLoading ? (
+                {conversationsError ? (
+                  <div className="p-4 text-center text-red-500">{conversationsError}</div>
+                ) : isLoading ? (
                   <div className="p-4 text-center text-gray-500">Loading conversations...</div>
                 ) : filteredConversations.length === 0 ? (
                   <div className="p-4 text-center text-gray-500">
@@ -271,17 +312,17 @@ export default function MessagesPage() {
                         <div className="flex items-center space-x-3">
                           <Avatar className="h-10 w-10">
                             <AvatarImage 
-                              src={conversation.partner.avatar_url || "/placeholder-user.jpg"} 
-                              alt={`${conversation.partner.first_name} ${conversation.partner.last_name}`} 
+                              src={conversation.partner?.avatar_url || "/placeholder-user.jpg"} 
+                              alt={`${conversation.partner?.first_name || "Unknown"} ${conversation.partner?.last_name || "User"}`} 
                             />
                             <AvatarFallback>
-                              {conversation.partner.first_name[0]}{conversation.partner.last_name[0]}
+                              {getPartnerInitials(conversation.partner)}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
                               <p className="text-sm font-medium text-gray-900 truncate">
-                                {conversation.partner.first_name} {conversation.partner.last_name}
+                                {getPartnerName(conversation.partner)}
                               </p>
                               <span className="text-xs text-gray-500">
                                 {formatTime(conversation.lastMessage.created_at)}
@@ -307,11 +348,11 @@ export default function MessagesPage() {
 
           {/* Message Area */}
           <div className="lg:col-span-2">
-            <Card className="h-[600px] flex flex-col">
+            <Card className="h-[600px] flex flex-col max-w-4xl mx-auto">
               <CardHeader className="flex-shrink-0">
                 <CardTitle>
                   {selectedConversation ? (
-                    `${selectedConversation.partner.first_name} ${selectedConversation.partner.last_name}`
+                    getPartnerName(selectedConversation.partner)
                   ) : (
                     "Select a conversation to start messaging"
                   )}
@@ -326,7 +367,9 @@ export default function MessagesPage() {
                 ) : (
                   <>
                     <div className="overflow-y-auto space-y-4 p-4 border-b bg-white h-[500px]">
-                      {isLoadingMessages ? (
+                      {messagesError ? (
+                        <div className="text-center text-red-500">{messagesError}</div>
+                      ) : isLoadingMessages ? (
                         <div className="text-center text-gray-500">Loading messages...</div>
                       ) : messages.length === 0 ? (
                         <div className="text-center text-gray-500">No messages yet. Start the conversation!</div>
@@ -339,7 +382,7 @@ export default function MessagesPage() {
                               className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
                             >
                               <div
-                                className={`inline-block max-w-[60%] min-w-[64px] px-4 py-2 rounded-lg align-bottom break-words whitespace-pre-wrap shadow-sm ${
+                                className={`inline-block max-w-[80%] min-w-[64px] px-3 py-2 rounded-lg align-bottom break-words whitespace-pre-wrap shadow-sm text-base ${
                                   isOwnMessage
                                     ? "bg-blue-600 text-white self-end"
                                     : "bg-gray-100 text-gray-900 self-start"
@@ -366,7 +409,7 @@ export default function MessagesPage() {
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyPress={handleKeyPress}
                         placeholder="Type your message..."
-                        className="flex-1 min-h-[60px] max-h-[120px] resize-none"
+                        className="flex-1 min-h-[48px] max-h-[120px] resize-none text-base"
                         disabled={isSending}
                       />
                       <Button

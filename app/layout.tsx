@@ -11,6 +11,8 @@ import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEn
 
 const inter = Inter({ subsets: ["latin"] })
 
+const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
 export const metadata: Metadata = {
   title: "Versate - Competition Team Formation Platform",
   description: "Find teammates for academic competitions and collaborative projects",
@@ -23,13 +25,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider publishableKey={clerkPublishableKey}>
       <html lang="en">
         <body className={inter.className + " bg-white text-black"}>
           <OnboardingScrollEnforcer>
-          <BackgroundDesign />
-          <Header />
-          <main className="relative z-10 min-h-screen">{children}</main>
+            <BackgroundDesign />
+            <Header />
+            <main className="relative z-10 min-h-screen">{children}</main>
             <Toaster />
             <Analytics />
           </OnboardingScrollEnforcer>

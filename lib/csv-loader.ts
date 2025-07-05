@@ -51,6 +51,14 @@ export interface SummerProgram {
   name: string;
 }
 
+// Scholarship type for the new scholarships page
+export interface Scholarship {
+  title: string;
+  degrees: string;
+  funds: string;
+  location: string;
+}
+
 const csvFiles = [
   "/webset-california.csv",
   "/webset-washington.csv",
@@ -58,7 +66,17 @@ const csvFiles = [
   "/webset-ohio.csv",
   "/webset-indiana.csv",
   "/webset-linkedin_profiles_yc_partners.csv",
-  "/webset-linkedin_profiles_current_admissions_officers_t20_universities.csv"
+  "/webset-linkedin_profiles_current_admissions_officers_t20_universities.csv",
+  // New mentor websets (researchers)
+  "/webset-linkedin_profiles_researcher_or_pi_high_school_projects_alabama.csv",
+  "/webset-linkedin_profiles_researcher_or_pi_high_school_projects_alaska.csv",
+  "/webset-linkedin_profiles_researcher_or_pi_high_school_projects_arizona.csv",
+  "/webset-linkedin_profiles_researcher_or_pi_high_school_projects_colorado.csv",
+  "/webset-linkedin_profiles_researcher_or_pi_high_school_projects_connecticut.csv",
+  "/webset-linkedin_profiles_researcher_or_pi_high_school_projects_delaware.csv",
+  "/webset-linkedin_profiles_researcher_or_pi_high_school_projects_florida.csv",
+  "/webset-linkedin_profiles_researcher_or_pi_high_school_projects_georgia.csv",
+  "/webset-linkedin_profiles_researcher_or_pi_high_school_projects_hawaii.csv"
 ]
 
 function getStateFromFilename(filename: string): string {
@@ -67,6 +85,17 @@ function getStateFromFilename(filename: string): string {
   if (filename.includes("arkansas")) return "Arkansas"
   if (filename.includes("ohio")) return "Ohio"
   if (filename.includes("indiana")) return "Indiana"
+  if (filename.includes("alabama")) return "Alabama"
+  if (filename.includes("alaska")) return "Alaska"
+  if (filename.includes("arizona")) return "Arizona"
+  if (filename.includes("colorado")) return "Colorado"
+  if (filename.includes("connecticut")) return "Connecticut"
+  if (filename.includes("delaware")) return "Delaware"
+  if (filename.includes("florida")) return "Florida"
+  if (filename.includes("georgia")) return "Georgia"
+  if (filename.includes("hawaii")) return "Hawaii"
+  if (filename.includes("yc_partners")) return "Y Combinator"
+  if (filename.includes("admissions_officers")) return "Admissions Officer"
   return "Unknown"
 }
 
@@ -74,47 +103,52 @@ export async function loadAllMentors(): Promise<MentorProfile[]> {
   const allMentors: MentorProfile[] = []
 
   for (const file of csvFiles) {
-    const res = await fetch(file)
-    const text = await res.text()
-    const { data } = Papa.parse(text, { header: true, skipEmptyLines: true })
-    let state = getStateFromFilename(file)
-    for (const row of data as any[]) {
-      // Skip incomplete
-      if (!row["Title"] || !row["URL"]) continue
-      // Special handling for new files
-      if (file.includes("yc_partners")) {
-        allMentors.push({
-          name: row["Title"].trim(),
-          linkedin: row["URL"].trim(),
-          company: row["Company"]?.trim() || "",
-          jobTitle: row["Job Title"]?.trim() || "",
-          email: row["Work Email (Result)"]?.trim() || "",
-          yearsExperience: row["Years Experience (Result)"]?.trim() || "",
-          state: "Y Combinator"
-        })
-      } else if (file.includes("admissions_officers")) {
-        allMentors.push({
-          name: row["Title"].trim(),
-          linkedin: row["URL"].trim(),
-          company: row["Company"]?.trim() || "",
-          jobTitle: row["Job Title"]?.trim() || "",
-          email: row["Work Email (Result)"]?.trim() || "",
-          yearsExperience: row["Years of Experience (Result)"]?.trim() || "",
-          state: row["Company"]?.trim() || "Admissions Officer"
-        })
-      } else {
-        allMentors.push({
-          name: row["Title"].trim(),
-          linkedin: row["URL"].trim(),
-          company: row["Company"]?.trim() || "",
-          jobTitle: row["Job Title"]?.trim() || "",
-          email: row["Email (Result)"]?.trim() || "",
-          yearsExperience: row["Years Experience (Result)"]?.trim() || "",
-          state
-        })
+    try {
+      // Always use relative URL for client-side fetch
+      const res = await fetch(file)
+      if (!res.ok) {
+        console.warn(`Failed to load ${file}: ${res.statusText}`)
+        continue
       }
+      const text = await res.text()
+      const { data } = Papa.parse(text, { header: true, skipEmptyLines: true })
+      let state = getStateFromFilename(file)
+      
+      for (const row of data as any[]) {
+        // Skip incomplete
+        if (!row["Title"] || !row["URL"]) {
+          continue
+        }
+        
+        // Special handling for different file types
+        if (file.includes("yc_partners")) {
+          allMentors.push({
+            name: row["Title"].trim(),
+            linkedin: row["URL"].trim(),
+            company: row["Company"]?.trim() || "",
+            jobTitle: row["Job Title"]?.trim() || "",
+            email: row["Work Email (Result)"]?.trim() || "",
+            yearsExperience: row["Years Experience (Result)"]?.trim() || "",
+            state: state
+          })
+        } else if (file.includes("researcher_or_pi_high_school_projects")) {
+          // Handle new researcher files
+          allMentors.push({
+            name: row["Title"].trim(),
+            linkedin: row["URL"].trim(),
+            company: row["Company"]?.trim() || "",
+            jobTitle: row["Job Title"]?.trim() || "",
+            email: row["Email (Result)"]?.trim() || "",
+            yearsExperience: row["Years Experience (Result)"]?.trim() || "",
+            state: state
+          })
+        }
+      }
+    } catch (error) {
+      console.error(`Error loading ${file}:`, error)
     }
   }
+
   return allMentors
 }
 
@@ -230,4 +264,19 @@ export async function loadAllSummerPrograms(): Promise<SummerProgram[]> {
     officialUrl: row["url is the official page for the specific program (Criterion)"] || row["URL"] || "",
     name: row["Name of Summer Program (Result)"] || row["Title"] || "",
   }));
-} 
+}
+
+// Load all scholarships from the CSV file in public directory
+export async function loadAllScholarships(): Promise<Scholarship[]> {
+  const res = await fetch("/Universities_Schoolarships_All_Around_the_World.csv");
+  const text = await res.text();
+  const { data } = Papa.parse(text, { header: true, skipEmptyLines: true });
+  return (data as any[]).map(row => ({
+    title: row["title"] || "",
+    degrees: row["degrees"] || "",
+    funds: row["funds"] || "",
+    location: row["location"] || "",
+  }));
+}
+
+// Note: This function must be called from the browser (client-side) only. 

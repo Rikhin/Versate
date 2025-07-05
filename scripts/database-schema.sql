@@ -153,6 +153,33 @@ CREATE TABLE IF NOT EXISTS projects (
   competition_id text
 );
 
+-- Create chats table for AI chat history
+CREATE TABLE IF NOT EXISTS chats (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  messages JSONB NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_chats_user_id ON chats(user_id);
+CREATE INDEX IF NOT EXISTS idx_chats_created_at ON chats(created_at);
+
+ALTER TABLE chats ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own chats" ON chats
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own chats" ON chats
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own chats" ON chats
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own chats" ON chats
+  FOR DELETE USING (auth.uid() = user_id);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
 CREATE INDEX IF NOT EXISTS idx_teams_owner_id ON teams(owner_id);

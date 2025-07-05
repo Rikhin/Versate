@@ -114,6 +114,7 @@ export function Header() {
                 >
                   <button className="py-3 px-6 text-left hover:bg-gray-100" onClick={() => { router.push('/competitions'); setFindDropdownOpen(false); }}>Competitions</button>
                   <button className="py-3 px-6 text-left hover:bg-gray-100" onClick={() => { router.push('/summer-programs'); setFindDropdownOpen(false); }}>Summer Programs</button>
+                  <button className="py-3 px-6 text-left hover:bg-gray-100" onClick={() => { router.push('/scholarships'); setFindDropdownOpen(false); }}>Scholarships</button>
                 </div>
               )}
             </div>

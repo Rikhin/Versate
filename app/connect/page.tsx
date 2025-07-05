@@ -26,6 +26,7 @@ const filterBoxClass = "h-10 md:h-11 text-sm md:text-base font-normal border bor
 
 export default function ConnectPage() {
   const [mentors, setMentors] = useState<MentorProfile[]>([])
+  const [shuffledMentors, setShuffledMentors] = useState<MentorProfile[]>([])
   const [students, setStudents] = useState<any[]>([])
   const [search, setSearch] = useState("")
   const [filterCompany, setFilterCompany] = useState("")
@@ -42,16 +43,152 @@ export default function ConnectPage() {
   const [stateSearch, setStateSearch] = useState('')
   const [filterSkill, setFilterSkill] = useState("");
   const [filterCompetition, setFilterCompetition] = useState("");
+  const [filterEmail, setFilterEmail] = useState("");
   const [skillSearch, setSkillSearch] = useState("");
   const [competitionSearch, setCompetitionSearch] = useState("");
   const [emailModalStudent, setEmailModalStudent] = useState<any>(null)
   const router = useRouter()
   const [page, setPage] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  
+  // New pagination and loading states
+  const [loadingMentors, setLoadingMentors] = useState(false);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 27,
+    total: 0,
+    totalPages: 0,
+    hasNext: false,
+    hasPrev: false
+  });
 
+  // Shuffle function
+  function shuffleArray<T>(array: T[]): T[] {
+    const arr = array.slice();
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // Load and shuffle mentors on mount only
+  useEffect(() => {
+    loadAndShuffleMentors();
+    // eslint-disable-next-line
+  }, []);
+
+  const loadAndShuffleMentors = async () => {
+    setLoadingMentors(true);
+    try {
+      const allMentors = await loadAllMentors();
+      const shuffled = shuffleArray(allMentors);
+      setShuffledMentors(shuffled);
+      setMentors(shuffled);
+      setPagination(p => ({
+        ...p,
+        total: shuffled.length,
+        totalPages: Math.ceil(shuffled.length / p.limit),
+        page: 1,
+        hasNext: shuffled.length > p.limit,
+        hasPrev: false
+      }));
+    } catch (error) {
+      setShuffledMentors([]);
+      setMentors([]);
+    } finally {
+      setLoadingMentors(false);
+    }
+  };
+
+  // Paginate mentors when page/filter/search changes
+  const loadMentors = (pageNum = 1, searchTerm = search, filters: {
+    state?: string;
+    company?: string;
+    jobTitle?: string;
+    yearsExperience?: string;
+    email?: string;
+  } = {}) => {
+    setLoadingMentors(true);
+    try {
+      let filteredMentors = shuffledMentors;
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        filteredMentors = filteredMentors.filter(m => 
+          m.name?.toLowerCase().includes(searchLower) ||
+          m.company?.toLowerCase().includes(searchLower) ||
+          m.jobTitle?.toLowerCase().includes(searchLower)
+        );
+      }
+      if (filters.state) {
+        filteredMentors = filteredMentors.filter(m => 
+          m.state?.toLowerCase().includes(filters.state!.toLowerCase())
+        );
+      }
+      if (filters.company) {
+        filteredMentors = filteredMentors.filter(m => 
+          m.company?.toLowerCase().includes(filters.company!.toLowerCase())
+        );
+      }
+      if (filters.jobTitle) {
+        filteredMentors = filteredMentors.filter(m => 
+          m.jobTitle?.toLowerCase().includes(filters.jobTitle!.toLowerCase())
+        );
+      }
+      if (filters.yearsExperience) {
+        filteredMentors = filteredMentors.filter(m => 
+          m.yearsExperience?.toLowerCase().includes(filters.yearsExperience!.toLowerCase())
+        );
+      }
+      if (filters.email) {
+        if (filters.email === "Yes") {
+          filteredMentors = filteredMentors.filter(m => 
+            m.email && m.email.trim() !== "" && m.email !== "N/A"
+          );
+        } else if (filters.email === "No") {
+          filteredMentors = filteredMentors.filter(m => 
+            !m.email || m.email.trim() === "" || m.email === "N/A"
+          );
+        }
+      }
+      const limit = 27;
+      const startIndex = (pageNum - 1) * limit;
+      const endIndex = startIndex + limit;
+      const paginatedMentors = filteredMentors.slice(startIndex, endIndex);
+      setMentors(paginatedMentors);
+      setPagination({
+        page: pageNum,
+        limit: limit,
+        total: filteredMentors.length,
+        totalPages: Math.ceil(filteredMentors.length / limit),
+        hasNext: endIndex < filteredMentors.length,
+        hasPrev: pageNum > 1
+      });
+    } catch (error) {
+      setMentors([]);
+    } finally {
+      setLoadingMentors(false);
+    }
+  };
+
+  // Update useEffect to use loadMentors with shuffledMentors
+  useEffect(() => {
+    if (activeTab === "mentor" && shuffledMentors.length > 0) {
+      const filters = {
+        state: filterState,
+        company: filterCompany,
+        jobTitle: filterJob,
+        yearsExperience: filterYears,
+        email: filterEmail
+      };
+      loadMentors(1, search, filters);
+    }
+    // eslint-disable-next-line
+  }, [activeTab, search, filterState, filterCompany, filterJob, filterYears, filterEmail, shuffledMentors]);
+
+  // Load students
   useEffect(() => {
     let cancelled = false;
-    loadAllMentors().then(m => { if (!cancelled) setMentors(m) }).catch(() => setMentors([]));
     if (isSignedIn) {
       fetch("/api/profiles/search?limit=1000")
         .then(res => res.ok ? res.json() : [])
@@ -63,6 +200,7 @@ export default function ConnectPage() {
     return () => { cancelled = true; };
   }, [isSignedIn]);
 
+  // Load states
   useEffect(() => {
     fetch('/state_abbreviations.csv')
       .then(res => res.text())
@@ -72,20 +210,43 @@ export default function ConnectPage() {
       });
   }, []);
 
+  // Load emails
   useEffectEmails(() => {
     if (activeTab === "emails" && isSignedIn) {
       setLoadingEmails(true)
       fetch("/api/email/sent")
-        .then(res => res.json())
-        .then(data => setSentEmails(data.emails || []))
+        .then(res => {
+          console.log('Sent emails response status:', res.status);
+          return res.json();
+        })
+        .then(data => {
+          console.log('Sent emails data:', data);
+          setSentEmails(data.emails || []);
+        })
+        .catch(error => {
+          console.error('Error fetching sent emails:', error);
+          setSentEmails([]);
+        })
         .finally(() => setLoadingEmails(false))
     }
   }, [activeTab, isSignedIn])
 
+  // Handle auth modal
   useEffect(() => {
     if (isLoaded && !isSignedIn) setShowAuthModal(true);
     else setShowAuthModal(false);
   }, [isSignedIn, isLoaded]);
+
+  // Handle page changes
+  const handlePageChange = (newPage: number) => {
+    const filters = {
+      state: filterState,
+      company: filterCompany,
+      jobTitle: filterJob,
+      yearsExperience: filterYears
+    };
+    loadMentors(newPage, search, filters);
+  };
 
   // Grouped filter options
   const yearGroups = [
@@ -188,9 +349,12 @@ export default function ConnectPage() {
     setFilterJob("");
     setFilterYears("");
     setFilterState("");
+    setFilterEmail("");
     setFilterSkill("");
     setFilterCompetition("");
     setPage(0);
+    // Reload mentors with cleared filters
+    loadAndShuffleMentors();
   }
 
   return (
@@ -243,7 +407,7 @@ export default function ConnectPage() {
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-center gap-3">
                       <Mail className="h-6 w-6 text-blue-400" />
                       <span className="text-blue-900 text-sm">
-                        Only emails you send from ColabBoard are shown here.<br />Replies from mentors will appear in your regular Gmail inbox.
+                        Only emails you send from Versate are shown here.<br />Replies from mentors will appear in your regular inbox.
                       </span>
                     </div>
                   )}
@@ -275,6 +439,9 @@ export default function ConnectPage() {
                           <div className="relative min-w-[120px] h-10 flex items-center">
                             <CustomDropdown label="Experience" placeholder="Experience" options={yearGroups} value={filterYears} onChange={(v: string) => { setFilterYears(v); setPage(0); }} />
                           </div>
+                          <div className="relative min-w-[120px] h-10 flex items-center">
+                            <CustomDropdown label="Email" placeholder="Email Provided" options={["Yes", "No"]} value={filterEmail} onChange={(v: string) => { setFilterEmail(v); setPage(0); }} />
+                          </div>
                         </>
                       )}
                       {/* Student Filters */}
@@ -293,30 +460,72 @@ export default function ConnectPage() {
                   )}
                   {/* Tab Content */}
                   {activeTab === "mentor" && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-10">
-                      {filtered.map((m, i) => (
-                        <div key={"mentor-"+i} className="focus:outline-none focus:ring-4 focus:ring-black/30 rounded-xl">
-                          <Card 
-                            className="border-2 border-blue-200 shadow-lg hover:shadow-blue-300/40 hover:border-blue-400 ring-1 ring-blue-100/40 transition hover:scale-105 cursor-pointer bg-white"
-                          >
-                            <CardHeader className="pb-6">
-                              <div className="flex justify-between items-start mb-4">
-                                <Badge className="border-2 bg-blue-100 text-blue-800 border-blue-300 px-4 py-2 text-sm font-bold uppercase tracking-widest">Mentor</Badge>
-                                <div className="text-3xl"><Users /></div>
-                              </div>
-                              <CardTitle className="text-xl font-bold text-gray-900 mb-1">{m.name}</CardTitle>
-                              <div className="text-sm text-gray-600 mb-2">{m.jobTitle}</div>
-                              <div className="text-sm text-gray-500 mb-2">{m.company}</div>
-                            </CardHeader>
-                            <CardContent className="flex flex-col gap-2">
-                              <div className="flex items-center justify-between mt-2">
-                                <div className="text-xs text-gray-500">{m.state}</div>
-                                <Button size="sm" className="ml-auto" onClick={() => handleProfileClick(m, 'mentor')}>Connect</Button>
-                              </div>
-                            </CardContent>
-                          </Card>
+                    <div>
+                      {loadingMentors ? (
+                        <div className="text-center py-8">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                          <p className="text-gray-500 mt-2">Loading mentors...</p>
                         </div>
-                      ))}
+                      ) : (
+                        <>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-10">
+                            {mentors.map((m, i) => (
+                              <div key={"mentor-"+i} className="focus:outline-none focus:ring-4 focus:ring-black/30 rounded-xl">
+                                <Card 
+                                  className="border-2 border-blue-200 shadow-lg hover:shadow-blue-300/40 hover:border-blue-400 ring-1 ring-blue-100/40 transition hover:scale-105 cursor-pointer bg-white"
+                                >
+                                  <CardHeader className="pb-6">
+                                    <div className="flex justify-between items-start mb-4">
+                                      <Badge className="border-2 bg-blue-100 text-blue-800 border-blue-300 px-4 py-2 text-sm font-bold uppercase tracking-widest">Mentor</Badge>
+                                      <div className="text-3xl"><Users /></div>
+                                    </div>
+                                    <CardTitle className="text-xl font-bold text-gray-900 mb-1">{m.name}</CardTitle>
+                                    <div className="text-sm text-gray-600 mb-2">{m.jobTitle}</div>
+                                    <div className="text-sm text-gray-500 mb-2">{m.company}</div>
+                                  </CardHeader>
+                                  <CardContent className="flex flex-col gap-2">
+                                    <div className="flex items-center justify-between mt-2">
+                                      <div className="text-xs text-gray-500">{m.state}</div>
+                                      <Button size="sm" className="ml-auto" onClick={() => handleProfileClick(m, 'mentor')}>Connect</Button>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {/* Pagination Controls */}
+                          {pagination.totalPages > 1 && (
+                            <div className="flex justify-center items-center gap-2 mt-8">
+                              <Button
+                                variant="outline"
+                                onClick={() => handlePageChange(pagination.page - 1)}
+                                disabled={!pagination.hasPrev}
+                              >
+                                Previous
+                              </Button>
+                              
+                              <span className="text-sm text-gray-600">
+                                Page {pagination.page} of {pagination.totalPages}
+                              </span>
+                              
+                              <Button
+                                variant="outline"
+                                onClick={() => handlePageChange(pagination.page + 1)}
+                                disabled={!pagination.hasNext}
+                              >
+                                Next
+                              </Button>
+                            </div>
+                          )}
+                          
+                          {mentors.length === 0 && !loadingMentors && (
+                            <div className="text-center text-gray-500 mt-10">
+                              No mentors found matching your criteria.
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
                   )}
                   {activeTab === "student" && (
@@ -373,7 +582,9 @@ export default function ConnectPage() {
                                 <span className="ml-auto text-xs text-gray-400">{new Date(email.sent_at).toLocaleString()}</span>
                               </div>
                               <div className="font-bold text-gray-900 mb-1">{email.subject}</div>
-                              <div className="text-gray-700 whitespace-pre-line text-sm">{email.body}</div>
+                              <div className="text-gray-700 text-sm italic">
+                                {email.body && email.body.length > 50 ? email.body.substring(0, 50) + "..." : email.body}
+                              </div>
                             </div>
                           ))}
                         </div>
