@@ -138,7 +138,29 @@ export async function loadAllMentors(): Promise<MentorProfile[]> {
             linkedin: row["URL"].trim(),
             company: row["Company"]?.trim() || "",
             jobTitle: row["Job Title"]?.trim() || "",
-            email: row["Email (Result)"]?.trim() || "",
+            email: row["Work Email (Result)"]?.trim() || "",
+            yearsExperience: row["Years Experience (Result)"]?.trim() || "",
+            state: state
+          })
+        } else if (file.includes("admissions_officers")) {
+          // Handle admissions officers file
+          allMentors.push({
+            name: row["Title"].trim(),
+            linkedin: row["URL"].trim(),
+            company: row["Company"]?.trim() || "",
+            jobTitle: row["Job Title"]?.trim() || "",
+            email: row["Work Email (Result)"]?.trim() || "",
+            yearsExperience: row["Years Experience (Result)"]?.trim() || "",
+            state: state
+          })
+        } else {
+          // Handle other state-specific files (california, washington, arkansas, ohio, indiana)
+          allMentors.push({
+            name: row["Title"].trim(),
+            linkedin: row["URL"].trim(),
+            company: row["Company"]?.trim() || "",
+            jobTitle: row["Job Title"]?.trim() || "",
+            email: row["Work Email (Result)"]?.trim() || "",
             yearsExperience: row["Years Experience (Result)"]?.trim() || "",
             state: state
           })
