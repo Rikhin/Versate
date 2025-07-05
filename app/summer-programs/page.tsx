@@ -112,10 +112,11 @@ export default function SummerProgramsPage() {
     <>
       <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
         <DialogContent className="flex flex-col items-center justify-center gap-6 animate-fade-in">
-          <h2 className="text-2xl font-bold">Sign in to continue</h2>
+          <h2 className="text-2xl font-bold text-indigo-700">Welcome to Versate!</h2>
+          <p className="text-center text-gray-600 max-w-xs">Sign in or create an account to explore summer programs, save your favorites, and connect with a supportive community. We're glad you're here!</p>
           <div className="flex gap-4">
             <Button onClick={() => window.location.href = '/sign-in'}>Sign In</Button>
-            <Button onClick={() => window.location.href = '/sign-up'} variant="outline">Sign Up</Button>
+            <Button onClick={() => window.location.href = '/sign-up'} variant="outline">Create Account</Button>
           </div>
         </DialogContent>
       </Dialog>
