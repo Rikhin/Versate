@@ -72,6 +72,10 @@ export function Header() {
     };
   }, [user]);
 
+  useEffect(() => {
+    if (showModal && findDropdownOpen) setFindDropdownOpen(false);
+  }, [showModal, findDropdownOpen]);
+
   return (
     <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur border-b border-gray-200" style={{minHeight: '80px'}}>
       <div className="w-full flex items-center justify-center px-0" style={{maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto', paddingLeft: '24px', paddingRight: '24px', minHeight: '80px'}}>
@@ -91,7 +95,7 @@ export function Header() {
             {/* <Link href="/#works" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Features</Link> */}
             <div
               className="relative group"
-              onMouseEnter={() => setFindDropdownOpen(true)}
+              onMouseEnter={() => { if (!showModal) setFindDropdownOpen(true); }}
               onMouseLeave={() => setFindDropdownOpen(false)}
             >
               <button
@@ -99,16 +103,16 @@ export function Header() {
                 tabIndex={showModal ? -1 : 0}
                 aria-disabled={showModal}
                 style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
-                onClick={() => setFindDropdownOpen((open) => !open)}
+                onClick={() => { if (!showModal) setFindDropdownOpen((open) => !open); }}
               >
                 FIND
                 <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
               {/* Transparent buffer to expand hover zone */}
-              <div className="absolute left-1/2 -translate-x-1/2 w-32 h-6 top-full z-30" style={{ pointerEvents: 'auto' }} onMouseEnter={() => setFindDropdownOpen(true)} onMouseLeave={() => setFindDropdownOpen(false)} />
-              {findDropdownOpen && (
+              <div className="absolute left-1/2 -translate-x-1/2 w-32 h-6 top-full z-30" style={{ pointerEvents: 'auto' }} onMouseEnter={() => { if (!showModal) setFindDropdownOpen(true); }} onMouseLeave={() => setFindDropdownOpen(false)} />
+              {findDropdownOpen && !showModal && (
                 <div
-                  className="absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg z-50 flex flex-col"
+                  className="absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg z-60 flex flex-col"
                   onMouseEnter={() => setFindDropdownOpen(true)}
                   onMouseLeave={() => setFindDropdownOpen(false)}
                 >

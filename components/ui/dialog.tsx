@@ -19,9 +19,9 @@ const DialogOverlay = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
   <>
-    {/* Transparent, non-interactive overlay for header */}
-    <div className="fixed left-0 right-0 top-0 h-20 z-50 pointer-events-none" />
-    {/* Normal overlay for rest of page */}
+    {/* Transparent, non-interactive overlay for header (full header height, z-60) */}
+    <div className="fixed left-0 right-0 top-0 h-20 min-h-[80px] z-60 pointer-events-none" />
+    {/* Normal overlay for rest of page (z-50) */}
     <DialogPrimitive.Overlay
       ref={ref}
       className={cn(
