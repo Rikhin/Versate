@@ -161,8 +161,9 @@ export default function MessagesPage() {
   }
 
   const filteredConversations = conversations.filter(conversation => {
-    if (!conversation.partner) return false;
-    const fullName = `${conversation.partner.first_name || "Unknown"} ${conversation.partner.last_name || "User"}`.toLowerCase();
+    // Remove the check that hides conversations with missing partner
+    // Always show the conversation, use fallback name/avatar if needed
+    const fullName = `${conversation.partner?.first_name || "Unknown"} ${conversation.partner?.last_name || "User"}`.toLowerCase();
     return fullName.includes(searchQuery.toLowerCase());
   })
 
@@ -226,12 +227,14 @@ export default function MessagesPage() {
 
   // Defensive fallback for partner name and avatar
   const getPartnerName = (partner: any) => {
+    // Always return a name, even if partner is null
     if (!partner) return "Unknown User";
     const first = partner.first_name || "Unknown";
     const last = partner.last_name || "User";
     return `${first} ${last}`;
   };
   const getPartnerInitials = (partner: any) => {
+    // Always return initials, even if partner is null
     if (!partner) return "U";
     return `${(partner.first_name?.[0] || "U")}${(partner.last_name?.[0] || "U")}`;
   };
