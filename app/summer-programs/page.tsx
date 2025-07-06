@@ -112,7 +112,7 @@ export default function SummerProgramsPage() {
     <>
       <Dialog open={showAuthModal}>
         <DialogContent
-          className="flex flex-col items-center justify-center gap-6 animate-fade-in [&>button[data-dialog-close]]:hidden"
+          className="flex flex-col items-center justify-center gap-6 animate-fade-in [&>button[data-dialog-close]]:hidden [&>button.absolute.right-4.top-4]:hidden"
           onInteractOutside={e => e.preventDefault()}
           onEscapeKeyDown={e => e.preventDefault()}
         >
