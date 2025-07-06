@@ -164,45 +164,9 @@ export default function CompetitionsPage() {
           
           {/* Main Content Container */}
           <div className="relative z-10">
-            {/* Header */}
-            <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-              <div className="container mx-auto px-8 py-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <Trophy className="h-8 w-8 text-black" />
-                    <div>
-                      <span className="text-2xl font-black text-black">Versate</span>
-                      <p className="text-sm text-gray-600">Competitions</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    {!isSignedIn ? (
-                      <>
-                        <SignInButton mode="modal">
-                          <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
-                            Sign In
-                          </Button>
-                        </SignInButton>
-                        <SignUpButton mode="modal">
-                          <Button className="bg-black text-white hover:bg-gray-800">
-                            Get Started
-                          </Button>
-                        </SignUpButton>
-                      </>
-                    ) : (
-                      <Link href="/dashboard">
-                        <Button className="bg-black text-white hover:bg-gray-800">
-                          Dashboard
-                        </Button>
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </header>
 
             {/* Hero Section */}
-            <section className="py-16 md:py-24">
+            <section className="py-16 md:py-24 pt-20">
               <div className="container mx-auto px-8">
                 <div className="text-center mb-12 md:mb-16">
                   <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>

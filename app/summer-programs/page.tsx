@@ -129,46 +129,9 @@ export default function SummerProgramsPage() {
           <BackgroundGradient startColor="from-gray-50/50" endColor="to-gray-100/50" triggerStart="top center" triggerEnd="center center" />
           <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
           <div className="relative z-10">
-            {/* Header */}
-            <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-              <div className="container mx-auto px-8 py-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <Calendar className="h-8 w-8 text-black" />
-                    <div>
-                      <span className="text-2xl font-black text-black">Versate</span>
-                      <p className="text-sm text-gray-600">Summer Programs</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    {!isSignedIn ? (
-                      <>
-                        <SignInButton mode="modal">
-                          <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
-                            Sign In
-                          </Button>
-                        </SignInButton>
-                        <SignUpButton mode="modal">
-                          <Button className="bg-black text-white hover:bg-gray-800">
-                            Get Started
-                          </Button>
-                        </SignUpButton>
-                      </>
-                    ) : (
-                      <Link href="/dashboard">
-                        <Button className="bg-black text-white hover:bg-gray-800">
-                          Dashboard
-                        </Button>
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </header>
-            <div className="h-8 md:h-12" />
 
             {/* Title section */}
-            <section className="text-center mb-8 md:mb-16">
+            <section className="text-center mb-8 md:mb-16 pt-20">
               <h1 className="text-3xl md:text-6xl md:text-7xl font-black text-black mb-4 md:mb-8 leading-none">
                 Explore<br /><span className="text-gray-400">Summer Programs</span>
               </h1>
