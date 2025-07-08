@@ -59,38 +59,6 @@ export const NetworkBG = (props: NetworkBGProps) => {
   let rotZ = 0;
   let lastTimestamp = 0;
 
-  // Helper: Prim's algorithm for MST
-  function computeMST(nodes: any[]) {
-    const n = nodes.length;
-    const inTree = Array(n).fill(false);
-    const minDist = Array(n).fill(Infinity);
-    const parent = Array(n).fill(-1);
-    minDist[0] = 0;
-    for (let i = 0; i < n; i++) {
-      let u = -1;
-      for (let j = 0; j < n; j++) {
-        if (!inTree[j] && (u === -1 || minDist[j] < minDist[u])) u = j;
-      }
-      inTree[u] = true;
-      for (let v = 0; v < n; v++) {
-        if (!inTree[v]) {
-          const dx = nodes[u].x - nodes[v].x;
-          const dy = nodes[u].y - nodes[v].y;
-          const dist = dx * dx + dy * dy;
-          if (dist < minDist[v]) {
-            minDist[v] = dist;
-            parent[v] = u;
-          }
-        }
-      }
-    }
-    const mstEdges = [];
-    for (let v = 1; v < n; v++) {
-      if (parent[v] !== -1) mstEdges.push([v, parent[v]]);
-    }
-    return mstEdges;
-  }
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -118,8 +86,8 @@ export const NetworkBG = (props: NetworkBGProps) => {
       canvas.width = w;
       canvas.height = h;
       // Re-randomize dot positions
-      const dotCount = 180;
-      dots.current = Array.from({ length: dotCount }, () => ({
+      const dotCount = 80;
+      dots.current = Array.from({ length: dotCount }, (_, i) => ({
         x: randomBetween(-900, 900),
         y: randomBetween(-540, 540),
         z: randomBetween(-900, 900),
@@ -127,22 +95,22 @@ export const NetworkBG = (props: NetworkBGProps) => {
         vy: randomBetween(-0.5, 0.5),
         vz: randomBetween(-0.5, 0.5),
         color: NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
-        size: [6, 10][Math.floor(Math.random() * 2)]
+        size: i % 13 === 0 ? 18 : [6, 10][Math.floor(Math.random() * 2)] // accentuate some nodes
       }));
-      // Compute MST edges
-      edges.current = computeMST(dots.current);
-      // Add more nearest neighbor edges for each node
+      // Build edges: connect each node to its 4 nearest neighbors
+      let edgeSet = new Set<string>();
       for (let i = 0; i < dots.current.length; i++) {
         // Find 4 nearest neighbors
-        const dists = dots.current.map((d, j) => ({j, dist: (d.x - dots.current[i].x) ** 2 + (d.y - dots.current[i].y) ** 2}));
+        const dists = dots.current.map((d, j) => ({j, dist: (d.x - dots.current[i].x) ** 2 + (d.y - dots.current[i].y) ** 2 + (d.z - dots.current[i].z) ** 2}));
         dists.sort((a, b) => a.dist - b.dist);
         for (let k = 1; k <= 4; k++) {
           const j = dists[k].j;
-          if (!edges.current.some(([a, b]) => (a === i && b === j) || (a === j && b === i))) {
-            edges.current.push([i, j]);
-          }
+          const key = i < j ? `${i},${j}` : `${j},${i}`;
+          edgeSet.add(key);
         }
       }
+      const edgesArr = Array.from(edgeSet).map(key => key.split(',').map(Number));
+      edges.current = edgesArr;
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -187,17 +155,15 @@ export const NetworkBG = (props: NetworkBGProps) => {
       ctx.globalAlpha = 0.13;
       ctx.strokeStyle = "#f3f4f6";
       ctx.lineWidth = 0.7;
-      for (let i = 0; i < dots.current.length; i++) {
-        for (let j = i + 1; j < dots.current.length; j++) {
-          const a = rotate3D(dots.current[i], rotX, rotZ);
-          const b = rotate3D(dots.current[j], rotX, rotZ);
-          const pa = project3D(a, w, h);
-          const pb = project3D(b, w, h);
-          ctx.beginPath();
-          ctx.moveTo(pa.x, pa.y);
-          ctx.lineTo(pb.x, pb.y);
-          ctx.stroke();
-        }
+      for (const [i, j] of edges.current) {
+        const a = rotate3D(dots.current[i], rotX, rotZ);
+        const b = rotate3D(dots.current[j], rotX, rotZ);
+        const pa = project3D(a, w, h);
+        const pb = project3D(b, w, h);
+        ctx.beginPath();
+        ctx.moveTo(pa.x, pa.y);
+        ctx.lineTo(pb.x, pb.y);
+        ctx.stroke();
       }
       ctx.restore();
 

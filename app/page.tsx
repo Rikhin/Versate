@@ -138,29 +138,29 @@ export default function LandingPage() {
       {/* Main Content Container */}
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
         {/* Hero Section */}
-        <section id="home" className="flex flex-col items-start justify-center min-h-[90vh] w-full relative pl-12 md:pl-24">
+        <section id="home" className="flex flex-col items-start justify-center min-h-screen w-full relative pl-12 md:pl-24">
           {/* Not backed by Y Combinator badge */}
-          <div className="mb-8">
-            <span className="inline-flex items-center rounded-full border border-orange-500 px-6 py-3 text-orange-500 text-base font-semibold bg-transparent" style={{letterSpacing: '0.01em'}}>
-              <span className="bg-orange-500 text-white rounded w-6 h-6 flex items-center justify-center mr-3 font-bold text-sm" style={{fontFamily: 'Inter, sans-serif'}}>Y</span>
+          <div className="mb-10">
+            <span className="inline-flex items-center rounded-full border border-orange-500 px-8 py-3 text-orange-500 text-lg font-semibold bg-transparent" style={{letterSpacing: '0.01em'}}>
+              <span className="bg-orange-500 text-white rounded w-7 h-7 flex items-center justify-center mr-3 font-bold text-base" style={{fontFamily: 'Inter, sans-serif'}}>Y</span>
               Not Backed by Y Combinator
             </span>
           </div>
           <div ref={heroRef} className="relative z-10 flex flex-col items-start justify-center w-full parallax-hero-text">
-            <h1 className="text-5xl md:text-7xl font-bold mb-4 text-left leading-[2] tracking-tight">
+            <h1 className="text-6xl md:text-8xl font-bold mb-2 text-left leading-tight tracking-tight">
               Enhance Your High School <span className="whitespace-nowrap">Experience with <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versa</span></span>
             </h1>
-            <p className="text-lg md:text-xl text-white/70 mb-12 max-w-2xl text-left leading-relaxed">Discover, connect, and build with the best students for competitions and projects.</p>
-            <div className="flex flex-row items-center gap-6 mt-2">
+            <p className="text-xl md:text-2xl text-white/70 mb-12 max-w-2xl text-left leading-relaxed">Discover, connect, and build with the best students for competitions and projects.</p>
+            <div className="flex flex-row items-center gap-8 mt-8">
               <Link href="/dashboard">
-                <button className="bg-white text-black font-semibold rounded px-6 py-3 text-base shadow-none border-none hover:bg-gray-100 transition">Go to Dashboard</button>
+                <button className="bg-white text-black font-semibold rounded px-8 py-4 text-lg shadow-none border-none hover:bg-gray-100 transition">Go to Dashboard</button>
               </Link>
             </div>
           </div>
         </section>
 
         {/* Stats Section */}
-        <section className="py-12 md:py-16 mt-24">
+        <section className="py-12 md:py-16 mt-48">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
               {stats.map((stat, index) => (
