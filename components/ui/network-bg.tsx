@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 interface NetworkBGProps {
   className?: string;
@@ -6,12 +7,6 @@ interface NetworkBGProps {
 
 // Node color palette (blue, purple, pink shades)
 const NODE_COLORS = ["#7b61ff", "#5ad1ff", "#a78bfa", "#818cf8", "#6366f1", "#a5b4fc"];
-
-const getDotCount = () => {
-  if (typeof window === 'undefined') return 48;
-  return window.innerWidth < 768 ? 20 : 48;
-};
-const getLineDistance = () => (typeof window !== 'undefined' && window.innerWidth < 768 ? 220 : 340);
 
 function randomBetween(a: number, b: number) {
   return a + Math.random() * (b - a);
@@ -49,12 +44,11 @@ function rotate3D(dot: Dot3D, rotX: number, rotZ: number) {
   return { x, y, z };
 }
 
-export const NetworkBG = (props: NetworkBGProps) => {
+export const NetworkBG = ({ className = '' }: NetworkBGProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dots = useRef<Dot3D[]>([]);
   const edges = useRef<any[]>([]);
   const animationRef = useRef<number>();
-  const lastScrollY = useRef<number>(0);
   let rotX = 0;
   let rotZ = 0;
   let lastTimestamp = 0;
@@ -65,42 +59,41 @@ export const NetworkBG = (props: NetworkBGProps) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Set canvas to fixed, full viewport
+    const dpr = window.devicePixelRatio || 1;
+
     canvas.style.position = "fixed";
     canvas.style.top = "0";
     canvas.style.left = "0";
     canvas.style.width = "100vw";
     canvas.style.height = "100vh";
-    canvas.style.zIndex = "0";
+    canvas.style.zIndex = "-1"; // Ensure it stays behind all content
     canvas.style.pointerEvents = "none";
+    canvas.style.opacity = "0.7"; // Slightly transparent to not overpower content
 
     let w = window.innerWidth;
     let h = window.innerHeight;
-    canvas.width = w;
-    canvas.height = h;
 
-    // Responsive resize
     const handleResize = () => {
       w = window.innerWidth;
       h = window.innerHeight;
-      canvas.width = w;
-      canvas.height = h;
-      // Re-randomize dot positions
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.scale(dpr, dpr);
+
       const dotCount = 80;
       dots.current = Array.from({ length: dotCount }, (_, i) => ({
         x: randomBetween(-900, 900),
         y: randomBetween(-540, 540),
         z: randomBetween(-900, 900),
-        vx: randomBetween(-0.5, 0.5),
-        vy: randomBetween(-0.5, 0.5),
-        vz: randomBetween(-0.5, 0.5),
+        vx: randomBetween(-0.1, 0.1),
+        vy: randomBetween(-0.1, 0.1),
+        vz: randomBetween(-0.1, 0.1),
         color: NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
         size: i % 13 === 0 ? 18 : [6, 10][Math.floor(Math.random() * 2)] // accentuate some nodes
       }));
-      // Build edges: connect each node to its 4 nearest neighbors
+
       let edgeSet = new Set<string>();
       for (let i = 0; i < dots.current.length; i++) {
-        // Find 4 nearest neighbors
         const dists = dots.current.map((d, j) => ({j, dist: (d.x - dots.current[i].x) ** 2 + (d.y - dots.current[i].y) ** 2 + (d.z - dots.current[i].z) ** 2}));
         dists.sort((a, b) => a.dist - b.dist);
         for (let k = 1; k <= 4; k++) {
@@ -112,14 +105,9 @@ export const NetworkBG = (props: NetworkBGProps) => {
       const edgesArr = Array.from(edgeSet).map(key => key.split(',').map(Number));
       edges.current = edgesArr;
     };
+
     handleResize();
     window.addEventListener("resize", handleResize);
-
-    // Parallax on scroll
-    const handleScroll = () => {
-      lastScrollY.current = window.scrollY;
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
 
     function draw(timestamp?: number) {
       if (!ctx) return;
@@ -129,13 +117,11 @@ export const NetworkBG = (props: NetworkBGProps) => {
       ctx.fillRect(0, 0, w, h);
       ctx.restore();
 
-      // Animate node positions in 3D
       for (let i = 0; i < dots.current.length; i++) {
         let d = dots.current[i];
         d.x += d.vx;
         d.y += d.vy;
         d.z += d.vz;
-        // Bounce off a 3D box
         if (d.x < -220 || d.x > 220) d.vx *= -1;
         if (d.y < -140 || d.y > 140) d.vy *= -1;
         if (d.z < -220 || d.z > 220) d.vz *= -1;
@@ -144,13 +130,12 @@ export const NetworkBG = (props: NetworkBGProps) => {
       // Animate rotation
       if (timestamp !== undefined) {
         if (lastTimestamp) {
-          rotX += 0.00025 * (timestamp - lastTimestamp); // slower
-          rotZ += 0.00015 * (timestamp - lastTimestamp); // slower
+          rotX += 0.00005 * (timestamp - lastTimestamp); // much slower
+          rotZ += 0.00004 * (timestamp - lastTimestamp); // much slower
         }
         lastTimestamp = timestamp;
       }
 
-      // Project and draw edges
       ctx.save();
       ctx.globalAlpha = 0.13;
       ctx.strokeStyle = "#f3f4f6";
@@ -167,27 +152,34 @@ export const NetworkBG = (props: NetworkBGProps) => {
       }
       ctx.restore();
 
-      // Project and draw nodes
       for (let i = 0; i < dots.current.length; i++) {
         const d = rotate3D(dots.current[i], rotX, rotZ);
         const p = project3D(d, w, h);
         ctx.save();
         ctx.fillStyle = dots.current[i].color;
         ctx.globalAlpha = 0.8;
-        ctx.beginPath();
+          ctx.beginPath();
         ctx.arc(p.x, p.y, dots.current[i].size * p.scale * 0.5, 0, 2 * Math.PI);
-        ctx.fill();
+          ctx.fill();
         ctx.restore();
       }
       animationRef.current = requestAnimationFrame(draw);
     }
+
     animationRef.current = requestAnimationFrame(draw);
+
     return () => {
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("scroll", handleScroll);
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className={props.className} />;
-}; 
+  return (
+    <div className={cn("fixed inset-0 w-full h-full overflow-hidden", className)}>
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+      />
+    </div>
+  );
+};

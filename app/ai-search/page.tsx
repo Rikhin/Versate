@@ -154,157 +154,157 @@ export default function AISearchPage() {
       <div className="flex h-screen bg-helix-dark relative overflow-hidden">
         <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
         <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
-        {/* Sidebar - Fixed to viewport, fits under header */}
+      {/* Sidebar - Fixed to viewport, fits under header */}
         <aside className={`${sidebarOpen ? 'w-64' : 'w-16'} glass border-r border-white/10 flex flex-col fixed left-0 top-16 h-[calc(100vh-4rem)] transition-all duration-300 overflow-hidden z-10 pb-8`}>
-          {/* Top Section */}
-          <div className="flex flex-col flex-1 pt-6">
-            {/* Collapsed: V icon, divider, toggle button */}
-            {!sidebarOpen && (
-              <div className="flex flex-col items-center pt-6">
+        {/* Top Section */}
+        <div className="flex flex-col flex-1 pt-6">
+          {/* Collapsed: V icon, divider, toggle button */}
+          {!sidebarOpen && (
+            <div className="flex flex-col items-center pt-6">
                 <span className="text-3xl font-extrabold text-helix-gradient-start mb-2">V</span>
                 <div className="w-8 border-b-2 border-white/20 mb-2" />
-                <button
-                  onClick={() => setSidebarOpen(true)}
+              <button
+                onClick={() => setSidebarOpen(true)}
                   className="p-2 hover:bg-white/10 rounded-full transition-colors"
-                >
+              >
                   <svg className="w-4 h-4 text-helix-gradient-start" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          )}
+          {/* Expanded: Logo, toggle, search, history */}
+          {sidebarOpen && (
+            <>
+              {/* Logo and toggle */}
+              <div className="flex items-center justify-between px-6 mb-4">
+                <div className="flex items-center space-x-2">
+                    <span className="text-xl font-bold text-white tracking-tight">Versate</span>
+                </div>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                    className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                >
+                    <svg className="w-4 h-4 text-helix-text-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
               </div>
-            )}
-            {/* Expanded: Logo, toggle, search, history */}
+
+              {/* Search bar */}
+              <div className="px-6 mb-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                      className="w-full pl-10 pr-4 py-3 border-2 border-white/20 focus:border-helix-gradient-start bg-white/10 text-white placeholder-helix-text-light backdrop-blur-sm rounded-full text-base"
+                  />
+                    <svg className="absolute left-3 top-3 w-4 h-4 text-helix-text-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Start a New Search Button */}
+              <div className="px-6 mb-2">
+                <button
+                    className="w-full bg-white/10 hover:bg-white/20 text-white font-bold rounded-full py-3 text-base transition border-2 border-white/20"
+                  onClick={startNewSearch}
+                >
+                  + Start a New Search
+                </button>
+              </div>
+
+              {/* Search History */}
+              <div className="px-6 mb-4">
+                  <h3 className="text-xs font-bold text-helix-text-light mb-2 tracking-wide uppercase">Search History</h3>
+                <div className="space-y-2">
+                  {/* chatHistory.slice(0, 3).map((chat, index) => (
+                      <div key={index} className="text-xs text-helix-text-light hover:bg-white/10 p-2 rounded-full cursor-pointer truncate">
+                      {chat.title}
+                    </div>
+                  )) */}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+        {/* Bottom Section: Profile/plan/upgrade always visible, flush to bottom, matches chat input bar */}
+        <div className="mt-auto mb-8 flex flex-col items-center px-6 w-full">
+          {/* Profile icon and plan/upgrade button here */}
+          <div className="flex flex-col items-center w-full">
+            <div className="mb-3 flex justify-center w-full">
+              <img
+                src={user?.imageUrl || '/placeholder-user.jpg'}
+                alt="Profile"
+                  className={`${sidebarOpen ? 'h-11 w-11' : 'h-8 w-8'} rounded-full border-2 border-white/20 shadow-sm transition-all duration-300`}
+              />
+            </div>
             {sidebarOpen && (
               <>
-                {/* Logo and toggle */}
-                <div className="flex items-center justify-between px-6 mb-4">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xl font-bold text-white tracking-tight">Versate</span>
-                  </div>
-                  <button
-                    onClick={() => setSidebarOpen(false)}
-                    className="p-2 hover:bg-white/10 rounded-full transition-colors"
-                  >
-                    <svg className="w-4 h-4 text-helix-text-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-                </div>
-
-                {/* Search bar */}
-                <div className="px-6 mb-4">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      className="w-full pl-10 pr-4 py-3 border-2 border-white/20 focus:border-helix-gradient-start bg-white/10 text-white placeholder-helix-text-light backdrop-blur-sm rounded-full text-base"
-                    />
-                    <svg className="absolute left-3 top-3 w-4 h-4 text-helix-text-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                </div>
-
-                {/* Start a New Search Button */}
-                <div className="px-6 mb-2">
-                  <button
-                    className="w-full bg-white/10 hover:bg-white/20 text-white font-bold rounded-full py-3 text-base transition border-2 border-white/20"
-                    onClick={startNewSearch}
-                  >
-                    + Start a New Search
-                  </button>
-                </div>
-
-                {/* Search History */}
-                <div className="px-6 mb-4">
-                  <h3 className="text-xs font-bold text-helix-text-light mb-2 tracking-wide uppercase">Search History</h3>
-                  <div className="space-y-2">
-                    {/* chatHistory.slice(0, 3).map((chat, index) => (
-                      <div key={index} className="text-xs text-helix-text-light hover:bg-white/10 p-2 rounded-full cursor-pointer truncate">
-                        {chat.title}
-                      </div>
-                    )) */}
-                  </div>
-                </div>
+                  <div className="text-sm text-helix-text-light mb-3">Current Plan: <span className="font-bold text-helix-gradient-start">{profilePlan}</span></div>
+                <button
+                    className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white text-sm px-4 py-2 rounded-full font-bold hover:shadow-xl glow transition"
+                  onClick={() => router.push('/dashboard/plans')}
+                >
+                  Upgrade
+                </button>
               </>
             )}
           </div>
-          {/* Bottom Section: Profile/plan/upgrade always visible, flush to bottom, matches chat input bar */}
-          <div className="mt-auto mb-8 flex flex-col items-center px-6 w-full">
-            {/* Profile icon and plan/upgrade button here */}
-            <div className="flex flex-col items-center w-full">
-              <div className="mb-3 flex justify-center w-full">
-                <img
-                  src={user?.imageUrl || '/placeholder-user.jpg'}
-                  alt="Profile"
-                  className={`${sidebarOpen ? 'h-11 w-11' : 'h-8 w-8'} rounded-full border-2 border-white/20 shadow-sm transition-all duration-300`}
-                />
-              </div>
-              {sidebarOpen && (
-                <>
-                  <div className="text-sm text-helix-text-light mb-3">Current Plan: <span className="font-bold text-helix-gradient-start">{profilePlan}</span></div>
-                  <button
-                    className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white text-sm px-4 py-2 rounded-full font-bold hover:shadow-xl glow transition"
-                    onClick={() => router.push('/dashboard/plans')}
-                  >
-                    Upgrade
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </aside>
-        
-        {/* Main Content - Adjusted for fixed sidebar */}
-        <main className={`flex-1 flex flex-col h-screen transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
-          {/* Welcome Bubble (no arrow) */}
-          {!hasSearched && messages.length === 0 && (
-            <div className="absolute left-1/2 top-1/4 transform -translate-x-1/2 flex flex-col items-center z-10">
-              <div className="mx-auto w-96 md:w-[600px] flex flex-col items-center text-center">
+        </div>
+      </aside>
+      
+      {/* Main Content - Adjusted for fixed sidebar */}
+      <main className={`flex-1 flex flex-col h-screen transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
+        {/* Welcome Bubble (no arrow) */}
+        {!hasSearched && messages.length === 0 && (
+          <div className="absolute left-1/2 top-1/4 transform -translate-x-1/2 flex flex-col items-center z-10">
+            <div className="mx-auto w-96 md:w-[600px] flex flex-col items-center text-center">
                 <div className="glass border border-white/10 rounded-full p-6 mb-6 glow">
                   <Sparkles className="h-12 w-12 text-helix-gradient-start" />
-                </div>
+              </div>
                 <div className="font-black text-4xl md:text-5xl mb-6 text-white">Welcome, {user?.firstName || 'there'}!</div>
                 <div className="text-helix-text-light text-lg md:text-xl leading-relaxed">
-                  Ask me anything about competitions, projects, opportunities, or any topic you'd like to explore. I'm here to help you find the information you need.
-                </div>
+                Ask me anything about competitions, projects, opportunities, or any topic you'd like to explore. I'm here to help you find the information you need.
               </div>
             </div>
-          )}
-          {/* Chat Area */}
-          <div className="flex flex-col w-full mx-auto flex-1 justify-end min-h-[60vh]" style={{ paddingTop: hasSearched || messages.length > 0 ? '2rem' : 0, paddingBottom: 0 }}>
-            <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-8 pb-32">
-              {messages.map((msg, idx) => (
+          </div>
+        )}
+        {/* Chat Area */}
+        <div className="flex flex-col w-full mx-auto flex-1 justify-end min-h-[60vh]" style={{ paddingTop: hasSearched || messages.length > 0 ? '2rem' : 0, paddingBottom: 0 }}>
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-8 pb-32">
+            {messages.map((msg, idx) => (
                 <div key={msg.id} className={`my-4 flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`glass border border-white/10 rounded-[16px] px-6 py-4 max-w-[70%] shadow-xl text-base whitespace-pre-line ${msg.type === 'user' ? 'bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white' : 'text-white'}`}>
-                    {msg.content}
-                  </div>
+                  {msg.content}
                 </div>
-              ))}
-            </div>
-            {/* Chat Input */}
+              </div>
+            ))}
+          </div>
+          {/* Chat Input */}
             <form onSubmit={handleSend} className={`fixed bottom-0 flex items-center glass border-t border-white/10 px-8 py-6 z-20 transition-all duration-300 ${sidebarOpen ? 'left-64' : 'left-0'} right-0`} style={{ boxShadow: '0 -2px 16px 0 rgba(80,80,120,0.04)' }}>
               <Search className="h-6 w-6 text-helix-text-light mr-4" />
-              <input
-                type="text"
+            <input
+              type="text"
                 className="flex-1 border-none outline-none bg-transparent text-lg placeholder-helix-text-light text-white"
-                placeholder="Ask me anything about competitions, projects, or opportunities..."
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                disabled={loading}
-                autoFocus
-              />
-              <button
-                type="submit"
+              placeholder="Ask me anything about competitions, projects, or opportunities..."
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              disabled={loading}
+              autoFocus
+            />
+            <button
+              type="submit"
                 className="ml-4 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end hover:shadow-xl glow text-white rounded-full p-3 transition disabled:opacity-50"
-                disabled={loading || !query.trim()}
-              >
+              disabled={loading || !query.trim()}
+            >
                 <Send className="h-6 w-6" />
-              </button>
-            </form>
-          </div>
-        </main>
-      </div>
+            </button>
+          </form>
+        </div>
+      </main>
+    </div>
     </OnboardingScrollEnforcer>
   );
 } 

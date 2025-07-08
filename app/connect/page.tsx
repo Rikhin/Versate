@@ -254,14 +254,14 @@ export default function ConnectPage() {
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
-      const filters = {
-        state: filterState,
-        company: filterCompany,
-        jobTitle: filterJob,
+    const filters = {
+      state: filterState,
+      company: filterCompany,
+      jobTitle: filterJob,
         yearsExperience: filterYears,
         email: filterEmail
-      };
-      loadMentors(newPage, search, filters);
+    };
+    loadMentors(newPage, search, filters);
     }
   };
 
@@ -294,7 +294,7 @@ export default function ConnectPage() {
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end bg-clip-text text-transparent mb-4 drop-shadow-lg">Connect</h1>
             <h2 className="text-3xl md:text-4xl font-bold text-helix-gradient-start mb-4">Mentors & Students</h2>
             <p className="text-lg text-helix-text-light mb-8 max-w-2xl mx-auto">Browse and connect with real mentors and students from across the country. Use the filters to find the right expertise, background, or collaborators for your needs.</p>
-          </div>
+                      </div>
           <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
             <Button 
               variant={activeTab === "mentor" ? "default" : "outline"} 
@@ -302,111 +302,111 @@ export default function ConnectPage() {
               className={activeTab === "mentor" ? "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow" : "border-2 border-white/20 text-white hover:bg-white/10 rounded-full"}
             >
               Mentors
-            </Button>
+                            </Button>
             <Button 
               variant={activeTab === "student" ? "default" : "outline"} 
               onClick={() => setActiveTab("student")}
               className={activeTab === "student" ? "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow" : "border-2 border-white/20 text-white hover:bg-white/10 rounded-full"}
             >
               Students
-            </Button>
+                            </Button>
             <Button 
               variant={activeTab === "emails" ? "default" : "outline"} 
               onClick={() => setActiveTab("emails")}
               className={activeTab === "emails" ? "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow" : "border-2 border-white/20 text-white hover:bg-white/10 rounded-full"}
             >
               Emails
-            </Button>
-          </div>
+                          </Button>
+                    </div>
           <div className="glass border border-white/10 rounded-[20px] shadow-xl px-8 py-6 flex flex-wrap items-center justify-center gap-4 mb-16">
             <div className="flex-1 relative flex items-center h-12 sm:h-14 md:h-16">
-              <Input
-                placeholder="Search by name, company, or job title..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
+                        <Input
+                          placeholder="Search by name, company, or job title..."
+                          value={search}
+                          onChange={e => setSearch(e.target.value)}
                 className="pl-6 border-2 border-white/20 focus:border-helix-gradient-start bg-white/10 text-white placeholder-helix-text-light backdrop-blur-sm rounded-full text-lg md:text-xl h-12 sm:h-14 md:h-16"
-              />
-            </div>
+                        />
+                      </div>
             <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
-              <CustomDropdown placeholder="State" options={allStates} value={filterState} onChange={setFilterState} />
-            </div>
+                        <CustomDropdown placeholder="State" options={allStates} value={filterState} onChange={setFilterState} />
+                      </div>
             <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
-              <CustomDropdown label="Company" placeholder="Company" options={companyGroups} value={filterCompany} onChange={(v: string) => { setFilterCompany(v); setPage(0); }} />
-            </div>
+                            <CustomDropdown label="Company" placeholder="Company" options={companyGroups} value={filterCompany} onChange={(v: string) => { setFilterCompany(v); setPage(0); }} />
+                          </div>
             <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
-              <CustomDropdown label="Job Title" placeholder="Job Title" options={jobGroups} value={filterJob} onChange={(v: string) => { setFilterJob(v); setPage(0); }} />
-            </div>
+                            <CustomDropdown label="Job Title" placeholder="Job Title" options={jobGroups} value={filterJob} onChange={(v: string) => { setFilterJob(v); setPage(0); }} />
+                          </div>
             <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
-              <CustomDropdown label="Experience" placeholder="Experience" options={yearGroups} value={filterYears} onChange={(v: string) => { setFilterYears(v); setPage(0); }} />
-            </div>
+                            <CustomDropdown label="Experience" placeholder="Experience" options={yearGroups} value={filterYears} onChange={(v: string) => { setFilterYears(v); setPage(0); }} />
+                          </div>
             <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
-              <CustomDropdown label="Email" placeholder="Email Provided" options={["Yes", "No"]} value={filterEmail} onChange={(v: string) => { setFilterEmail(v); setPage(0); }} />
-            </div>
+                            <CustomDropdown label="Email" placeholder="Email Provided" options={["Yes", "No"]} value={filterEmail} onChange={(v: string) => { setFilterEmail(v); setPage(0); }} />
+                          </div>
             <Button variant="outline" className="h-12 sm:h-14 md:h-16 border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold text-lg" onClick={clearFilters}>Clear</Button>
-          </div>
+                          </div>
           <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
-            {activeTab === "mentor" && (
-              <div>
-                {loadingMentors ? (
+                  {activeTab === "mentor" && (
+                    <div>
+                      {loadingMentors ? (
                   <div className="text-center py-16">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-helix-gradient-start mx-auto mb-4"></div>
                     <p className="text-helix-text-light text-lg">Loading mentors...</p>
-                  </div>
-                ) : (
-                  <>
+                        </div>
+                      ) : (
+                        <>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12">
-                      {mentors.map((m, i) => (
+                            {mentors.map((m, i) => (
                         <div key={"mentor-"+i} className="focus:outline-none focus:ring-4 focus:ring-helix-gradient-start/30 rounded-[24px]">
-                          <Card 
+                                <Card 
                             className="glass border border-white/10 shadow-xl hover:shadow-2xl hover:glow transition-all duration-300 cursor-pointer"
-                          >
+                                >
                             <CardHeader className="pb-8">
                               <div className="flex justify-between items-start mb-6">
                                 <Badge className="border-2 bg-blue-400/20 text-blue-400 border-blue-400/30 px-4 py-2 text-sm font-bold uppercase tracking-widest">Mentor</Badge>
                                 <div className="text-4xl"><Users /></div>
-                              </div>
+                                    </div>
                               <CardTitle className="text-xl font-semibold text-white mb-2">{m.name}</CardTitle>
                               <div className="text-base text-helix-text-light line-clamp-3 mb-2">{m.jobTitle}</div>
                               <div className="text-sm text-helix-text-light mb-2">{m.company}</div>
-                            </CardHeader>
+                                  </CardHeader>
                             <CardContent className="flex flex-col gap-4">
                               <div className="flex items-center justify-between mt-4">
                                 <div className="text-sm text-helix-text-light">{m.state}</div>
                                 <Button size="sm" className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold" onClick={() => handleProfileClick(m, 'mentor')}>Connect</Button>
+                                    </div>
+                                  </CardContent>
+                                </Card>
                               </div>
-                            </CardContent>
-                          </Card>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {pagination.totalPages > 1 && (
+                            ))}
+                          </div>
+                          
+                          {pagination.totalPages > 1 && (
                       <div className="flex justify-center items-center gap-4 mt-12">
-                        <Button
-                          variant="outline"
-                          onClick={() => handlePageChange(pagination.page - 1)}
-                          disabled={!pagination.hasPrev}
+                              <Button
+                                variant="outline"
+                                onClick={() => handlePageChange(pagination.page - 1)}
+                                disabled={!pagination.hasPrev}
                           className="border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold"
-                        >
-                          Previous
-                        </Button>
-                        
+                              >
+                                Previous
+                              </Button>
+                              
                         <span className="text-lg text-helix-text-light">
-                          Page {pagination.page} of {pagination.totalPages}
-                        </span>
-                        
-                        <Button
-                          variant="outline"
-                          onClick={() => handlePageChange(pagination.page + 1)}
-                          disabled={!pagination.hasNext}
+                                Page {pagination.page} of {pagination.totalPages}
+                              </span>
+                              
+                              <Button
+                                variant="outline"
+                                onClick={() => handlePageChange(pagination.page + 1)}
+                                disabled={!pagination.hasNext}
                           className="border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold"
-                        >
-                          Next
-                        </Button>
-                      </div>
-                    )}
-                    
-                    {mentors.length === 0 && !loadingMentors && (
+                              >
+                                Next
+                              </Button>
+                            </div>
+                          )}
+                          
+                          {mentors.length === 0 && !loadingMentors && (
                       <div className="text-center text-helix-text-light mt-16">
                         <div className="text-3xl md:text-5xl font-black mb-4">No mentors found</div>
                         <p className="text-lg md:text-xl mb-8">Try adjusting your search or filters</p>
@@ -416,77 +416,77 @@ export default function ConnectPage() {
                         >
                           Clear Filters
                         </Button>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-            {activeTab === "student" && (
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
+                  {activeTab === "student" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12">
-                {filteredStudents.map((s, i) => (
+                      {filteredStudents.map((s, i) => (
                   <div key={"student-"+i} className="focus:outline-none focus:ring-4 focus:ring-helix-gradient-start/30 rounded-[24px]">
                     <Card className="glass border border-white/10 shadow-xl hover:shadow-2xl hover:glow transition-all duration-300 cursor-pointer"> 
                       <CardHeader className="pb-8">
                         <div className="flex justify-between items-start mb-6">
                           <Badge className="border-2 bg-green-400/20 text-green-400 border-green-400/30 px-4 py-2 text-sm font-bold uppercase tracking-widest">Student</Badge>
                           <div className="text-4xl"><Users /></div>
-                        </div>
+                              </div>
                         <CardTitle className="text-xl font-semibold text-white">{s.first_name} {s.last_name}</CardTitle>
                         <div className="text-base text-helix-text-light">{s.grade_level || "Student"}</div>
                         <div className="text-sm text-helix-text-light">{s.school}</div>
-                      </CardHeader>
+                            </CardHeader>
                       <CardContent className="space-y-6">
                         <div className="flex flex-wrap gap-2 mt-4">
-                          {s.skills && s.skills.slice(0, 3).map((skill: string) => (
+                                {s.skills && s.skills.slice(0, 3).map((skill: string) => (
                             <span key={skill} className="bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm text-helix-text-light">{skill}</span>
-                          ))}
-                          {s.skills && s.skills.length > 3 && (
+                                ))}
+                                {s.skills && s.skills.length > 3 && (
                             <span className="bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm text-helix-text-light">+{s.skills.length - 3} more</span>
-                          )}
-                        </div>
+                                )}
+                              </div>
                         <div className="text-sm text-helix-text-light">Location: <span className="font-medium text-white">{s.location}</span></div>
-                        {s.competitions && s.competitions.length > 0 && (
+                              {s.competitions && s.competitions.length > 0 && (
                           <div className="text-sm text-helix-text-light">Competition: <span className="font-medium text-white">{s.competitions[0]}</span></div>
-                        )}
+                              )}
                         <div className="flex items-center justify-between mt-4">
-                          <div></div>
+                                <div></div>
                           <Button size="sm" className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold" onClick={() => handleProfileClick(s, 'student')}>Connect</Button>
+                              </div>
+                            </CardContent>
+                          </Card>
                         </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                ))}
-              </div>
-            )}
-            {activeTab === "emails" && (
-              <div>
-                {loadingEmails ? (
+                      ))}
+                    </div>
+                  )}
+                  {activeTab === "emails" && (
+                    <div>
+                      {loadingEmails ? (
                   <div className="text-center text-helix-text-light py-16">Loading sent emails...</div>
-                ) : sentEmails.length === 0 ? (
+                      ) : sentEmails.length === 0 ? (
                   <div className="text-center text-helix-text-light py-16">No sent emails yet.</div>
-                ) : (
+                      ) : (
                   <div className="space-y-6">
-                    {sentEmails.map((email: any) => (
+                          {sentEmails.map((email: any) => (
                       <div key={email.id} className="glass border border-white/10 rounded-[16px] p-6 shadow-xl">
                         <div className="flex items-center gap-3 mb-4">
                           <Mail className="h-5 w-5 text-helix-gradient-start" />
                           <span className="font-bold text-white">To:</span>
                           <span className="text-helix-text-light">{email.email_to}</span>
                           <span className="ml-auto text-sm text-helix-text-light">{new Date(email.sent_at).toLocaleString()}</span>
-                        </div>
+                              </div>
                         <div className="font-bold text-white mb-2">{email.subject}</div>
                         <div className="text-helix-text-light text-base italic">
-                          {email.body && email.body.length > 50 ? email.body.substring(0, 50) + "..." : email.body}
+                                {email.body && email.body.length > 50 ? email.body.substring(0, 50) + "..." : email.body}
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+                      )}
+                    </div>
+                  )}
             {mentors.length === 0 && filteredStudents.length === 0 && <div className="text-center text-helix-text-light mt-16">No mentors or students found.</div>}
-          </TextFade>
+                </TextFade>
         </div>
         <ProfileModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} profile={selectedProfile} />
         {showAuthModal && (

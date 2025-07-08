@@ -34,12 +34,12 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <OnboardingScrollEnforcer>
-              <Header />
-              <main className="relative z-10 min-h-screen">{children}</main>
-              <Toaster />
-              <Analytics />
-            </OnboardingScrollEnforcer>
+          <OnboardingScrollEnforcer>
+            <Header />
+            <main className="relative z-10 min-h-screen">{children}</main>
+            <Toaster />
+            <Analytics />
+          </OnboardingScrollEnforcer>
           </ThemeProvider>
         </body>
       </html>

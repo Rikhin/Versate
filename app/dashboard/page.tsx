@@ -130,19 +130,24 @@ export default function DashboardPage() {
   const profileCompletion = Math.min(100, Math.round((filledFields / profileFields.length) * 100));
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen bg-helix-dark relative overflow-hidden">
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen bg-helix-dark relative overflow-hidden flex">
         <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
         <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
-        {/* Sidebar - fixed on the left, hidden on mobile */}
-        <div className="hidden md:flex fixed top-0 left-0 h-full w-64 z-30 glass border-r border-white/10 shadow-md flex-col items-start px-6 py-8">
-          <span className="text-xl font-bold text-white whitespace-nowrap block mb-8">
-            Welcome back, {firstName}! 👋
-          </span>
-        </div>
-        {/* Main Content Container - full width, centered, with left margin for sidebar on desktop */}
-        <div className="flex-1 ml-0 md:ml-64">
-          <div className="w-full max-w-7xl mx-auto mt-8 mb-8 px-6 lg:px-8">
+        
+        {/* Sidebar */}
+        <Sidebar className="hidden md:flex h-full fixed top-0 left-0 z-30">
+          <div className="h-full w-64 glass border-r border-white/10 shadow-md flex flex-col items-start px-6 py-8">
+            <span className="text-xl font-bold text-white whitespace-nowrap block mb-8">
+              Welcome back, {firstName}! 👋
+            </span>
+            {/* Add sidebar content here */}
+          </div>
+        </Sidebar>
+        
+        {/* Main Content */}
+        <div className="flex-1 transition-all duration-300 ease-in-out ml-0 md:ml-64">
+          <div className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-8">
             <div className="glass border border-white/10 rounded-[24px] shadow-2xl px-8 py-10 md:px-12 md:py-14 space-y-12 md:space-y-16">
               {/* Stats Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 w-full">

@@ -12,6 +12,8 @@ import { competitions } from "@/lib/competitions-data"
 import { NetworkBG } from "@/components/ui/network-bg"
 import { Inter } from 'next/font/google'
 import { useState, useEffect, useRef } from 'react'
+import { AnimatedWrapper } from "@/components/ui/animated-wrapper"
+import { motion } from "framer-motion"
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '700'] })
 
@@ -107,7 +109,7 @@ export default function LandingPage() {
       const max = 240; // px before effect maxes out
       const progress = Math.min(scrollY / max, 1);
       if (heroRef.current) {
-        heroRef.current.style.transform = `translateY(-${progress * 40}px)`;
+        heroRef.current.style.transform = `translateY(-${progress * 40}px) scale(${1 - progress * 0.05})`;
         heroRef.current.style.opacity = `${1 - progress * 0.25}`;
       }
       if (orbRef.current) {
@@ -120,56 +122,142 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden landing-bg antialiased">
-      <NetworkBG />
-      {/* Background Animations */}
-      <BackgroundGradient 
-        startColor="from-helix-blue/20" 
-        endColor="to-helix-dark-blue/20" 
-        triggerStart="top center"
-        triggerEnd="center center"
-      />
-      <FloatingShapes 
-        count={5} 
-        triggerStart="top center"
-        triggerEnd="bottom center"
-      />
+    <div className="min-h-screen relative overflow-hidden antialiased">
+      {/* Background Elements */}
+      <div className="fixed inset-0 -z-10">
+        <NetworkBG className="opacity-50" />
+      </div>
+      
+      {/* Gradient Overlay */}
+      <div className="fixed inset-0 -z-10">
+        <BackgroundGradient 
+          startColor="from-helix-blue/20" 
+          endColor="to-helix-dark-blue/20" 
+          triggerStart="top center"
+          triggerEnd="bottom center"
+        />
+      </div>
+      
+      {/* Floating Shapes */}
+      <div className="fixed inset-0 -z-10 pointer-events-none">
+        <FloatingShapes 
+          count={8} 
+          triggerStart="top center"
+          triggerEnd="bottom center"
+        />
+      </div>
       
       {/* Main Content Container */}
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
         <section id="home" className="flex flex-col items-start justify-center min-h-screen w-full relative pb-24 sm:pb-32 pl-0 sm:pl-4 md:pl-8">
           {/* Not backed by Y Combinator badge */}
-          <div className="mb-6">
-            <span className="inline-flex items-center rounded-full border border-orange-500/50 px-4 py-1.5 text-sm font-semibold text-orange-400 bg-orange-500/10 backdrop-blur-sm">
-              <span className="bg-orange-500 text-white rounded w-5 h-5 flex items-center justify-center mr-2 font-bold text-xs" style={{fontFamily: 'Inter, sans-serif'}}>Y</span>
-              Not Backed by Y Combinator
-            </span>
-          </div>
-          <div ref={heroRef} className="relative z-10 flex flex-col items-start justify-center w-full parallax-hero-text">
-            <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4 text-left leading-none tracking-tighter">
-              <span className="whitespace-nowrap">Enhance Your High</span><br />
-              School Experience<br />
-              with <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versate</span>
-            </h1>
-            <p className="text-lg md:text-xl text-white/80 mb-8 max-w-xl text-left leading-relaxed">Discover, connect, and build with the best students for competitions and projects.</p>
-            <div className="flex flex-row items-center gap-6 mt-2">
-              <Link href="/dashboard">
-                <button className="bg-white text-black font-semibold rounded-md px-6 py-3 text-base shadow-none border-none hover:bg-gray-200 transition">Go to Dashboard</button>
-              </Link>
+          <AnimatedWrapper delay={0.2} type="slide" direction="left">
+            <div className="mb-6">
+              <motion.span 
+                className="inline-flex items-center rounded-full border border-orange-500/50 px-4 py-1.5 text-sm font-semibold text-orange-400 bg-orange-500/10 backdrop-blur-sm"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <span className="bg-orange-500 text-white rounded w-5 h-5 flex items-center justify-center mr-2 font-bold text-xs" style={{fontFamily: 'Inter, sans-serif'}}>Y</span>
+                Not Backed by Y Combinator
+              </motion.span>
             </div>
+          </AnimatedWrapper>
+          <div ref={heroRef} className="relative z-10 flex flex-col items-start justify-center w-full parallax-hero-text">
+            <AnimatedWrapper delay={0.4} type="slide" direction="up">
+              <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4 text-left leading-[1.1] tracking-[-0.02em] font-sans">
+                <motion.span 
+                  className="inline-block whitespace-nowrap"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                >
+                  Enhance Your High
+                </motion.span>
+                <br />
+                <motion.span 
+                  className="inline-block"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                >
+                  School Experience
+                </motion.span>
+                <br />
+                <motion.span 
+                  className="inline-flex items-baseline"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                >
+                  with <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent ml-2">Versate</span>
+                </motion.span>
+              </h1>
+            </AnimatedWrapper>
+            
+            <AnimatedWrapper delay={0.8} type="fade">
+              <p 
+                className="text-lg md:text-xl text-white/90 mb-8 max-w-xl text-left leading-relaxed tracking-wide font-sans" 
+                style={{ lineHeight: '1.7' }}
+              >
+                Discover, connect, and build with the best students for competitions and projects.
+              </p>
+            </AnimatedWrapper>
+            
+            <AnimatedWrapper delay={1} type="scale">
+              <motion.div 
+                className="flex flex-row items-center gap-6 mt-2"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 1 }}
+              >
+                <Link href="/dashboard">
+                  <button className="bg-white text-black font-semibold rounded-md px-6 py-3 text-base shadow-none border-none hover:bg-gray-200 transition hover:scale-105 transform transition-transform duration-300">
+                    Go to Dashboard
+                  </button>
+                </Link>
+                <Link href="#features">
+                  <button className="bg-transparent text-white font-semibold rounded-md px-6 py-3 text-base border border-white/30 hover:bg-white/10 transition hover:scale-105 transform transition-transform duration-300">
+                    Learn More
+                  </button>
+                </Link>
+              </motion.div>
+            </AnimatedWrapper>
           </div>
         </section>
 
         {/* Stats Section */}
-        <section className="py-12 md:py-16 mt-20">
+        <section className="py-12 md:py-16 mt-24">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 -mt-8">
               {stats.map((stat, index) => (
-                <div key={index} className="text-center py-6">
-                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold gradient-text-helix mb-3">{stat.value}</div>
-                  <div className="text-sm md:text-base text-helix-text-light uppercase tracking-widest font-medium">{stat.label}</div>
-                </div>
+                <AnimatedWrapper 
+                  key={index} 
+                  delay={0.1 * index} 
+                  type="fade" 
+                  className="text-center py-6"
+                >
+                  <motion.div 
+                    className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent mb-3 font-sans"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.1 * index }}
+                  >
+                    {stat.value}
+                  </motion.div>
+                  <motion.div 
+                    className="text-sm md:text-base text-helix-text-light/90 uppercase tracking-widest font-medium font-sans"
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.15 * (index + 1) }}
+                  >
+                    {stat.label}
+                  </motion.div>
+                </AnimatedWrapper>
               ))}
             </div>
           </TextFade>
@@ -178,22 +266,46 @@ export default function LandingPage() {
         {/* Main Content Sections */}
         <div className="space-y-24">
           {/* Why Versate Section */}
-          <section className="glass p-8 md:p-16 rounded-[24px] border border-white/10 shadow-xl">
+          <section id="features" className="glass p-8 md:p-16 rounded-[24px] border border-white/10 shadow-xl">
             <div className="text-center mb-12">
-              <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 ${inter.className}`}>
-                Why <span className="gradient-text-helix">Versate?</span>
-              </h2>
-              <p className={`text-lg md:text-xl text-helix-text-light max-w-4xl mx-auto leading-relaxed ${inter.className}`}>
-                Versate provides info and access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.
-              </p>
+              <AnimatedWrapper type="fade" delay={0.2}>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 font-sans">
+                  Why <span className="gradient-text-helix">Versate?</span>
+                </h2>
+              </AnimatedWrapper>
+              <AnimatedWrapper type="fade" delay={0.4}>
+                <p className="text-lg md:text-xl text-helix-text-light/90 max-w-4xl mx-auto leading-relaxed font-sans">
+                  Versate provides info and access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.
+                </p>
+              </AnimatedWrapper>
             </div>
             <div className="flex flex-wrap justify-center gap-4 w-full">
-              <div className={`rounded-full border-2 border-helix-gradient-start/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-helix-gradient-start whitespace-nowrap ${inter.className}`}>Researchers</div>
-              <div className={`rounded-full border-2 border-green-400/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-green-400 whitespace-nowrap ${inter.className}`}>Admission Counselors</div>
-              <div className={`rounded-full border-2 border-blue-400/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-blue-400 whitespace-nowrap ${inter.className}`}>Y-Combinator Affiliates</div>
-              <div className={`rounded-full border-2 border-purple-400/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-purple-400 whitespace-nowrap ${inter.className}`}>Summer Programs</div>
-              <div className={`rounded-full border-2 border-pink-400/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-pink-400 whitespace-nowrap ${inter.className}`}>Competitions</div>
-              <div className={`rounded-full border-2 border-gray-400/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-gray-300 whitespace-nowrap ${inter.className}`}>Student Community</div>
+              {[
+                { text: 'Researchers', color: 'helix-gradient-start' },
+                { text: 'Admission Counselors', color: 'green-400' },
+                { text: 'Y-Combinator Affiliates', color: 'blue-400' },
+                { text: 'Summer Programs', color: 'purple-400' },
+                { text: 'Competitions', color: 'pink-400' },
+                { text: 'Student Community', color: 'gray-300' }
+              ].map((item, index) => (
+                <AnimatedWrapper 
+                  key={item.text} 
+                  delay={0.1 * index} 
+                  type="fade"
+                  direction="up"
+                >
+                  <motion.div 
+                    className={`rounded-full border-2 border-${item.color}/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-${item.color} whitespace-nowrap font-sans`}
+                    whileHover={{ 
+                      y: -3,
+                      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+                    }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                  >
+                    {item.text}
+                  </motion.div>
+                </AnimatedWrapper>
+              ))}
             </div>
           </section>
 

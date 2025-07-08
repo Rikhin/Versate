@@ -53,6 +53,7 @@
     "date-fns": "latest",
     "dotenv": "^17.0.1",
     "embla-carousel-react": "latest",
+    "framer-motion": "^12.23.0",
     "gsap": "^3.13.0",
     "helix-ts": "^1.0.5",
     "input-otp": "latest",

@@ -213,6 +213,6 @@ export default function ScholarshipsPage() {
             </section>
           </div>
         </div>
-    </OnboardingScrollEnforcer>
+      </OnboardingScrollEnforcer>
   )
 } 

@@ -242,6 +242,6 @@ export default function SummerProgramsPage() {
             </Dialog>
           </div>
         </div>
-    </OnboardingScrollEnforcer>
+      </OnboardingScrollEnforcer>
   )
 } 
