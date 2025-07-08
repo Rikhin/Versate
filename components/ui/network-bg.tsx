@@ -29,7 +29,7 @@ interface Dot3D {
   size: number;
 }
 
-function project3D(dot: { x: number; y: number; z: number }, w: number, h: number, fov: number = 900) {
+function project3D(dot: { x: number; y: number; z: number }, w: number, h: number, fov: number = 1800) {
   // Simple perspective projection
   const scale = fov / (fov + dot.z);
   return {
@@ -118,11 +118,11 @@ export const NetworkBG = (props: NetworkBGProps) => {
       canvas.width = w;
       canvas.height = h;
       // Re-randomize dot positions
-      const dotCount = 100;
+      const dotCount = 180;
       dots.current = Array.from({ length: dotCount }, () => ({
-        x: randomBetween(-500, 500),
-        y: randomBetween(-300, 300),
-        z: randomBetween(-500, 500),
+        x: randomBetween(-900, 900),
+        y: randomBetween(-540, 540),
+        z: randomBetween(-900, 900),
         vx: randomBetween(-0.5, 0.5),
         vy: randomBetween(-0.5, 0.5),
         vz: randomBetween(-0.5, 0.5),
