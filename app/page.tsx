@@ -136,9 +136,9 @@ export default function LandingPage() {
       />
       
       {/* Main Content Container */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
-        <section id="home" className="flex flex-col items-start justify-center min-h-screen w-full relative pb-24 sm:pb-32 pl-4 sm:pl-8 md:pl-12">
+        <section id="home" className="flex flex-col items-start justify-center min-h-screen w-full relative pb-24 sm:pb-32 pl-0 sm:pl-4 md:pl-8">
           {/* Not backed by Y Combinator badge */}
           <div className="mb-6">
             <span className="inline-flex items-center rounded-full border border-orange-500/50 px-4 py-1.5 text-sm font-semibold text-orange-400 bg-orange-500/10 backdrop-blur-sm">
