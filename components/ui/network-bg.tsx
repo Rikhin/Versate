@@ -29,7 +29,7 @@ interface Dot3D {
   size: number;
 }
 
-function project3D(dot: { x: number; y: number; z: number }, w: number, h: number, fov: number = 500) {
+function project3D(dot: { x: number; y: number; z: number }, w: number, h: number, fov: number = 900) {
   // Simple perspective projection
   const scale = fov / (fov + dot.z);
   return {
@@ -97,86 +97,32 @@ export const NetworkBG = (props: NetworkBGProps) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Always cover the full hero section
-    const heroSection = canvas.parentElement;
-    let w = window.innerWidth;
-    let h = window.innerHeight;
-    if (heroSection) {
-      const rect = heroSection.getBoundingClientRect();
-      w = rect.width;
-      h = rect.height;
-      canvas.style.top = "0";
-      canvas.style.left = "0";
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-    } else {
-      canvas.style.top = "0";
-      canvas.style.left = "0";
-      canvas.style.width = "100vw";
-      canvas.style.height = "100vh";
-    }
-    canvas.style.position = "absolute";
+    // Set canvas to fixed, full viewport
+    canvas.style.position = "fixed";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
     canvas.style.zIndex = "0";
     canvas.style.pointerEvents = "none";
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.scale(dpr, dpr);
 
-    // Re-randomize dot positions centered on hero
-    const dotCount = 140;
-    dots.current = Array.from({ length: dotCount }, () => ({
-      x: randomBetween(-w/2 + 40, w/2 - 40),
-      y: randomBetween(-h/2 + 40, h/2 - 40),
-      z: randomBetween(-w/2, w/2),
-      vx: randomBetween(-0.5, 0.5),
-      vy: randomBetween(-0.5, 0.5),
-      vz: randomBetween(-0.5, 0.5),
-      color: NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
-      size: [6, 10][Math.floor(Math.random() * 2)]
-    }));
-    // Compute MST edges
-    edges.current = computeMST(dots.current);
-    // Add more nearest neighbor edges for each node
-    for (let i = 0; i < dots.current.length; i++) {
-      // Find 4 nearest neighbors
-      const dists = dots.current.map((d, j) => ({j, dist: (d.x - dots.current[i].x) ** 2 + (d.y - dots.current[i].y) ** 2}));
-      dists.sort((a, b) => a.dist - b.dist);
-      for (let k = 1; k <= 4; k++) {
-        const j = dists[k].j;
-        if (!edges.current.some(([a, b]) => (a === i && b === j) || (a === j && b === i))) {
-          edges.current.push([i, j]);
-        }
-      }
-    }
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    canvas.width = w;
+    canvas.height = h;
 
     // Responsive resize
-    const handleResize = (event?: UIEvent) => {
-      const heroSection = canvas.parentElement;
-      let w = window.innerWidth;
-      let h = window.innerHeight;
-      const dpr = window.devicePixelRatio || 1;
-      if (heroSection) {
-        const rect = heroSection.getBoundingClientRect();
-        w = rect.width;
-        h = rect.height;
-        canvas.style.width = `${w}px`;
-        canvas.style.height = `${h}px`;
-      } else {
-        canvas.style.width = "100vw";
-        canvas.style.height = "100vh";
-      }
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(dpr, dpr);
+    const handleResize = () => {
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = w;
+      canvas.height = h;
       // Re-randomize dot positions
-      const dotCount = 140;
+      const dotCount = 100;
       dots.current = Array.from({ length: dotCount }, () => ({
-        x: randomBetween(-w/2 + 40, w/2 - 40),
-        y: randomBetween(-h/2 + 40, h/2 - 40),
-        z: randomBetween(-w/2, w/2),
+        x: randomBetween(-500, 500),
+        y: randomBetween(-300, 300),
+        z: randomBetween(-500, 500),
         vx: randomBetween(-0.5, 0.5),
         vy: randomBetween(-0.5, 0.5),
         vz: randomBetween(-0.5, 0.5),
@@ -222,16 +168,16 @@ export const NetworkBG = (props: NetworkBGProps) => {
         d.y += d.vy;
         d.z += d.vz;
         // Bounce off a 3D box
-        if (d.x < -w/2 + 40 || d.x > w/2 - 40) d.vx *= -1;
-        if (d.y < -h/2 + 40 || d.y > h/2 - 40) d.vy *= -1;
-        if (d.z < -w/2 || d.z > w/2) d.vz *= -1;
+        if (d.x < -220 || d.x > 220) d.vx *= -1;
+        if (d.y < -140 || d.y > 140) d.vy *= -1;
+        if (d.z < -220 || d.z > 220) d.vz *= -1;
       }
 
       // Animate rotation
       if (timestamp !== undefined) {
         if (lastTimestamp) {
-          rotX += 0.00025 * (timestamp - lastTimestamp); // slower
-          rotZ += 0.00018 * (timestamp - lastTimestamp); // slower
+          rotX += 0.0007 * (timestamp - lastTimestamp);
+          rotZ += 0.0005 * (timestamp - lastTimestamp);
         }
         lastTimestamp = timestamp;
       }
