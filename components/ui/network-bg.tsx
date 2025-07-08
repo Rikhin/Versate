@@ -97,7 +97,7 @@ export const NetworkBG = (props: NetworkBGProps) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Set canvas to fixed, full viewport
+    // Set canvas to fixed, full viewport, and high-DPI
     canvas.style.position = "fixed";
     canvas.style.top = "0";
     canvas.style.left = "0";
@@ -108,21 +108,23 @@ export const NetworkBG = (props: NetworkBGProps) => {
 
     let w = window.innerWidth;
     let h = window.innerHeight;
-    canvas.width = w;
-    canvas.height = h;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     // Responsive resize
     const handleResize = () => {
       w = window.innerWidth;
       h = window.innerHeight;
-      canvas.width = w;
-      canvas.height = h;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
       // Re-randomize dot positions
-      const dotCount = 110;
+      const dotCount = 140;
       dots.current = Array.from({ length: dotCount }, () => ({
-        x: randomBetween(-420, 420),
-        y: randomBetween(-260, 260),
-        z: randomBetween(-420, 420),
+        x: randomBetween(-700, 700),
+        y: randomBetween(-400, 400),
+        z: randomBetween(-700, 700),
         vx: randomBetween(-0.5, 0.5),
         vy: randomBetween(-0.5, 0.5),
         vz: randomBetween(-0.5, 0.5),
@@ -176,8 +178,8 @@ export const NetworkBG = (props: NetworkBGProps) => {
       // Animate rotation
       if (timestamp !== undefined) {
         if (lastTimestamp) {
-          rotX += 0.0007 * (timestamp - lastTimestamp);
-          rotZ += 0.0005 * (timestamp - lastTimestamp);
+          rotX += 0.00025 * (timestamp - lastTimestamp); // slower
+          rotZ += 0.00018 * (timestamp - lastTimestamp); // slower
         }
         lastTimestamp = timestamp;
       }
