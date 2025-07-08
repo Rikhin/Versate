@@ -67,9 +67,9 @@ export default function LandingPage() {
 
   const stats = [
     { label: "Active Projects", value: "500+", icon: Trophy },
-    { label: "Students Connected", value: "2,000+", icon: Users },
+    { label: "Students Connected", value: "750+", icon: Users },
     { label: "Successful Teams", value: "150+", icon: Award },
-    { label: "Competitions Supported", value: "25+", icon: Target },
+    { label: "Competitions Supported", value: "100+", icon: Target },
   ]
 
   // Typewriter effect for hero paragraph
@@ -107,7 +107,7 @@ export default function LandingPage() {
       const max = 240; // px before effect maxes out
       const progress = Math.min(scrollY / max, 1);
       if (heroRef.current) {
-        heroRef.current.style.transform = `translateY(-${progress * 40}px) scale(${1 - progress * 0.05})`;
+        heroRef.current.style.transform = `translateY(-${progress * 40}px)`;
         heroRef.current.style.opacity = `${1 - progress * 0.25}`;
       }
       if (orbRef.current) {
@@ -162,7 +162,7 @@ export default function LandingPage() {
         </section>
 
         {/* Stats Section */}
-        <section className="py-12 md:py-16 mt-48">
+        <section className="py-12 md:py-16 mt-20">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
               {stats.map((stat, index) => (
