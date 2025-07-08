@@ -97,21 +97,60 @@ export const NetworkBG = (props: NetworkBGProps) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Set canvas to fixed, full viewport, and high-DPI
-    canvas.style.position = "fixed";
-    canvas.style.top = "0";
-    canvas.style.left = "0";
-    canvas.style.width = "100vw";
-    canvas.style.height = "100vh";
-    canvas.style.zIndex = "0";
-    canvas.style.pointerEvents = "none";
-
+    // Set canvas to fixed, full hero area, and high-DPI
+    const hero = document.querySelector('.parallax-hero-text') as HTMLElement;
     let w = window.innerWidth;
     let h = window.innerHeight;
+    let top = 0;
+    if (hero) {
+      const rect = hero.getBoundingClientRect();
+      w = rect.width;
+      h = rect.height + 120; // add some buffer
+      top = rect.top + window.scrollY - 60; // offset for nav
+      canvas.style.top = `${top}px`;
+      canvas.style.left = `${rect.left}px`;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+    } else {
+      canvas.style.top = "0";
+      canvas.style.left = "0";
+      canvas.style.width = "100vw";
+      canvas.style.height = "100vh";
+    }
+    canvas.style.position = "absolute";
+    canvas.style.zIndex = "0";
+    canvas.style.pointerEvents = "none";
     const dpr = window.devicePixelRatio || 1;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Re-randomize dot positions centered on hero
+    const dotCount = 140;
+    dots.current = Array.from({ length: dotCount }, () => ({
+      x: randomBetween(-w/2 + 40, w/2 - 40),
+      y: randomBetween(-h/2 + 40, h/2 - 40),
+      z: randomBetween(-w/2, w/2),
+      vx: randomBetween(-0.5, 0.5),
+      vy: randomBetween(-0.5, 0.5),
+      vz: randomBetween(-0.5, 0.5),
+      color: NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
+      size: [6, 10][Math.floor(Math.random() * 2)]
+    }));
+    // Compute MST edges
+    edges.current = computeMST(dots.current);
+    // Add more nearest neighbor edges for each node
+    for (let i = 0; i < dots.current.length; i++) {
+      // Find 4 nearest neighbors
+      const dists = dots.current.map((d, j) => ({j, dist: (d.x - dots.current[i].x) ** 2 + (d.y - dots.current[i].y) ** 2}));
+      dists.sort((a, b) => a.dist - b.dist);
+      for (let k = 1; k <= 4; k++) {
+        const j = dists[k].j;
+        if (!edges.current.some(([a, b]) => (a === i && b === j) || (a === j && b === i))) {
+          edges.current.push([i, j]);
+        }
+      }
+    }
 
     // Responsive resize
     const handleResize = () => {
@@ -122,9 +161,9 @@ export const NetworkBG = (props: NetworkBGProps) => {
       // Re-randomize dot positions
       const dotCount = 140;
       dots.current = Array.from({ length: dotCount }, () => ({
-        x: randomBetween(-700, 700),
-        y: randomBetween(-400, 400),
-        z: randomBetween(-700, 700),
+        x: randomBetween(-w/2 + 40, w/2 - 40),
+        y: randomBetween(-h/2 + 40, h/2 - 40),
+        z: randomBetween(-w/2, w/2),
         vx: randomBetween(-0.5, 0.5),
         vy: randomBetween(-0.5, 0.5),
         vz: randomBetween(-0.5, 0.5),
@@ -170,9 +209,9 @@ export const NetworkBG = (props: NetworkBGProps) => {
         d.y += d.vy;
         d.z += d.vz;
         // Bounce off a 3D box
-        if (d.x < -220 || d.x > 220) d.vx *= -1;
-        if (d.y < -140 || d.y > 140) d.vy *= -1;
-        if (d.z < -220 || d.z > 220) d.vz *= -1;
+        if (d.x < -w/2 + 40 || d.x > w/2 - 40) d.vx *= -1;
+        if (d.y < -h/2 + 40 || d.y > h/2 - 40) d.vy *= -1;
+        if (d.z < -w/2 || d.z > w/2) d.vz *= -1;
       }
 
       // Animate rotation
