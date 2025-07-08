@@ -97,18 +97,16 @@ export const NetworkBG = (props: NetworkBGProps) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Set canvas to fixed, full hero area, and high-DPI
-    const hero = document.querySelector('.parallax-hero-text') as HTMLElement;
+    // Always cover the full hero section
+    const heroSection = canvas.parentElement;
     let w = window.innerWidth;
     let h = window.innerHeight;
-    let top = 0;
-    if (hero) {
-      const rect = hero.getBoundingClientRect();
+    if (heroSection) {
+      const rect = heroSection.getBoundingClientRect();
       w = rect.width;
-      h = rect.height + 120; // add some buffer
-      top = rect.top + window.scrollY - 60; // offset for nav
-      canvas.style.top = `${top}px`;
-      canvas.style.left = `${rect.left}px`;
+      h = rect.height;
+      canvas.style.top = "0";
+      canvas.style.left = "0";
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
     } else {
@@ -123,7 +121,8 @@ export const NetworkBG = (props: NetworkBGProps) => {
     const dpr = window.devicePixelRatio || 1;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
 
     // Re-randomize dot positions centered on hero
     const dotCount = 140;
@@ -153,11 +152,25 @@ export const NetworkBG = (props: NetworkBGProps) => {
     }
 
     // Responsive resize
-    const handleResize = () => {
-      w = window.innerWidth;
-      h = window.innerHeight;
+    const handleResize = (event?: UIEvent) => {
+      const heroSection = canvas.parentElement;
+      let w = window.innerWidth;
+      let h = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      if (heroSection) {
+        const rect = heroSection.getBoundingClientRect();
+        w = rect.width;
+        h = rect.height;
+        canvas.style.width = `${w}px`;
+        canvas.style.height = `${h}px`;
+      } else {
+        canvas.style.width = "100vw";
+        canvas.style.height = "100vh";
+      }
       canvas.width = w * dpr;
       canvas.height = h * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
       // Re-randomize dot positions
       const dotCount = 140;
       dots.current = Array.from({ length: dotCount }, () => ({
