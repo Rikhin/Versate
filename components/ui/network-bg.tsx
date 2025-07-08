@@ -191,16 +191,12 @@ export const NetworkBG = (props: NetworkBGProps) => {
         for (let j = i + 1; j < dots.current.length; j++) {
           const a = rotate3D(dots.current[i], rotX, rotZ);
           const b = rotate3D(dots.current[j], rotX, rotZ);
-          // Only draw if close in 3D
-          const dist = Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2 + (a.z - b.z) ** 2);
-          if (dist < 120) {
-            const pa = project3D(a, w, h);
-            const pb = project3D(b, w, h);
-            ctx.beginPath();
-            ctx.moveTo(pa.x, pa.y);
-            ctx.lineTo(pb.x, pb.y);
-            ctx.stroke();
-          }
+          const pa = project3D(a, w, h);
+          const pb = project3D(b, w, h);
+          ctx.beginPath();
+          ctx.moveTo(pa.x, pa.y);
+          ctx.lineTo(pb.x, pb.y);
+          ctx.stroke();
         }
       }
       ctx.restore();
