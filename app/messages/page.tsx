@@ -11,6 +11,7 @@ import { useUser } from "@clerk/nextjs"
 import { Textarea } from "@/components/ui/textarea"
 import { useRealtimeMessages } from "@/hooks/use-realtime-messages"
 import { useRequireProfile } from "@/hooks/use-require-profile"
+import { BackgroundGradient, FloatingShapes } from '@/components/scroll-animations'
 
 interface Conversation {
   partnerId: string
@@ -249,94 +250,102 @@ export default function MessagesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading...</p>
+      <div className="min-h-screen bg-helix-dark flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-helix-gradient-start mx-auto mb-4"></div>
+          <p className="text-helix-text-light">Loading...</p>
+        </div>
       </div>
     )
   }
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-helix-dark flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Profile Missing</h1>
-          <p className="text-gray-600 mb-4">Your user profile could not be loaded. Please create or fix your profile to use messages.</p>
-          <a href="/profile" className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition">Go to Profile</a>
+          <h1 className="text-3xl font-black text-white mb-6">Profile Missing</h1>
+          <p className="text-xl text-helix-text-light mb-8">Your user profile could not be loaded. Please create or fix your profile to use messages.</p>
+          <a href="/profile" className="inline-block bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white px-8 py-4 rounded-full font-bold hover:shadow-xl glow transition-all duration-300">Go to Profile</a>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">Messages</h1>
-          <p className="text-slate-600">Connect with other students and team members</p>
+    <div className="min-h-screen bg-helix-dark relative overflow-hidden">
+      <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
+      <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
+      <div className="container mx-auto px-6 py-12">
+        <div className="mb-12">
+          <h1 className="text-5xl font-black text-white mb-4">Messages</h1>
+          <p className="text-xl text-helix-text-light">Connect with other students and team members</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Conversations List */}
           <div className="lg:col-span-1">
-            <Card className="h-[600px]">
+            <Card className="h-[700px] glass border border-white/10 rounded-[20px] shadow-2xl">
               <CardHeader>
-                <div className="flex items-center space-x-2 mb-4">
-                  <MessageSquare className="h-5 w-5" />
-                  <CardTitle>Conversations</CardTitle>
+                <div className="flex items-center space-x-3 mb-6">
+                  <MessageSquare className="h-6 w-6 text-helix-gradient-start" />
+                  <CardTitle className="text-xl font-black text-white">Conversations</CardTitle>
                 </div>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-helix-text-light h-5 w-5" />
                   <Input
                     placeholder="Search conversations..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
+                    className="pl-12 bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl"
                   />
                 </div>
               </CardHeader>
               <CardContent className="p-0">
                 {conversationsError ? (
-                  <div className="p-4 text-center text-red-500">{conversationsError}</div>
+                  <div className="p-6 text-center text-red-400 text-lg">{conversationsError}</div>
                 ) : isLoading ? (
-                  <div className="p-4 text-center text-gray-500">Loading conversations...</div>
+                  <div className="p-6 text-center text-helix-text-light text-lg">Loading conversations...</div>
                 ) : filteredConversations.length === 0 ? (
-                  <div className="p-4 text-center text-gray-500">
+                  <div className="p-6 text-center text-helix-text-light text-lg">
                     {searchQuery ? "No conversations found." : "No conversations yet."}
                   </div>
                 ) : (
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     {filteredConversations.map((conversation) => (
                       <div
                         key={conversation.partnerId}
-                        className={`p-4 hover:bg-gray-50 cursor-pointer border-b last:border-b-0 ${selectedConversation?.partnerId === conversation.partnerId ? 'bg-blue-50 border-blue-200' : ''}`}
+                        className={`p-6 hover:bg-white/5 cursor-pointer border-b border-white/10 last:border-b-0 transition-all duration-300 ${
+                          selectedConversation?.partnerId === conversation.partnerId 
+                            ? 'bg-white/10 border-helix-gradient-start/30' 
+                            : ''
+                        }`}
                         onClick={() => openConversation(conversation)}
                       >
-                        <div className="flex items-center space-x-3">
-                          <Avatar className="h-10 w-10">
+                        <div className="flex items-center space-x-4">
+                          <Avatar className="h-12 w-12 border-2 border-white/20">
                             <AvatarImage 
                               src={conversation.partner?.avatar_url || "/placeholder-user.jpg"} 
                               alt={`${conversation.partner?.first_name || "Unknown"} ${conversation.partner?.last_name || "User"}`} 
                             />
-                            <AvatarFallback>
+                            <AvatarFallback className="bg-white/10 text-white font-bold">
                               {getPartnerInitials(conversation.partner)}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
-                              <p className="text-sm font-medium text-gray-900 truncate">
+                              <p className="text-base font-bold text-white truncate">
                                 {getPartnerName(conversation.partner)}
                               </p>
-                              <span className="text-xs text-gray-500">
+                              <span className="text-sm text-helix-text-light">
                                 {formatTime(conversation.lastMessage.created_at)}
                               </span>
                             </div>
-                            <p className="text-sm text-gray-500 truncate">
+                            <p className="text-sm text-helix-text-light truncate">
                               {formatMessagePreview(conversation.lastMessage.content)}
                             </p>
                           </div>
                           {conversation.unreadCount > 0 && (
-                            <Badge variant="destructive" className="ml-2">
+                            <Badge variant="destructive" className="ml-3 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white font-bold">
                               {conversation.unreadCount}
                             </Badge>
                           )}
@@ -351,9 +360,9 @@ export default function MessagesPage() {
 
           {/* Message Area */}
           <div className="lg:col-span-2">
-            <Card className="h-[600px] flex flex-col max-w-4xl mx-auto">
+            <Card className="h-[700px] flex flex-col max-w-4xl mx-auto glass border border-white/10 rounded-[20px] shadow-2xl">
               <CardHeader className="flex-shrink-0">
-                <CardTitle>
+                <CardTitle className="text-xl font-black text-white">
                   {selectedConversation ? (
                     getPartnerName(selectedConversation.partner)
                   ) : (
@@ -363,19 +372,19 @@ export default function MessagesPage() {
               </CardHeader>
               <CardContent className="flex flex-col p-0">
                 {!selectedConversation ? (
-                  <div className="text-center text-gray-500 flex-1 flex flex-col items-center justify-center">
-                    <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p>Choose a conversation from the list to start messaging</p>
+                  <div className="text-center text-helix-text-light flex-1 flex flex-col items-center justify-center">
+                    <MessageSquare className="h-16 w-16 mx-auto mb-6 text-helix-gradient-start" />
+                    <p className="text-lg">Choose a conversation from the list to start messaging</p>
                   </div>
                 ) : (
                   <>
-                    <div className="overflow-y-auto space-y-4 p-4 border-b bg-white h-[500px]">
+                    <div className="overflow-y-auto space-y-6 p-6 border-b border-white/10 bg-white/5 h-[550px]">
                       {messagesError ? (
-                        <div className="text-center text-red-500">{messagesError}</div>
+                        <div className="text-center text-red-400 text-lg">{messagesError}</div>
                       ) : isLoadingMessages ? (
-                        <div className="text-center text-gray-500">Loading messages...</div>
+                        <div className="text-center text-helix-text-light text-lg">Loading messages...</div>
                       ) : messages.length === 0 ? (
-                        <div className="text-center text-gray-500">No messages yet. Start the conversation!</div>
+                        <div className="text-center text-helix-text-light text-lg">No messages yet. Start the conversation!</div>
                       ) : (
                         messages.map((message) => {
                           const isOwnMessage = message.sender_id === user?.id
@@ -385,17 +394,17 @@ export default function MessagesPage() {
                               className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
                             >
                               <div
-                                className={`inline-block max-w-[80%] min-w-[64px] px-3 py-2 rounded-lg align-bottom break-words whitespace-pre-wrap shadow-sm text-base ${
+                                className={`inline-block max-w-[80%] min-w-[64px] px-4 py-3 rounded-[16px] align-bottom break-words whitespace-pre-wrap shadow-xl text-base ${
                                   isOwnMessage
-                                    ? "bg-blue-600 text-white self-end"
-                                    : "bg-gray-100 text-gray-900 self-start"
+                                    ? "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white self-end"
+                                    : "bg-white/10 border border-white/20 text-white self-start"
                                 }`}
                               >
-                                <p className="text-sm break-words whitespace-pre-wrap overflow-hidden">
+                                <p className="text-base break-words whitespace-pre-wrap overflow-hidden">
                                   {message.content}
                                 </p>
-                                <p className={`text-xs mt-1 ${
-                                  isOwnMessage ? "text-blue-100" : "text-gray-500"
+                                <p className={`text-sm mt-2 ${
+                                  isOwnMessage ? "text-white/80" : "text-helix-text-light"
                                 }`}>
                                   {formatTime(message.created_at)}
                                 </p>
@@ -406,26 +415,26 @@ export default function MessagesPage() {
                       )}
                       <div ref={messagesEndRef} />
                     </div>
-                    <div className="flex-shrink-0 flex space-x-2 p-4 bg-white">
+                    <div className="flex-shrink-0 flex space-x-4 p-6 bg-white/5">
                       <Textarea
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyPress={handleKeyPress}
                         placeholder="Type your message..."
-                        className="flex-1 min-h-[48px] max-h-[120px] resize-none text-base"
+                        className="flex-1 min-h-[56px] max-h-[120px] resize-none text-base bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl"
                         disabled={isSending}
                       />
                       <Button
                         onClick={sendMessage}
                         disabled={!newMessage.trim() || isSending}
                         size="sm"
-                        className="self-end"
+                        className="self-end bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-xl font-bold px-6 py-3"
                       >
-                        <Send className="h-4 w-4" />
+                        <Send className="h-5 w-5" />
                       </Button>
                     </div>
                     {sendError && (
-                      <div className="text-red-500 text-sm px-4 pb-2">{sendError}</div>
+                      <div className="text-red-400 text-base px-6 pb-4">{sendError}</div>
                     )}
                   </>
                 )}

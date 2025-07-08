@@ -4,9 +4,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Rocket, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { BackgroundGradient, FloatingShapes } from "@/components/scroll-animations";
 
-const versateGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600";
-const versateTextGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent";
+const versateGradient = "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end";
+const versateTextGradient = "gradient-text-helix";
 
 const plans = [
   {
@@ -89,67 +90,74 @@ export default function PlansPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-start py-12 px-4 md:px-0">
-      {/* Versate pill with icon */}
-      <div className="flex justify-center mb-4">
-        <span className={`inline-flex items-center text-sm md:text-base font-semibold text-white ${versateGradient} rounded-full px-4 py-1 tracking-wide`}>
-          <Rocket className="w-4 h-4 mr-2" />
-          One-Time Purchase, Lifetime Access
-        </span>
-      </div>
-      {/* Title */}
-      <h1 className="text-3xl md:text-5xl font-extrabold text-black text-center mb-4">
-        <span className={versateTextGradient}>Accelerate</span> Search. Boost <span className={versateTextGradient}>Success.</span>
-      </h1>
-      {/* Subtitle */}
-      <p className="text-lg md:text-xl text-gray-600 text-center mb-10 max-w-2xl">
-        Versate empowers students and teams to discover, connect, and win. Enjoy smart matching, curated opportunities, and a supportive community—built to help you reach your goals faster.
-      </p>
-      {/* Pricing Cards */}
-      <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-stretch">
-        {plans.map((plan, i) => (
-          <div
-            key={plan.name}
-            className={`flex-1 bg-white rounded-2xl shadow-xl border p-8 flex flex-col items-center min-w-[280px] max-w-sm relative transition-all duration-200 ${i === 1 ? 'border-2 border-blue-500' : selected === i ? 'border-2 border-blue-500' : 'border-gray-100'}`}
-          >
-            {i === 1 && (
-              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1 rounded-full bg-blue-600 text-white shadow border-2 border-blue-500">Most Popular</span>
-            )}
-            <h2 className="text-lg font-semibold text-black mb-2">{plan.name}</h2>
-            <p className="text-gray-500 text-sm mb-4 text-center">{plan.description}</p>
-            <div className="mb-2 flex items-center gap-2">
-              {plan.oldPrice && <span className="text-gray-400 line-through text-lg">${plan.oldPrice}</span>}
-              <span className="text-2xl font-extrabold text-black">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
-              {plan.price !== 0 && <span className="text-xs text-gray-400 font-semibold">USD</span>}
-            </div>
-            <ul className="text-left text-gray-700 text-sm space-y-2 mt-4 mb-2 w-full max-w-xs">
-              {plan.features.map((f, idx) => (
-                <li key={idx}>{f}</li>
-              ))}
-            </ul>
-            <button
-              className={`mt-4 w-full py-2 rounded-lg font-semibold text-base transition-all duration-150 ${selected === i ? 'bg-black text-white shadow-lg' : 'bg-gray-100 text-black hover:bg-gray-200'}`}
-              onClick={() => setSelected(i)}
+    <div className="min-h-screen bg-helix-dark relative overflow-hidden flex flex-col items-center justify-start py-20 px-6 lg:px-8">
+      <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
+      <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
+      <div className="relative z-10 w-full max-w-7xl">
+        {/* Versate pill with icon */}
+        <div className="flex justify-center mb-8">
+          <span className={`inline-flex items-center text-base md:text-lg font-bold text-white ${versateGradient} rounded-full px-6 py-3 tracking-wide shadow-xl glow`}>
+            <Rocket className="w-5 h-5 mr-3" />
+            One-Time Purchase, Lifetime Access
+          </span>
+        </div>
+        {/* Title */}
+        <h1 className="text-5xl md:text-7xl md:text-8xl font-black text-white text-center mb-8 leading-none">
+          <span className={versateTextGradient}>Accelerate</span> Search.<br />Boost <span className={versateTextGradient}>Success.</span>
+        </h1>
+        {/* Subtitle */}
+        <p className="text-xl md:text-2xl text-helix-text-light text-center mb-16 max-w-4xl mx-auto leading-relaxed">
+          Versate empowers students and teams to discover, connect, and win. Enjoy smart matching, curated opportunities, and a supportive community—built to help you reach your goals faster.
+        </p>
+        {/* Pricing Cards */}
+        <div className="w-full flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-stretch mb-12">
+          {plans.map((plan, i) => (
+            <div
+              key={plan.name}
+              className={`flex-1 glass border border-white/10 rounded-[24px] shadow-xl p-8 flex flex-col items-center min-w-[280px] max-w-sm relative transition-all duration-300 ${i === 1 ? 'border-2 border-helix-gradient-start glow' : selected === i ? 'border-2 border-helix-gradient-start glow' : 'hover:glow'}`}
             >
-              {selected === i ? "Selected" : plan.cta}
-            </button>
-          </div>
-        ))}
+              {i === 1 && (
+                <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-sm font-bold px-6 py-2 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white shadow-xl glow">Most Popular</span>
+              )}
+              <h2 className="text-2xl font-bold text-white mb-4">{plan.name}</h2>
+              <p className="text-helix-text-light text-base mb-6 text-center leading-relaxed">{plan.description}</p>
+              <div className="mb-6 flex items-center gap-3">
+                {plan.oldPrice && <span className="text-helix-text-light line-through text-xl">${plan.oldPrice}</span>}
+                <span className="text-4xl font-black text-white">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
+                {plan.price !== 0 && <span className="text-sm text-helix-text-light font-bold">USD</span>}
+              </div>
+              <ul className="text-left text-helix-text-light text-base space-y-3 mt-6 mb-8 w-full max-w-xs">
+                {plan.features.map((f, idx) => (
+                  <li key={idx} className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-helix-gradient-start mt-0.5 flex-shrink-0" />
+                    <span>{f.replace('✔️ ', '')}</span>
+                  </li>
+                ))}
+              </ul>
+              <button
+                className={`mt-auto w-full py-4 rounded-full font-bold text-lg transition-all duration-300 ${selected === i ? 'bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white shadow-xl glow' : 'bg-white/10 border-2 border-white/20 text-white hover:bg-white/20'}`}
+                onClick={() => setSelected(i)}
+              >
+                {selected === i ? "Selected" : plan.cta}
+              </button>
+            </div>
+          ))}
+        </div>
+        {/* Continue Button */}
+        <div className="w-full flex justify-center">
+          <Button
+            className="w-full max-w-5xl py-6 rounded-full font-bold text-xl bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow flex items-center justify-center gap-3"
+            onClick={handleContinue}
+          >
+            Continue
+            <ArrowRight className="h-6 w-6" />
+          </Button>
+        </div>
+        {/* Success Message for Free Plan */}
+        {showSuccess && (
+          <div className="mt-8 text-green-400 font-bold text-center text-lg">You have successfully selected the free Starter plan!</div>
+        )}
       </div>
-      {/* Continue Button */}
-      <div className="w-full flex justify-center mt-8">
-        <Button
-          className="w-full max-w-5xl py-4 rounded-lg font-semibold text-lg bg-black text-white hover:bg-gray-900 flex items-center justify-center gap-2"
-          onClick={handleContinue}
-        >
-          Continue
-          <ArrowRight className="h-5 w-5 text-blue-600" />
-        </Button>
-      </div>
-      {/* Success Message for Free Plan */}
-      {showSuccess && (
-        <div className="mt-6 text-green-600 font-semibold text-center">You have successfully selected the free Starter plan!</div>
-      )}
     </div>
   );
 } 

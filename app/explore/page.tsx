@@ -13,6 +13,7 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
 import { MessageButton } from '@/components/messaging/MessageButton'
+import { BackgroundGradient, FloatingShapes } from '@/components/scroll-animations'
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -80,51 +81,56 @@ export default function ExplorePage() {
   const categories = ["STEM", "Computer Science", "Business & Entrepreneurship", "Innovation & Design"]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">Explore Projects</h1>
-          <p className="text-slate-600">Browse and join exciting student projects</p>
+    <div className="min-h-screen bg-helix-dark relative overflow-hidden">
+      <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
+      <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
+      <div className="container mx-auto px-6 py-12">
+        <div className="mb-12">
+          <h1 className="text-5xl font-black text-white mb-4">Explore Projects</h1>
+          <p className="text-xl text-helix-text-light">Browse and join exciting student projects</p>
         </div>
         {/* Only show projects grid, no tabs for people/profiles */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {loadingProjects ? (
-            <div className="col-span-full text-center text-gray-500">Loading projects...</div>
+            <div className="col-span-full text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-helix-gradient-start mx-auto mb-4"></div>
+              <p className="text-helix-text-light text-lg">Loading projects...</p>
+            </div>
           ) : projectsError ? (
-            <div className="col-span-full text-center text-red-500">{projectsError}</div>
+            <div className="col-span-full text-center text-red-400 text-lg">{projectsError}</div>
           ) : filteredProjects.length === 0 ? (
-            <div className="col-span-full text-center text-gray-500">No projects found.</div>
+            <div className="col-span-full text-center text-helix-text-light text-lg">No projects found.</div>
           ) : (
             filteredProjects.map((project) => (
-              <Card key={project.id} className="hover:shadow-lg transition-shadow">
+              <Card key={project.id} className="glass border border-white/10 rounded-[20px] shadow-2xl hover:shadow-2xl hover:glow transition-all duration-300">
                 <Link href={`/explore/projects/${project.id}`}>
                   <CardHeader>
-                    <CardTitle className="text-lg font-bold">{project.title}</CardTitle>
-                    <CardDescription>{project.category}</CardDescription>
+                    <CardTitle className="text-xl font-black text-white">{project.title}</CardTitle>
+                    <CardDescription className="text-helix-text-light text-lg">{project.category}</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="h-8 w-8">
+                  <CardContent className="space-y-6">
+                    <div className="flex items-center space-x-4">
+                      <Avatar className="h-12 w-12 border-2 border-white/20">
                         <AvatarImage src={"/placeholder-user.jpg"} alt={project.authors?.[0] || "?"} />
-                        <AvatarFallback>{project.authors?.[0] || "?"}</AvatarFallback>
+                        <AvatarFallback className="bg-white/10 text-white font-bold">{project.authors?.[0] || "?"}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium">{project.authors}</p>
+                        <p className="text-base font-bold text-white">{project.authors}</p>
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm text-slate-600">
-                        <div className="flex items-center space-x-1">
-                          <Users className="h-4 w-4" />
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between text-base text-helix-text-light">
+                        <div className="flex items-center space-x-2">
+                          <Users className="h-5 w-5 text-helix-gradient-start" />
                           <span>ISEF Project</span>
                         </div>
-                        <div className="flex items-center space-x-1">
-                          <Calendar className="h-4 w-4" />
+                        <div className="flex items-center space-x-2">
+                          <Calendar className="h-5 w-5 text-helix-gradient-start" />
                           <span>{new Date(project.created_at).toLocaleDateString()}</span>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-1 text-sm text-slate-600">
-                        <TrendingUp className="h-4 w-4" />
+                      <div className="flex items-center space-x-2 text-base text-helix-text-light">
+                        <TrendingUp className="h-5 w-5 text-helix-gradient-start" />
                         <span>{project.awards || "No awards"}</span>
                       </div>
                     </div>

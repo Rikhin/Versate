@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 interface CustomDropdownProps {
@@ -57,11 +57,11 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({ label, options, 
   const menu = open ? createPortal(
     <div
       id="dropdown-menu"
-      className="absolute bg-white border border-gray-300 rounded-lg shadow-lg z-[9999] max-h-60 overflow-y-auto"
+      className="absolute bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-[9999] max-h-60 overflow-y-auto"
       style={{ top: menuPosition.top, left: menuPosition.left, width: menuPosition.width, position: 'absolute' }}
     >
       <input
-        className="w-full px-3 py-2 border-b border-gray-200 text-sm focus:outline-none"
+        className="w-full px-3 py-2 border-b border-gray-700 text-sm focus:outline-none bg-gray-800 text-white placeholder-gray-400"
         placeholder="Search..."
         value={search}
         onChange={e => setSearch(e.target.value)}
@@ -73,7 +73,7 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({ label, options, 
         {/* Only show 'All' if not already present in options */}
         {!hasAllOption && (
           <div
-            className={`px-3 py-2 cursor-pointer hover:bg-blue-50 ${value === '' ? 'bg-blue-100 font-bold' : ''}`}
+            className={`px-3 py-2 cursor-pointer hover:bg-blue-900/20 ${value === '' ? 'bg-blue-900/30 font-bold text-white' : 'text-gray-200'}`}
             onClick={e => { e.stopPropagation(); onChange(''); setOpen(false); setSearch(''); }}
           >
             All
@@ -82,7 +82,7 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({ label, options, 
         {filteredOptions.map(opt => (
           <div
             key={opt.value}
-            className={`px-3 py-2 cursor-pointer hover:bg-blue-50 ${value === opt.value ? 'bg-blue-100 font-bold' : ''}`}
+            className={`px-3 py-2 cursor-pointer hover:bg-blue-900/20 ${value === opt.value ? 'bg-blue-900/30 font-bold text-white' : 'text-gray-200'}`}
             onClick={e => { e.stopPropagation(); onChange(opt.value); setOpen(false); setSearch(''); }}
           >
             {opt.label}
@@ -111,12 +111,12 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({ label, options, 
       >
         <span className="sr-only">{hiddenLabel}</span>
         <div
-          className="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm flex items-center focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition z-[100]"
+          className="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-sm flex items-center focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-400 focus:border-blue-400 dark:focus:border-blue-400 transition z-[100]"
         >
           <span className={value ? 'text-black' : 'text-gray-400'}>
             {normalizedOptions.find(opt => opt.value === value)?.label || placeholder || label || 'All'}
           </span>
-          <span className="ml-auto text-gray-400">▼</span>
+          <span className="ml-auto text-gray-400 dark:text-gray-500">▼</span>
         </div>
       </div>
       {menu}

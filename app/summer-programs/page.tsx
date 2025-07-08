@@ -13,7 +13,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { SignInButton, SignUpButton, useUser, SignIn, SignUp } from "@clerk/nextjs"
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
 
-const filterBoxClass = "h-10 md:h-11 text-sm md:text-base font-normal border border-gray-300 focus:border-blue-500 focus:bg-blue-50/30 hover:bg-gray-50 rounded-lg px-3 transition-colors duration-150 min-w-[120px] md:min-w-[160px] bg-white appearance-none"
+
+const filterBoxClass = "h-12 sm:h-14 md:h-16 text-lg md:text-xl font-normal border-2 border-white/20 focus:border-helix-gradient-start focus:bg-white/10 hover:bg-white/10 rounded-full px-6 transition-colors duration-150 min-w-[140px] sm:min-w-[160px] md:min-w-[200px] bg-white/10 text-white backdrop-blur-sm appearance-none"
 
 // Helper functions for filter grouping
 function groupCost(cost: string) {
@@ -55,10 +56,10 @@ export default function SummerProgramsPage() {
   // Prevent hydration mismatch by not rendering until loaded
   if (!isLoaded) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+      <div className="min-h-screen bg-helix-dark flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800 mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-helix-gradient-start mx-auto mb-4"></div>
+          <p className="text-helix-text-light">Loading...</p>
         </div>
       </div>
     )
@@ -109,46 +110,47 @@ export default function SummerProgramsPage() {
   }
 
   return (
-    <>
-      <Dialog open={showAuthModal}>
-        <DialogContent
-          className="flex flex-col items-center justify-center gap-6 animate-fade-in [&>button[data-dialog-close]]:hidden [&>button.absolute.right-4.top-4]:hidden"
-          onInteractOutside={e => e.preventDefault()}
-          onEscapeKeyDown={e => e.preventDefault()}
-        >
-          <h2 className="text-2xl font-bold text-indigo-700">Welcome to Versate!</h2>
-          <p className="text-center text-gray-600 max-w-xs">Sign in or create an account to explore summer programs, save your favorites, and connect with a supportive community. We're glad you're here!</p>
-          <div className="flex gap-4">
-            <Button onClick={() => window.location.href = '/sign-in'}>Sign In</Button>
-            <Button onClick={() => window.location.href = '/sign-up'} variant="outline">Create Account</Button>
+    <OnboardingScrollEnforcer>
+        {showAuthModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
+            <div className="glass border border-white/10 rounded-[24px] shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
+              <h2 className="text-2xl font-bold text-white mb-2">Sign in or Sign up</h2>
+              <p className="text-helix-text-light text-center mb-4">Sign in or create an account to access Summer Programs and start exploring opportunities.</p>
+              <div className="flex w-full gap-3">
+                <SignInButton mode="modal">
+                  <button className="flex-1 py-3 rounded-full border border-white/20 text-white font-bold bg-white/10 hover:bg-white/20 transition">Sign In</button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="flex-1 py-3 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white font-bold hover:shadow-xl glow transition">Sign Up</button>
+                </SignUpButton>
+              </div>
+            </div>
           </div>
-        </DialogContent>
-      </Dialog>
-      <OnboardingScrollEnforcer>
-        <div className="min-h-screen bg-white relative overflow-hidden">
-          <BackgroundGradient startColor="from-gray-50/50" endColor="to-gray-100/50" triggerStart="top center" triggerEnd="center center" />
+        )}
+      <div className="min-h-screen bg-helix-dark relative overflow-hidden">
+          <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
           <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
-          <div className="relative z-10">
+          <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
 
             {/* Title section */}
-            <section className="text-center mb-8 md:mb-16 pt-20">
-              <h1 className="text-3xl md:text-6xl md:text-7xl font-black text-black mb-4 md:mb-8 leading-none">
-                Explore<br /><span className="text-gray-400">Summer Programs</span>
+            <section className="text-center mb-16 md:mb-20 pt-24">
+              <h1 className="text-5xl md:text-7xl md:text-8xl font-black text-white mb-8 md:mb-12 leading-none">
+                Explore<br /><span className="gradient-text-helix">Summer Programs</span>
               </h1>
-              <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-xl md:text-2xl text-helix-text-light max-w-4xl mx-auto leading-relaxed">
                 Browse and discover top summer programs for high school students. Use the filters to find the right fit for your goals, interests, and background.
               </p>
             </section>
 
             {/* Filters & Search */}
-            <section className="container mx-auto px-8 py-8">
-              <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-4 md:gap-6 mb-6 items-center justify-center">
+            <section className="py-12">
+              <div className="w-full flex flex-col md:flex-row gap-4 md:gap-6 mb-8 items-center justify-center">
                 <Input
                   type="text"
                   placeholder="Search summer programs..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  className="w-full md:w-80 border-2 border-gray-300 focus:border-blue-500 h-10 md:h-11"
+                  className="w-full md:w-80 border-2 border-white/20 focus:border-helix-gradient-start h-12 sm:h-14 md:h-16 bg-white/10 text-white placeholder-helix-text-light backdrop-blur-sm rounded-full text-lg md:text-xl"
                 />
                 <select className={filterBoxClass} value={filterCost} onChange={e => setFilterCost(e.target.value)}>
                   <option value="">Cost</option>
@@ -168,30 +170,39 @@ export default function SummerProgramsPage() {
                   <option value="No">No</option>
                   <option value="Unknown">Unknown</option>
                 </select>
-                <Button variant="outline" onClick={clearFilters} className="h-10 md:h-11">Clear</Button>
+                <Button variant="outline" onClick={clearFilters} className="h-12 sm:h-14 md:h-16 border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold text-lg">Clear</Button>
               </div>
             </section>
 
             {/* Program Cards */}
-            <section className="container mx-auto px-8 pb-16">
+            <section className="pb-20">
               {filtered.length === 0 ? (
-                <div className="text-center text-gray-500 py-20">No summer programs found.</div>
+                <div className="text-center text-helix-text-light py-20">
+                  <div className="text-3xl md:text-5xl font-black mb-4">No summer programs found.</div>
+                  <p className="text-lg md:text-xl mb-8">Try adjusting your search or filters</p>
+                  <Button 
+                    onClick={clearFilters}
+                    className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow font-bold text-lg px-8 py-4 rounded-full"
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
                   {filtered.map((program, idx) => (
-                    <Card key={idx} className="border-2 border-red-200 shadow-lg hover:shadow-red-300/40 hover:border-red-400 ring-1 ring-red-100/40 transition hover:scale-105 cursor-pointer bg-white" onClick={() => { setSelectedProgram(program); setIsModalOpen(true); }}>
-                      <CardHeader>
-                        <CardTitle className="text-lg font-bold line-clamp-2">{program.title || program.name}</CardTitle>
+                    <Card key={idx} className="glass border border-white/10 shadow-xl hover:shadow-2xl hover:glow transition-all duration-300 cursor-pointer" onClick={() => { setSelectedProgram(program); setIsModalOpen(true); }}>
+                      <CardHeader className="pb-6">
+                        <CardTitle className="text-lg font-bold line-clamp-2 text-white">{program.title || program.name}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="text-sm text-gray-700 line-clamp-3 mb-2">{program.description}</div>
-                        <div className="flex flex-wrap gap-2 mb-2">
-                          {program.cost && <Badge variant="secondary"><DollarSign className="h-4 w-4 mr-1 inline" />{program.cost}</Badge>}
-                          {program.acceptanceRate && <Badge variant="secondary">Acceptance: {program.acceptanceRate}</Badge>}
-                          {program.applicationDeadline && <Badge variant="secondary"><Calendar className="h-4 w-4 mr-1 inline" />{program.applicationDeadline}</Badge>}
-                          {program.targeted && <Badge variant="secondary">Targeted: {program.targeted}</Badge>}
+                        <div className="text-sm text-helix-text-light line-clamp-3 mb-4">{program.description}</div>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {program.cost && <Badge variant="outline" className="border-2 border-white/20 text-helix-text-light"><DollarSign className="h-4 w-4 mr-1 inline" />{program.cost}</Badge>}
+                          {program.acceptanceRate && <Badge variant="outline" className="border-2 border-white/20 text-helix-text-light">Acceptance: {program.acceptanceRate}</Badge>}
+                          {program.applicationDeadline && <Badge variant="outline" className="border-2 border-white/20 text-helix-text-light"><Calendar className="h-4 w-4 mr-1 inline" />{program.applicationDeadline}</Badge>}
+                          {program.targeted && <Badge variant="outline" className="border-2 border-white/20 text-helix-text-light">Targeted: {program.targeted}</Badge>}
                         </div>
-                        {program.sessions && <div className="text-xs text-gray-500 mb-1">{program.sessions}</div>}
+                        {program.sessions && <div className="text-xs text-helix-text-light mb-2">{program.sessions}</div>}
                       </CardContent>
                     </Card>
                   ))}
@@ -201,26 +212,26 @@ export default function SummerProgramsPage() {
 
             {/* Modal for expanded program details */}
             <Dialog open={isModalOpen} onOpenChange={() => setIsModalOpen(false)}>
-              <DialogContent className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <DialogContent className="glass border border-white/10 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 {selectedProgram && (
                   <>
                     <DialogHeader>
-                      <DialogTitle className="flex items-center gap-2">
+                      <DialogTitle className="flex items-center gap-2 text-white text-2xl font-bold">
                         {selectedProgram.title || selectedProgram.name}
                       </DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4 mt-2">
-                      <div className="text-base text-gray-800 whitespace-pre-line">{selectedProgram.description}</div>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedProgram.cost && <Badge variant="secondary"><DollarSign className="h-4 w-4 mr-1 inline" />{selectedProgram.cost}</Badge>}
-                        {selectedProgram.acceptanceRate && <Badge variant="secondary">Acceptance: {selectedProgram.acceptanceRate}</Badge>}
-                        {selectedProgram.applicationDeadline && <Badge variant="secondary"><Calendar className="h-4 w-4 mr-1 inline" />{selectedProgram.applicationDeadline}</Badge>}
-                        {selectedProgram.targeted && <Badge variant="secondary">Targeted: {selectedProgram.targeted}</Badge>}
+                    <div className="space-y-6 mt-4">
+                      <div className="text-lg text-helix-text-light whitespace-pre-line">{selectedProgram.description}</div>
+                      <div className="flex flex-wrap gap-3">
+                        {selectedProgram.cost && <Badge variant="outline" className="border-2 border-white/20 text-helix-text-light"><DollarSign className="h-4 w-4 mr-1 inline" />{selectedProgram.cost}</Badge>}
+                        {selectedProgram.acceptanceRate && <Badge variant="outline" className="border-2 border-white/20 text-helix-text-light">Acceptance: {selectedProgram.acceptanceRate}</Badge>}
+                        {selectedProgram.applicationDeadline && <Badge variant="outline" className="border-2 border-white/20 text-helix-text-light"><Calendar className="h-4 w-4 mr-1 inline" />{selectedProgram.applicationDeadline}</Badge>}
+                        {selectedProgram.targeted && <Badge variant="outline" className="border-2 border-white/20 text-helix-text-light">Targeted: {selectedProgram.targeted}</Badge>}
                       </div>
-                      {selectedProgram.sessions && <div className="text-sm text-gray-600">Sessions: {selectedProgram.sessions}</div>}
+                      {selectedProgram.sessions && <div className="text-base text-helix-text-light">Sessions: {selectedProgram.sessions}</div>}
                       {selectedProgram.officialUrl && (
-                        <Button variant="outline" onClick={() => window.open(selectedProgram.officialUrl, "_blank")} className="flex items-center gap-2 mt-2">
-                          <ExternalLink className="h-4 w-4" />
+                        <Button variant="outline" onClick={() => window.open(selectedProgram.officialUrl, "_blank")} className="flex items-center gap-3 mt-4 border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold">
+                          <ExternalLink className="h-5 w-5" />
                           Visit Official Website
                         </Button>
                       )}
@@ -231,7 +242,6 @@ export default function SummerProgramsPage() {
             </Dialog>
           </div>
         </div>
-      </OnboardingScrollEnforcer>
-    </>
+    </OnboardingScrollEnforcer>
   )
 } 

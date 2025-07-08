@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -40,6 +40,13 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
   const [showEmailForm, setShowEmailForm] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
   const { profile: userProfile } = useRequireProfile()
+
+  // Reset email form when profile changes
+  useEffect(() => {
+    setEmailSubject("");
+    setEmailBody("");
+    setShowEmailForm(false);
+  }, [profile]);
 
   const handleSendEmail = async () => {
     if (!profile?.email || !emailSubject || !emailBody) return

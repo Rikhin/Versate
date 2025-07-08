@@ -55,9 +55,11 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading...</p>
+      <div className="min-h-screen bg-helix-dark flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-helix-gradient-start mx-auto mb-4"></div>
+          <p className="text-helix-text-light">Loading...</p>
+        </div>
       </div>
     )
   }
@@ -67,9 +69,9 @@ export default function DashboardPage() {
   }
 
   const stats = [
-    { label: "Projects Joined", value: "", icon: FolderOpen, color: "text-blue-600" },
-    { label: "Teams Created", value: "", icon: Users, color: "text-green-600" },
-    { label: "Competitions", value: "", icon: Trophy, color: "text-purple-600" },
+    { label: "Projects Joined", value: "", icon: FolderOpen, color: "text-blue-400" },
+    { label: "Teams Created", value: "", icon: Users, color: "text-green-400" },
+    { label: "Competitions", value: "", icon: Trophy, color: "text-purple-400" },
   ]
 
   const recentActivity: Array<{
@@ -86,28 +88,28 @@ export default function DashboardPage() {
       description: "Find your next team",
       icon: Target,
       href: "/explore",
-      color: "bg-black hover:bg-gray-800",
+      color: "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow",
     },
     {
       title: "View Profiles",
       description: "Connect with students",
       icon: UserCheck,
       href: "/connect",
-      color: "border-2 border-black text-black hover:bg-black hover:text-white",
+      color: "border-2 border-white/20 text-white hover:bg-white/10",
     },
     {
       title: "Competitions",
       description: "Browse opportunities",
       icon: Award,
       href: "/competitions",
-      color: "border-2 border-black text-black hover:bg-black hover:text-white",
+      color: "border-2 border-white/20 text-white hover:bg-white/10",
     },
     {
       title: "My Profile",
       description: "Edit your profile",
       icon: Settings,
       href: "/profile",
-      color: "border-2 border-black text-black hover:bg-black hover:text-white",
+      color: "border-2 border-white/20 text-white hover:bg-white/10",
     },
   ]
 
@@ -129,38 +131,40 @@ export default function DashboardPage() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-white flex">
+      <div className="min-h-screen bg-helix-dark relative overflow-hidden">
+        <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
+        <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
         {/* Sidebar - fixed on the left, hidden on mobile */}
-        <div className="hidden md:flex fixed top-0 left-0 h-full w-64 z-30 bg-white/90 border-r border-gray-200 shadow-md flex-col items-start px-6 py-8">
-          <span className="text-lg font-semibold text-gray-900 whitespace-nowrap block mb-8">
+        <div className="hidden md:flex fixed top-0 left-0 h-full w-64 z-30 glass border-r border-white/10 shadow-md flex-col items-start px-6 py-8">
+          <span className="text-xl font-bold text-white whitespace-nowrap block mb-8">
             Welcome back, {firstName}! 👋
           </span>
         </div>
         {/* Main Content Container - full width, centered, with left margin for sidebar on desktop */}
         <div className="flex-1 ml-0 md:ml-64">
-          <div className="w-full max-w-7xl mx-auto mt-8 mb-8 px-2 sm:px-4 md:px-8">
-            <div className="bg-white/95 rounded-2xl shadow-2xl px-4 sm:px-8 py-6 sm:py-10 md:px-12 md:py-14 space-y-10 md:space-y-12 border border-gray-100">
+          <div className="w-full max-w-7xl mx-auto mt-8 mb-8 px-6 lg:px-8">
+            <div className="glass border border-white/10 rounded-[24px] shadow-2xl px-8 py-10 md:px-12 md:py-14 space-y-12 md:space-y-16">
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 w-full">
                 {stats.map((stat, index) => (
-                  <div key={index} className="rounded-xl bg-white/90 shadow-sm flex flex-col items-center justify-center py-4 sm:py-6 w-full">
-                    <div className={`mb-2 flex items-center justify-center w-10 h-10 rounded-full ${stat.color} bg-gray-100`}>{<stat.icon className="h-6 w-6" />}</div>
-                    <div className="text-xl sm:text-2xl font-bold text-gray-900">{stat.value}</div>
-                    <div className="text-sm sm:text-base text-gray-700 font-semibold mt-1">{stat.label}</div>
+                  <div key={index} className="glass border border-white/10 rounded-[16px] shadow-xl flex flex-col items-center justify-center py-8 w-full hover:glow transition-all duration-300">
+                    <div className={`mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-white/10 border border-white/20 ${stat.color}`}>{<stat.icon className="h-7 w-7" />}</div>
+                    <div className="text-2xl sm:text-3xl font-black text-white">{stat.value}</div>
+                    <div className="text-base sm:text-lg text-helix-text-light font-bold mt-2">{stat.label}</div>
                   </div>
                 ))}
               </div>
 
               {/* Quick Actions */}
-              <div className="space-y-4">
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2">Quick Actions</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 w-full">
+              <div className="space-y-6">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-6">Quick Actions</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 w-full">
                   {quickActions.map((action, index) => (
                     <Link key={index} href={action.href} className="w-full">
-                      <div className="rounded-xl bg-white/90 shadow-sm hover:shadow-lg hover:scale-[1.03] transition-all duration-200 flex flex-col items-center justify-center h-28 sm:h-32 cursor-pointer border border-gray-100 w-full">
-                        <div className="mb-2 flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 text-indigo-600">{<action.icon className="h-6 w-6" />}</div>
-                        <div className="text-base font-semibold text-gray-900">{action.title}</div>
-                        <div className="text-xs text-gray-500 mt-1 text-center">{action.description}</div>
+                      <div className="glass border border-white/10 rounded-[16px] shadow-xl hover:shadow-2xl hover:glow transition-all duration-300 flex flex-col items-center justify-center h-32 sm:h-36 cursor-pointer w-full">
+                        <div className="mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-white/10 border border-white/20 text-helix-gradient-start">{<action.icon className="h-7 w-7" />}</div>
+                        <div className="text-lg font-bold text-white">{action.title}</div>
+                        <div className="text-sm text-helix-text-light mt-2 text-center">{action.description}</div>
                       </div>
                     </Link>
                   ))}
@@ -168,45 +172,45 @@ export default function DashboardPage() {
               </div>
 
               {/* Profile Overview */}
-              <div className="space-y-4">
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2">Profile Overview</h2>
-                <div className="rounded-xl bg-white/90 shadow-sm p-4 sm:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-center border border-gray-100 w-full">
+              <div className="space-y-6">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-6">Profile Overview</h2>
+                <div className="glass border border-white/10 rounded-[16px] shadow-xl p-8 flex flex-col md:flex-row gap-8 items-center w-full">
                   <div className="flex-1 w-full">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-base sm:text-lg font-semibold text-gray-900">{(profile.full_name && profile.full_name.split(' ')[0]) || profile.first_name || "Your Name"}</span>
+                    <div className="flex items-center gap-4 mb-4">
+                      <span className="text-xl sm:text-2xl font-bold text-white">{(profile.full_name && profile.full_name.split(' ')[0]) || profile.first_name || "Your Name"}</span>
                       {profile.experience_level && (
-                        <span className="flex items-center gap-1 text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full font-medium">
-                          <span className="inline-block w-2 h-2 bg-indigo-400 rounded-full"></span>
+                        <span className="flex items-center gap-2 text-sm bg-white/10 border border-white/20 text-helix-gradient-start px-4 py-2 rounded-full font-bold">
+                          <span className="inline-block w-3 h-3 bg-helix-gradient-start rounded-full"></span>
                           {profile.experience_level}
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 text-gray-500 text-xs sm:text-sm mb-2">
-                      {profile.location && <><MapPin className="h-4 w-4" />{profile.location}</>}
+                    <div className="flex items-center gap-3 text-helix-text-light text-sm mb-4">
+                      {profile.location && <><MapPin className="h-5 w-5" />{profile.location}</>}
                     </div>
-                    <div className="text-gray-700 text-sm sm:text-base mb-4">{profile.bio || <span className="italic text-gray-400">No bio added yet.</span>}</div>
+                    <div className="text-helix-text-light text-base mb-6">{profile.bio || <span className="italic text-helix-text-light">No bio added yet.</span>}</div>
                     {profile.skills && profile.skills.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-2">
+                      <div className="flex flex-wrap gap-3 mt-4">
                         {profile.skills.map((skill: string, index: number) => (
-                          <span key={index} className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-medium">
+                          <span key={index} className="bg-white/10 border border-white/20 text-helix-text-light px-4 py-2 rounded-full text-sm font-bold">
                             {skill}
                           </span>
                         ))}
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col items-center gap-4 w-full max-w-xs">
+                  <div className="flex flex-col items-center gap-6 w-full max-w-xs">
                     <Link href="/profile" className="w-full">
-                      <Button className="w-full bg-black hover:bg-gray-800 rounded-lg text-base font-semibold py-2">Edit Profile</Button>
+                      <Button className="w-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full text-lg font-bold py-4">Edit Profile</Button>
                     </Link>
                     <div className="w-full">
-                      <div className="flex justify-between mb-1">
-                        <span className="text-xs text-gray-500">Profile completion</span>
-                        <span className="text-xs text-gray-700 font-semibold">{profileCompletion}%</span>
+                      <div className="flex justify-between mb-3">
+                        <span className="text-sm text-helix-text-light">Profile completion</span>
+                        <span className="text-sm text-white font-bold">{profileCompletion}%</span>
                       </div>
-                      <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="relative h-4 bg-white/10 rounded-full overflow-hidden border border-white/20">
                         <div
-                          className="absolute left-0 top-0 h-3 rounded-full bg-indigo-500 transition-all duration-500"
+                          className="absolute left-0 top-0 h-4 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end transition-all duration-500"
                           style={{ width: `${profileCompletion}%` }}
                         ></div>
                       </div>
@@ -216,27 +220,27 @@ export default function DashboardPage() {
               </div>
 
               {/* Recent Activity */}
-              <div className="space-y-4">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Recent Activity</h2>
+              <div className="space-y-6">
+                <h2 className="text-2xl md:text-3xl font-black text-white mb-6">Recent Activity</h2>
                 <div className="space-y-4 w-full">
                   {recentActivity.length > 0 ? (
                     recentActivity.map((activity, index) => (
-                      <div key={index} className="rounded-xl bg-white/90 shadow-sm p-4 flex items-center gap-4 border border-gray-100 w-full">
-                        <div className="p-2 bg-gray-100 rounded-lg">
-                          <activity.icon className="h-5 w-5 text-indigo-500" />
+                      <div key={index} className="glass border border-white/10 rounded-[16px] shadow-xl p-6 flex items-center gap-6 w-full">
+                        <div className="p-3 bg-white/10 border border-white/20 rounded-[12px]">
+                          <activity.icon className="h-6 w-6 text-helix-gradient-start" />
                         </div>
                         <div className="flex-1">
-                          <div className="font-semibold text-gray-900">{activity.title}</div>
-                          <div className="text-sm text-gray-500">{activity.description}</div>
+                          <div className="font-bold text-white text-lg">{activity.title}</div>
+                          <div className="text-base text-helix-text-light">{activity.description}</div>
                         </div>
-                        <span className="text-xs text-gray-400">{activity.time}</span>
+                        <span className="text-sm text-helix-text-light">{activity.time}</span>
                       </div>
                     ))
                   ) : (
-                    <div className="rounded-xl bg-white/90 shadow-sm p-8 flex items-center justify-center border border-gray-100 w-full">
-                      <div className="text-center text-gray-500">
-                        <div className="text-lg font-medium mb-2">No recent activity</div>
-                        <div className="text-sm">Start exploring projects and connecting with teams to see your activity here.</div>
+                    <div className="glass border border-white/10 rounded-[16px] shadow-xl p-12 flex items-center justify-center w-full">
+                      <div className="text-center text-helix-text-light">
+                        <div className="text-xl font-bold mb-4">No recent activity</div>
+                        <div className="text-base">Start exploring projects and connecting with teams to see your activity here.</div>
                       </div>
                     </div>
                   )}
@@ -244,63 +248,63 @@ export default function DashboardPage() {
               </div>
 
               {/* Recommendations (swap Projects and Competitions, add View All) */}
-              <div className="space-y-4">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Recommended for You</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+              <div className="space-y-6">
+                <h2 className="text-2xl md:text-3xl font-black text-white mb-6">Recommended for You</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
                   {/* Competitions card first */}
-                  <div className="rounded-xl bg-white/90 shadow-sm p-6 flex flex-col h-full border border-gray-100 w-full">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="p-2 bg-green-100 rounded-lg">
-                        <Trophy className="h-5 w-5 text-green-600" />
+                  <div className="glass border border-white/10 rounded-[16px] shadow-xl p-8 flex flex-col h-full w-full hover:glow transition-all duration-300">
+                    <div className="flex items-center space-x-4 mb-6">
+                      <div className="p-3 bg-green-400/20 border border-green-400/30 rounded-[12px]">
+                        <Trophy className="h-6 w-6 text-green-400" />
                       </div>
                       <div>
-                        <div className="font-semibold text-gray-900">Hackathons</div>
-                        <div className="text-sm text-gray-600">Perfect timing</div>
+                        <div className="font-bold text-white text-lg">Hackathons</div>
+                        <div className="text-base text-helix-text-light">Perfect timing</div>
                       </div>
                     </div>
-                    <div className="text-sm text-gray-600 mb-4">
+                    <div className="text-base text-helix-text-light mb-6">
                       Several hackathons are starting soon. Ready to compete?
                     </div>
-                    <Button variant="outline" className="w-full mb-2">
+                    <Button variant="outline" className="w-full mb-4 border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold">
                       View Competitions
                     </Button>
                     <Link href="/competitions" className="w-full">
-                      <Button variant="secondary" className="w-full mt-auto">View All</Button>
+                      <Button className="w-full mt-auto bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold">View All</Button>
                     </Link>
                   </div>
                   {/* Projects card second */}
-                  <div className="rounded-xl bg-white/90 shadow-sm p-6 border border-gray-100 w-full">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="p-2 bg-blue-100 rounded-lg">
-                        <Code className="h-5 w-5 text-blue-600" />
+                  <div className="glass border border-white/10 rounded-[16px] shadow-xl p-8 w-full hover:glow transition-all duration-300">
+                    <div className="flex items-center space-x-4 mb-6">
+                      <div className="p-3 bg-blue-400/20 border border-blue-400/30 rounded-[12px]">
+                        <Code className="h-6 w-6 text-blue-400" />
                       </div>
                       <div>
-                        <div className="font-semibold text-gray-900">Web Development</div>
-                        <div className="text-sm text-gray-600">Based on your skills</div>
+                        <div className="font-bold text-white text-lg">Web Development</div>
+                        <div className="text-base text-helix-text-light">Based on your skills</div>
                       </div>
                     </div>
-                    <div className="text-sm text-gray-600 mb-4">
+                    <div className="text-base text-helix-text-light mb-6">
                       Join teams working on web applications and improve your frontend skills.
                     </div>
-                    <Button variant="outline" className="w-full">
+                    <Button variant="outline" className="w-full border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold">
                       Explore Projects
                     </Button>
                   </div>
                   {/* Team Building card remains last */}
-                  <div className="rounded-xl bg-white/90 shadow-sm p-6 border border-gray-100 w-full">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="p-2 bg-purple-100 rounded-lg">
-                        <Users className="h-5 w-5 text-purple-600" />
+                  <div className="glass border border-white/10 rounded-[16px] shadow-xl p-8 w-full hover:glow transition-all duration-300">
+                    <div className="flex items-center space-x-4 mb-6">
+                      <div className="p-3 bg-purple-400/20 border border-purple-400/30 rounded-[12px]">
+                        <Users className="h-6 w-6 text-purple-400" />
                       </div>
                       <div>
-                        <div className="font-semibold text-gray-900">Team Building</div>
-                        <div className="text-sm text-gray-600">Network expansion</div>
+                        <div className="font-bold text-white text-lg">Team Building</div>
+                        <div className="text-base text-helix-text-light">Network expansion</div>
                       </div>
                     </div>
-                    <div className="text-sm text-gray-600 mb-4">
+                    <div className="text-base text-helix-text-light mb-6">
                       Connect with other students who share your interests and goals.
                     </div>
-                    <Button variant="outline" className="w-full">
+                    <Button variant="outline" className="w-full border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold">
                       Browse Profiles
                     </Button>
                   </div>

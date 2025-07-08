@@ -11,12 +11,12 @@ import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scrol
 import { competitions } from "@/lib/competitions-data"
 import { NetworkBG } from "@/components/ui/network-bg"
 import { Inter } from 'next/font/google'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '700'] })
 
-const versateGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600";
-const versateTextGradient = "bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent";
+const versateGradient = "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end";
+const versateTextGradient = "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end bg-clip-text text-transparent";
 const plans = [
   {
     name: "Starter - Free",
@@ -63,7 +63,7 @@ const plans = [
 ];
 
 export default function LandingPage() {
-  const { isSignedIn } = useUser()
+  const { isSignedIn, isLoaded } = useUser()
 
   const stats = [
     { label: "Active Projects", value: "500+", icon: Trophy },
@@ -77,6 +77,9 @@ export default function LandingPage() {
   const [typed, setTyped] = useState('');
   const [typingDone, setTypingDone] = useState(false);
   const [highlightWidth, setHighlightWidth] = useState(0);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const orbRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     let i = 0;
     const connectLength = 7; // 'Connect'.length
@@ -98,13 +101,31 @@ export default function LandingPage() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const max = 240; // px before effect maxes out
+      const progress = Math.min(scrollY / max, 1);
+      if (heroRef.current) {
+        heroRef.current.style.transform = `translateY(-${progress * 40}px) scale(${1 - progress * 0.05})`;
+        heroRef.current.style.opacity = `${1 - progress * 0.25}`;
+      }
+      if (orbRef.current) {
+        orbRef.current.style.transform = `translateY(-${progress * 80}px) scale(${1 + progress * 0.08})`;
+        orbRef.current.style.opacity = `${0.3 - progress * 0.15}`;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden landing-bg">
       <NetworkBG />
       {/* Background Animations */}
       <BackgroundGradient 
-        startColor="from-gray-50/50" 
-        endColor="to-gray-100/50" 
+        startColor="from-helix-blue/20" 
+        endColor="to-helix-dark-blue/20" 
         triggerStart="top center"
         triggerEnd="center center"
       />
@@ -115,200 +136,200 @@ export default function LandingPage() {
       />
       
       {/* Main Content Container */}
-      <div className="relative z-10 mx-auto" style={{maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto', paddingLeft: '24px', paddingRight: '24px'}}>
+      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
         {/* Hero Section */}
-        <section id="home" className="container mx-auto px-4 md:px-8 py-8 md:py-20 text-left">
-          <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.2}>
-            <div className="max-w-6xl mx-auto relative flex flex-col items-center justify-center text-center">
-              <div className="text-3xl sm:text-4xl md:text-7xl font-semibold text-black mb-6 sm:mb-8 md:mb-14 flex flex-col items-center leading-snug">
-                <span>Find Your</span>
-                <span>Perfect</span>
-                <span className="inline-block">
-                  <span className="bg-gradient-to-r from-blue-600 via-green-500 to-purple-600 bg-clip-text text-transparent font-semibold text-4xl sm:text-5xl md:text-7xl">Team</span>
-                </span>
-              </div>
-              <p className="mb-8 sm:mb-12 md:mb-16 max-w-3xl mx-auto leading-relaxed md:leading-loose text-black text-base sm:text-lg md:text-xl font-normal text-center" style={{ letterSpacing: '0.01em', fontWeight: 300 }}>
-                <span className="text-black font-normal text-base sm:text-lg md:text-xl relative">Connect</span>{typed}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center items-center w-full max-w-md mx-auto">
-                {isSignedIn ? (
-                  <Link href="/dashboard" className="w-full sm:w-auto">
-                    <Button size="lg" className="w-full sm:w-auto text-lg sm:text-xl px-6 sm:px-12 py-4 sm:py-6 bg-black text-white hover:bg-gray-800">
-                      Go to Dashboard
-                      <ArrowRight className="ml-4 h-6 w-6" />
-                    </Button>
-                  </Link>
-                ) : (
-                  <>
-                    <SignUpButton mode="modal">
-                      <Button size="lg" className="w-full sm:w-auto text-lg sm:text-xl px-6 sm:px-12 py-4 sm:py-6 bg-black text-white hover:bg-gray-800">
-                        Start Building Teams
-                        <ArrowRight className="ml-4 h-6 w-6" />
-                      </Button>
-                    </SignUpButton>
-                    <Link href="/explore" className="w-full sm:w-auto">
-                      <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg sm:text-xl px-6 sm:px-12 py-4 sm:py-6 border-2 border-black text-black hover:bg-black hover:text-white">
-                        Explore Projects
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </div>
+        <section id="home" className="flex flex-col items-start justify-center min-h-[90vh] w-full relative pl-12 md:pl-24">
+          {/* Not backed by Y Combinator badge */}
+          <div className="mb-8">
+            <span className="inline-flex items-center rounded-full border border-orange-500 px-4 py-1 text-orange-500 text-base font-semibold bg-transparent" style={{letterSpacing: '0.01em'}}>
+              <span className="bg-orange-500 text-white rounded w-6 h-6 flex items-center justify-center mr-2 font-bold text-sm" style={{fontFamily: 'Inter, sans-serif'}}>Y</span>
+              Not Backed by Y Combinator
+            </span>
+          </div>
+          <div ref={heroRef} className="relative z-10 flex flex-col items-start justify-center w-full parallax-hero-text">
+            <h1 className="text-5xl md:text-7xl font-extrabold mb-12 text-left leading-tight tracking-tight">
+              Enhance Your High School Experience With <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versa</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-white/70 mb-10 max-w-2xl text-left">Discover, connect, and build with the best students for competitions and projects.</p>
+            <div className="flex flex-row items-center gap-6 mt-2">
+              <Link href="/dashboard">
+                <button className="bg-white text-black font-bold rounded px-8 py-4 text-lg shadow-none border-none hover:bg-gray-100 transition">Go to Dashboard</button>
+              </Link>
             </div>
-          </TextFade>
+          </div>
         </section>
 
         {/* Stats Section */}
-        <section className="container mx-auto px-4 md:px-8 py-8 md:py-20">
+        <section className="py-20">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
               {stats.map((stat, index) => (
-                <div key={index} className="text-center py-4 sm:py-6 md:py-0">
-                  <div className="text-2xl sm:text-3xl md:text-6xl font-black text-black mb-1 sm:mb-2 md:mb-4">{stat.value}</div>
-                  <div className="text-xs sm:text-sm md:text-lg text-gray-600 uppercase tracking-widest">{stat.label}</div>
+                <div key={index} className="text-center py-8">
+                  <div className="text-4xl sm:text-5xl md:text-7xl font-black gradient-text-helix mb-4">{stat.value}</div>
+                  <div className="text-sm md:text-lg text-helix-text-light uppercase tracking-widest font-medium">{stat.label}</div>
                 </div>
               ))}
             </div>
           </TextFade>
         </section>
 
-        {/* Wrap all main sections in a very light, airy glass container */}
-        <div className="w-full max-w-[1400px] mx-auto px-6 md:px-16 py-16 md:py-24 my-10 rounded-[32px] border border-white/20 shadow-[0_4px_20px_0_rgba(0,0,0,0.05),inset_0_1px_8px_rgba(255,255,255,0.15)] backdrop-blur-sm bg-white/5 flex flex-col gap-20 relative">
-          {/* Why Versate Section - reduce top margin even more */}
-          <div className="px-8 md:px-20 py-6 md:py-8 flex flex-col items-center">
-            <h2 className={`text-3xl sm:text-4xl md:text-5xl font-semibold text-black text-center mb-8 pt-8 ${inter.className}`}>Why <span className={versateTextGradient}>Versate?</span></h2>
-            <p className={`text-lg md:text-xl text-gray-700 text-center mb-12 max-w-2xl ${inter.className}`}>Versate provides info and access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.</p>
-            <div className="flex flex-wrap justify-center gap-6 w-full">
-              <div className={`rounded-full border-2 border-indigo-100 bg-white/80 shadow px-6 py-3 text-base font-semibold text-indigo-700 whitespace-nowrap ${inter.className}`}>Researchers</div>
-              <div className={`rounded-full border-2 border-green-100 bg-white/80 shadow px-6 py-3 text-base font-semibold text-green-700 whitespace-nowrap ${inter.className}`}>Admission Counselors</div>
-              <div className={`rounded-full border-2 border-blue-100 bg-white/80 shadow px-6 py-3 text-base font-semibold text-blue-700 whitespace-nowrap ${inter.className}`}>Y-Combinator Affiliates</div>
-              <div className={`rounded-full border-2 border-purple-100 bg-white/80 shadow px-6 py-3 text-base font-semibold text-purple-700 whitespace-nowrap ${inter.className}`}>Summer Programs</div>
-              <div className={`rounded-full border-2 border-pink-100 bg-white/80 shadow px-6 py-3 text-base font-semibold text-pink-700 whitespace-nowrap ${inter.className}`}>Competitions</div>
-              <div className={`rounded-full border-2 border-gray-200 bg-white/80 shadow px-6 py-3 text-base font-semibold text-gray-700 whitespace-nowrap ${inter.className}`}>Student Community</div>
+        {/* Main Content Sections */}
+        <div className="space-y-32">
+          {/* Why Versate Section */}
+          <section className="glass p-12 md:p-20 rounded-[32px] border border-white/10 shadow-2xl">
+            <div className="text-center mb-16">
+              <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-white mb-8 ${inter.className}`}>
+                Why <span className="gradient-text-helix">Versate?</span>
+              </h2>
+              <p className={`text-xl md:text-2xl text-helix-text-light max-w-4xl mx-auto leading-relaxed ${inter.className}`}>
+                Versate provides info and access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.
+              </p>
             </div>
-          </div>
+            <div className="flex flex-wrap justify-center gap-6 w-full">
+              <div className={`rounded-full border-2 border-helix-gradient-start/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-helix-gradient-start whitespace-nowrap ${inter.className}`}>Researchers</div>
+              <div className={`rounded-full border-2 border-green-400/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-green-400 whitespace-nowrap ${inter.className}`}>Admission Counselors</div>
+              <div className={`rounded-full border-2 border-blue-400/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-blue-400 whitespace-nowrap ${inter.className}`}>Y-Combinator Affiliates</div>
+              <div className={`rounded-full border-2 border-purple-400/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-purple-400 whitespace-nowrap ${inter.className}`}>Summer Programs</div>
+              <div className={`rounded-full border-2 border-pink-400/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-pink-400 whitespace-nowrap ${inter.className}`}>Competitions</div>
+              <div className={`rounded-full border-2 border-gray-400/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-gray-300 whitespace-nowrap ${inter.className}`}>Student Community</div>
+            </div>
+          </section>
 
           {/* Everything You Need to Succeed (Features) */}
-          <div className="px-8 md:px-20 py-12 md:py-16 flex flex-col items-center">
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>Everything You Need to <span className={versateTextGradient}>Succeed</span></h2>
-            <p className={`text-lg md:text-xl text-gray-700 text-center mb-12 max-w-3xl ${inter.className}`}>Access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.</p>
+          <section className="glass p-12 md:p-20 rounded-[32px] border border-white/10 shadow-2xl">
+            <div className="text-center mb-16">
+              <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-white mb-8 ${inter.className}`}>
+                Everything You Need to <span className="gradient-text-helix">Succeed</span>
+              </h2>
+              <p className={`text-xl md:text-2xl text-helix-text-light max-w-4xl mx-auto leading-relaxed ${inter.className}`}>
+                Access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.
+              </p>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 w-full max-w-5xl">
-              <div className="rounded-2xl border border-gray-200 bg-white/50 backdrop-blur-sm p-6 md:p-8 text-center shadow-sm">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 w-full max-w-6xl mx-auto">
+              <div className="glass p-8 md:p-12 rounded-[24px] border border-white/10 text-center shadow-xl">
+                <div className="w-16 h-16 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end rounded-full flex items-center justify-center mx-auto mb-6 glow">
+                  <Users className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Connect with Peers</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">Find like-minded students, form study groups, and collaborate on projects. Build meaningful connections that last beyond competitions.</p>
+                <h3 className="text-2xl font-bold text-white mb-4">Connect with Peers</h3>
+                <p className="text-helix-text-light text-lg leading-relaxed">Find like-minded students, form study groups, and collaborate on projects. Build meaningful connections that last beyond competitions.</p>
               </div>
               
-              <div className="rounded-2xl border border-gray-200 bg-white/50 backdrop-blur-sm p-6 md:p-8 text-center shadow-sm">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
+              <div className="glass p-8 md:p-12 rounded-[24px] border border-white/10 text-center shadow-xl">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 glow">
+                  <Target className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Discover Opportunities</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">Access curated competitions, research programs, and mentorship opportunities. Find the perfect fit for your interests and goals.</p>
+                <h3 className="text-2xl font-bold text-white mb-4">Discover Opportunities</h3>
+                <p className="text-helix-text-light text-lg leading-relaxed">Access curated competitions, research programs, and mentorship opportunities. Find the perfect fit for your interests and goals.</p>
               </div>
               
-              <div className="rounded-2xl border border-gray-200 bg-white/50 backdrop-blur-sm p-6 md:p-8 text-center shadow-sm">
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
+              <div className="glass p-8 md:p-12 rounded-[24px] border border-white/10 text-center shadow-xl">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 glow">
+                  <Zap className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Accelerate Growth</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">Get personalized recommendations, track your progress, and receive guidance from experts. Maximize your potential and achieve your goals faster.</p>
+                <h3 className="text-2xl font-bold text-white mb-4">Accelerate Growth</h3>
+                <p className="text-helix-text-light text-lg leading-relaxed">Get personalized recommendations, track your progress, and receive guidance from experts. Maximize your potential and achieve your goals faster.</p>
               </div>
             </div>
-                  </div>
+          </section>
 
           {/* How It Works */}
-          <div className="px-8 md:px-20 pt-6 md:pt-8 pb-12 md:pb-16 flex flex-col items-center">
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-8 ${inter.className}`}>
-              <span className={versateTextGradient}>How</span> It Works
-            </h2>
-            <div className="flex flex-col md:flex-row gap-8 md:gap-12 w-full justify-center items-stretch max-w-6xl">
-              <Card className="flex-1 bg-white/90 border-2 border-indigo-100 rounded-3xl shadow-xl p-8 flex flex-col items-center text-center">
-                <span className="text-3xl font-bold mb-2">1</span>
-                <CardTitle className="text-lg font-bold mb-2">Sign Up & Create Profile</CardTitle>
-                <CardDescription className="text-gray-600 text-base">Tell us your interests, skills, and goals to get personalized matches and recommendations.</CardDescription>
+          <section className="glass p-12 md:p-20 rounded-[32px] border border-white/10 shadow-2xl">
+            <div className="text-center mb-16">
+              <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-white mb-8 ${inter.className}`}>
+                <span className="gradient-text-helix">How</span> It Works
+              </h2>
+            </div>
+            <div className="flex flex-col md:flex-row gap-8 md:gap-12 w-full justify-center items-stretch max-w-6xl mx-auto">
+              <Card className="flex-1 glass border border-white/10 rounded-[24px] shadow-xl p-8 md:p-12 flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end rounded-full flex items-center justify-center mb-6 glow">
+                  <span className="text-2xl font-black text-white">1</span>
+                </div>
+                <CardTitle className="text-2xl font-bold mb-4 text-white">Sign Up & Create Profile</CardTitle>
+                <CardDescription className="text-helix-text-light text-lg leading-relaxed">Tell us your interests, skills, and goals to get personalized matches and recommendations.</CardDescription>
               </Card>
-              <Card className="flex-1 bg-white/90 border-2 border-green-100 rounded-3xl shadow-xl p-8 flex flex-col items-center text-center">
-                <span className="text-3xl font-bold mb-2">2</span>
-                <CardTitle className="text-lg font-bold mb-2">Connect & Collaborate</CardTitle>
-                <CardDescription className="text-gray-600 text-base">Message, join teams, and work together on research, competitions, and projects.</CardDescription>
+              <Card className="flex-1 glass border border-white/10 rounded-[24px] shadow-xl p-8 md:p-12 flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mb-6 glow">
+                  <span className="text-2xl font-black text-white">2</span>
+                </div>
+                <CardTitle className="text-2xl font-bold mb-4 text-white">Connect & Collaborate</CardTitle>
+                <CardDescription className="text-helix-text-light text-lg leading-relaxed">Message, join teams, and work together on research, competitions, and projects.</CardDescription>
               </Card>
-              <Card className="flex-1 bg-white/90 border-2 border-purple-100 rounded-3xl shadow-xl p-8 flex flex-col items-center text-center">
-                <span className="text-3xl font-bold mb-2">3</span>
-                <CardTitle className="text-lg font-bold mb-2">Achieve & Grow</CardTitle>
-                <CardDescription className="text-gray-600 text-base">Win competitions, publish research, and build your network with Versate's support.</CardDescription>
+              <Card className="flex-1 glass border border-white/10 rounded-[24px] shadow-xl p-8 md:p-12 flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mb-6 glow">
+                  <span className="text-2xl font-black text-white">3</span>
+                </div>
+                <CardTitle className="text-2xl font-bold mb-4 text-white">Achieve & Grow</CardTitle>
+                <CardDescription className="text-helix-text-light text-lg leading-relaxed">Win competitions, publish research, and build your network with Versate's support.</CardDescription>
               </Card>
             </div>
-            </div>
+          </section>
 
           {/* Supported Competitions */}
-          <div className="px-8 md:px-20 py-12 md:py-16 flex flex-col items-center">
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>
-              Supported <span className={versateTextGradient}>Competitions</span>
-            </h2>
-            <p className="text-lg md:text-xl text-gray-700 text-center mb-12 max-w-2xl">We support teams participating in prestigious academic competitions worldwide</p>
-            <div className="flex flex-wrap justify-center gap-6 md:gap-8 w-full max-w-6xl">
+          <section className="glass p-12 md:p-20 rounded-[32px] border border-white/10 shadow-2xl">
+            <div className="text-center mb-16">
+              <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-white mb-8 ${inter.className}`}>
+                Supported <span className="gradient-text-helix">Competitions</span>
+              </h2>
+              <p className="text-xl md:text-2xl text-helix-text-light max-w-4xl mx-auto leading-relaxed">We support teams participating in prestigious academic competitions worldwide</p>
+            </div>
+            <div className="flex flex-wrap justify-center gap-8 md:gap-12 w-full max-w-6xl mx-auto">
               {competitions.slice(0, 8).map((competition) => (
                 <Link
                   key={competition.id}
                   href={`/competitions/${competition.id}`}
-                  className="focus:outline-none focus:ring-4 focus:ring-black/30"
+                  className="focus:outline-none focus:ring-4 focus:ring-helix-gradient-start/30"
                 >
-                  <div className="flex flex-col items-center justify-center bg-white/90 border-2 border-indigo-100 rounded-full shadow-xl px-8 py-8 w-64 h-48 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
-                    <span className="text-4xl mb-3">{competition.icon}</span>
-                    <span className="text-lg font-bold leading-tight text-center">{competition.name}</span>
+                  <div className="glass border border-white/10 rounded-[24px] shadow-xl px-10 py-10 w-72 h-56 hover:glow transition-all duration-300 flex flex-col items-center justify-center">
+                    <span className="text-5xl mb-4">{competition.icon}</span>
+                    <span className="text-xl font-bold leading-tight text-center text-white">{competition.name}</span>
                   </div>
                 </Link>
               ))}
             </div>
-            <div className="flex justify-center mt-10">
+            <div className="flex justify-center mt-16">
               <Link href="/competitions">
-                <Button className="rounded-full bg-black text-white hover:bg-gray-900 font-semibold text-lg px-10 py-4 shadow-lg">View All Competitions</Button>
+                <Button className="rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow font-bold text-xl px-12 py-6">
+                  View All Competitions
+                </Button>
               </Link>
             </div>
-          </div>
+          </section>
 
           {/* Pricing */}
-          <div className="px-8 md:px-20 pt-12 md:pt-16 pb-12 md:pb-16 flex flex-col items-center">
-            <div className="flex justify-center mb-8">
-              <span className={`inline-flex items-center text-sm md:text-base font-semibold text-white ${versateGradient} rounded-full px-4 py-1 tracking-wide`}>
-                <Rocket className="w-4 h-4 mr-2" />
-                One-Time Purchase, Lifetime Access
-              </span>
+          <section className="glass p-12 md:p-20 rounded-[32px] border border-white/10 shadow-2xl">
+            <div className="text-center mb-16">
+              <div className="flex justify-center mb-8">
+                <span className={`inline-flex items-center text-lg font-bold text-white ${versateGradient} rounded-full px-6 py-3 tracking-wide glow`}>
+                  <Rocket className="w-5 h-5 mr-3" />
+                  One-Time Purchase, Lifetime Access
+                </span>
+              </div>
+              <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-white mb-8 ${inter.className}`}>Pricing</h2>
             </div>
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-8 ${inter.className}`}>Pricing</h2>
-            <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-stretch mb-8 mt-4">
+            <div className="w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-8 md:gap-8 justify-center items-stretch mb-16">
               {plans.map((plan, i) => (
                 <div
                   key={plan.name}
-                  className={`flex-1 bg-white rounded-2xl shadow-xl border p-8 flex flex-col items-center min-w-[280px] max-w-sm relative transition-all duration-200 ${i === 1 ? 'border-2 border-blue-500' : 'border-gray-100'}`}
+                  className={`flex-1 glass border border-white/10 rounded-[24px] shadow-xl p-8 md:p-12 flex flex-col items-center min-w-[320px] max-w-sm relative transition-all duration-300 ${i === 1 ? 'border-2 border-helix-gradient-start glow' : ''}`}
                 >
                   {i === 1 && (
-                    <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1 rounded-full bg-blue-600 text-white shadow border-2 border-blue-500">Most Popular</span>
+                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-sm font-bold px-6 py-2 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white shadow-lg glow">Most Popular</span>
                   )}
-                  <h2 className="text-lg font-semibold text-black mb-2">{plan.name}</h2>
-                  <p className="text-gray-500 text-sm mb-4 text-center">{plan.description}</p>
-                  <div className="mb-2 flex items-center gap-2">
-                    {plan.oldPrice && <span className="text-gray-400 line-through text-lg">${plan.oldPrice}</span>}
-                    <span className="text-2xl font-extrabold text-black">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
-                    {plan.price !== 0 && <span className="text-xs text-gray-400 font-semibold">USD</span>}
+                  <h2 className="text-2xl font-bold text-white mb-4">{plan.name}</h2>
+                  <p className="text-helix-text-light text-lg mb-6 text-center">{plan.description}</p>
+                  <div className="mb-6 flex items-center gap-3">
+                    {plan.oldPrice && <span className="text-helix-text-light line-through text-xl">${plan.oldPrice}</span>}
+                    <span className="text-4xl font-black gradient-text-helix">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
+                    {plan.price !== 0 && <span className="text-sm text-helix-text-light font-bold">USD</span>}
                   </div>
-                  <ul className="text-left text-gray-700 text-sm space-y-2 mt-4 mb-2 w-full max-w-xs">
+                  <ul className="text-left text-helix-text-light text-lg space-y-3 mt-6 mb-8 w-full max-w-xs">
                     {plan.features.map((f, idx) => (
                       <li key={idx}>{f}</li>
                     ))}
                   </ul>
                   <button
-                    className={`mt-4 w-full py-2 rounded-lg font-semibold text-base transition-all duration-150 bg-gray-100 text-black hover:bg-gray-200`}
+                    className={`mt-auto w-full py-4 rounded-full font-bold text-lg transition-all duration-300 bg-white/10 text-white hover:bg-white/20 border border-white/20`}
                     disabled
                   >
                     {plan.cta}
@@ -318,21 +339,25 @@ export default function LandingPage() {
             </div>
             <div className="flex justify-center">
               {isSignedIn ? (
-                <Button size="lg" className="bg-gray-200 text-gray-400 font-semibold text-lg px-10 py-5 rounded-full shadow-lg cursor-not-allowed" disabled>
+                <Button size="lg" className="bg-white/10 text-helix-text-light font-bold text-xl px-12 py-6 rounded-full border border-white/20 cursor-not-allowed" disabled>
                   Join Versate Now
                 </Button>
               ) : (
                 <Link href="/sign-up">
-                  <Button size="lg" className="bg-black text-white hover:bg-gray-900 font-semibold text-lg px-10 py-5 rounded-full shadow-lg">Join Versate Now</Button>
+                  <Button size="lg" className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow font-bold text-xl px-12 py-6 rounded-full">
+                    Join Versate Now
+                  </Button>
                 </Link>
               )}
             </div>
-          </div>
+          </section>
 
           {/* Newsletter Signup */}
-          <div className="px-8 md:px-20 py-12 md:py-16 flex flex-col items-center">
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-semibold text-black text-center mb-4 ${inter.className}`}>Join the Versate Newsletter</h2>
-            <p className="text-lg text-gray-700 text-center mb-8 max-w-xl">Get the latest research, competitions, and team-building tips delivered to your inbox.</p>
+          <section className="glass p-12 md:p-20 rounded-[32px] border border-white/10 shadow-2xl">
+            <div className="text-center mb-16">
+              <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-white mb-8 ${inter.className}`}>Join the Versate Newsletter</h2>
+              <p className="text-xl text-helix-text-light max-w-2xl mx-auto leading-relaxed">Get the latest research, competitions, and team-building tips delivered to your inbox.</p>
+            </div>
             <form onSubmit={async (e) => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
@@ -356,40 +381,42 @@ export default function LandingPage() {
               } catch (error) {
                 alert('Something went wrong. Please try again.');
               }
-            }} className="flex flex-col sm:flex-row gap-4 w-full max-w-xl">
+            }} className="flex flex-col sm:flex-row gap-6 w-full max-w-2xl mx-auto">
               <input 
                 name="email"
                 type="email" 
                 placeholder="Your email address" 
-                className="flex-1 px-6 py-4 rounded-full border-2 border-gray-200 focus:border-indigo-400 outline-none text-base" 
+                className="flex-1 px-8 py-6 rounded-full border-2 border-white/20 focus:border-helix-gradient-start outline-none text-lg bg-white/10 text-white placeholder-helix-text-light backdrop-blur-sm" 
                 required
               />
-              <Button type="submit" className="rounded-full bg-black text-white hover:bg-gray-900 font-semibold text-lg px-8 py-4 shadow-lg">Subscribe</Button>
+              <Button type="submit" className="rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow font-bold text-lg px-10 py-6">
+                Subscribe
+              </Button>
             </form>
-          </div>
+          </section>
         </div>
 
         {/* CTA Section */}
-        <section id="contacts" className="container mx-auto px-4 md:px-8 py-8 md:py-20">
+        <section id="contacts" className="py-20">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.2}>
-            <Card className="bg-black text-white border-0">
-              <CardContent className="p-8 md:p-24 text-center">
-                <h2 className="text-2xl md:text-6xl md:text-7xl font-black mb-6 md:mb-8 leading-none">Ready to Build Your Dream Team?</h2>
-                <p className="text-base md:text-2xl mb-8 md:mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed">
+            <Card className="glass border border-white/10 shadow-2xl">
+              <CardContent className="p-12 md:p-24 text-center">
+                <h2 className="text-4xl md:text-7xl md:text-8xl font-black mb-8 md:mb-12 leading-none gradient-text-helix">Ready to Build Your Dream Team?</h2>
+                <p className="text-xl md:text-3xl mb-12 md:mb-16 text-helix-text-light max-w-4xl mx-auto leading-relaxed">
                   Join thousands of students who are already collaborating on amazing projects and winning competitions together.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center">
+                <div className="flex flex-col sm:flex-row gap-6 md:gap-8 justify-center">
                   <Link href="/dashboard">
-                    <Button size="lg" variant="secondary" className="text-xl px-12 py-6 bg-white text-black hover:bg-gray-100 font-bold">
+                    <Button size="lg" variant="secondary" className="text-2xl px-16 py-8 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow font-bold">
                       Get Started Now
-                      <ArrowRight className="ml-4 h-6 w-6" />
+                      <ArrowRight className="ml-4 h-8 w-8" />
                     </Button>
                   </Link>
                   <Link href="/explore">
                     <Button
                       size="lg"
                       variant="outline"
-                      className="text-xl px-12 py-6 border-2 border-white text-white hover:bg-white hover:text-black bg-transparent font-bold"
+                      className="text-2xl px-16 py-8 border-2 border-white text-white hover:bg-white hover:text-helix-dark bg-transparent font-bold"
                     >
                       Explore Projects
                     </Button>
@@ -401,24 +428,24 @@ export default function LandingPage() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-gray-200 bg-white py-16">
-          <div className="container mx-auto px-8 flex flex-col items-center justify-center">
-            <div className="flex flex-col items-center mb-8">
-              <Trophy className="h-8 w-8 text-black mb-2" />
-                  <span className="text-2xl font-black text-black">Versate</span>
-                  <p className="text-sm text-gray-600">built by Rikhin Kavuru</p>
-                </div>
-            <div className="flex flex-wrap justify-center gap-6 mb-6 text-sm text-gray-600">
-              <a href="#" className="hover:text-black transition-colors font-bold uppercase tracking-widest">Privacy Policy</a>
-              <a href="#" className="hover:text-black transition-colors font-bold uppercase tracking-widest">Terms of Service</a>
-              <a href="#" className="hover:text-black transition-colors font-bold uppercase tracking-widest">Contact</a>
-              </div>
-            <div className="flex gap-4 mb-6">
-              <a href="#" aria-label="Twitter" className="text-gray-400 hover:text-blue-500 transition"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.47.69a4.3 4.3 0 0 0 1.88-2.37 8.59 8.59 0 0 1-2.72 1.04A4.28 4.28 0 0 0 16.11 4c-2.37 0-4.29 1.92-4.29 4.29 0 .34.04.67.11.99C7.69 9.13 4.07 7.38 1.64 4.7c-.37.64-.58 1.38-.58 2.17 0 1.5.76 2.82 1.92 3.6-.7-.02-1.36-.21-1.94-.53v.05c0 2.1 1.5 3.85 3.5 4.25-.36.1-.74.16-1.13.16-.28 0-.54-.03-.8-.08.54 1.7 2.1 2.94 3.95 2.97A8.6 8.6 0 0 1 2 19.54c-.29 0-.57-.02-.85-.05A12.13 12.13 0 0 0 8.29 21.5c7.55 0 11.68-6.26 11.68-11.68 0-.18-.01-.36-.02-.54A8.18 8.18 0 0 0 24 4.59a8.36 8.36 0 0 1-2.54.7z"/></svg></a>
-              <a href="#" aria-label="LinkedIn" className="text-gray-400 hover:text-blue-700 transition"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm13.5 11.28h-3v-5.6c0-1.34-.03-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.7h-3v-10h2.88v1.36h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v5.59z"/></svg></a>
-              <a href="#" aria-label="Email" className="text-gray-400 hover:text-indigo-600 transition"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 13.065l-11.99-7.065v14h24v-14l-12.01 7.065zm11.99-9.065h-23.98l11.99 7.065 11.99-7.065z"/></svg></a>
+        <footer className="border-t border-white/10 py-20">
+          <div className="flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center mb-12">
+              <Trophy className="h-12 w-12 text-helix-gradient-start mb-4" />
+              <span className="text-4xl font-black gradient-text-helix mb-2">Versate</span>
+              <p className="text-lg text-helix-text-light">built by Rikhin Kavuru</p>
             </div>
-            <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
+            <div className="flex flex-wrap justify-center gap-8 mb-12 text-lg text-helix-text-light">
+              <a href="#" className="hover:text-white transition-colors font-bold uppercase tracking-widest">Privacy Policy</a>
+              <a href="#" className="hover:text-white transition-colors font-bold uppercase tracking-widest">Terms of Service</a>
+              <a href="#" className="hover:text-white transition-colors font-bold uppercase tracking-widest">Contact</a>
+            </div>
+            <div className="flex gap-6 mb-12">
+              <a href="#" aria-label="Twitter" className="text-helix-text-light hover:text-helix-gradient-start transition"><svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.47.69a4.3 4.3 0 0 0 1.88-2.37 8.59 8.59 0 0 1-2.72 1.04A4.28 4.28 0 0 0 16.11 4c-2.37 0-4.29 1.92-4.29 4.29 0 .34.04.67.11.99C7.69 9.13 4.07 7.38 1.64 4.7c-.37.64-.58 1.38-.58 2.17 0 1.5.76 2.82 1.92 3.6-.7-.02-1.36-.21-1.94-.53v.05c0 2.1 1.5 3.85 3.5 4.25-.36.1-.74.16-1.13.16-.28 0-.54-.03-.8-.08.54 1.7 2.1 2.94 3.95 2.97A8.6 8.6 0 0 1 2 19.54c-.29 0-.57-.02-.85-.05A12.13 12.13 0 0 0 8.29 21.5c7.55 0 11.68-6.26 11.68-11.68 0-.18-.01-.36-.02-.54A8.18 8.18 0 0 0 24 4.59a8.36 8.36 0 0 1-2.54.7z"/></svg></a>
+              <a href="#" aria-label="LinkedIn" className="text-helix-text-light hover:text-helix-gradient-start transition"><svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm13.5 11.28h-3v-5.6c0-1.34-.03-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.7h-3v-10h2.88v1.36h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v5.59z"/></svg></a>
+              <a href="#" aria-label="Email" className="text-helix-text-light hover:text-helix-gradient-start transition"><svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24"><path d="M12 13.065l-11.99-7.065v14h24v-14l-12.01 7.065zm11.99-9.065h-23.98l11.99 7.065 11.99-7.065z"/></svg></a>
+            </div>
+            <div className="border-t border-white/10 pt-12 text-center text-lg text-helix-text-light">
               <p>&copy; 2024 Versate. All rights reserved. Empowering students to achieve excellence together.</p>
             </div>
           </div>
@@ -427,3 +454,4 @@ export default function LandingPage() {
     </div>
   )
 }
+

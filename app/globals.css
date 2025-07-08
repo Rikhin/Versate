@@ -64,8 +64,18 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-200;
+    min-height: 100vh;
+    background: linear-gradient(120deg, #0A0A2A 0%, #1A1A3A 50%, #6C43A8 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 12s ease-in-out infinite;
   }
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .gradient-text {
@@ -78,3 +88,82 @@
 .gradient-bg {
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
+
+.dark .gradient-bg {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+/* Glassmorphism utility - consolidated */
+.glass {
+  background: rgba(24,25,42,0.7);
+  backdrop-filter: blur(16px) saturate(1.2);
+  border: 1.5px solid rgba(255,255,255,0.10);
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.12);
+}
+
+/* Glow utility - reduced intensity for subtlety */
+.glow {
+  box-shadow: 0 0 8px 2px rgba(108, 67, 168, 0.3), 0 0 16px 4px rgba(79, 70, 229, 0.2);
+}
+
+/* Gradient text utility */
+.gradient-text-helix {
+  background: linear-gradient(90deg, #4F46E5 0%, #6C43A8 50%, #8B5CF6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Light mode glassmorphism */
+.light .glass {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(16px) saturate(1.2);
+  border: 1.5px solid rgba(0,0,0,0.07);
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.06);
+}
+.light .bg-helix-dark {
+  background: #f7f8fa !important;
+}
+.light .text-helix-text-light {
+  color: #3a3a3a !important;
+}
+.light .border-white\/10 {
+  border-color: rgba(0,0,0,0.07) !important;
+}
+.light .bg-helix-gradient-start {
+  background: linear-gradient(90deg, #7b61ff 0%, #5ad1ff 100%) !important;
+}
+.light .bg-helix-gradient-end {
+  background: linear-gradient(90deg, #5ad1ff 0%, #7b61ff 100%) !important;
+}
+.light .glass input, .light .glass textarea, .light .glass select {
+  background: rgba(255,255,255,0.85) !important;
+  color: #222 !important;
+}
+
+/* Soften landing page background for dark mode */
+.dark .landing-bg {
+  background: radial-gradient(ellipse 120% 80% at 50% 0%, rgba(123,97,255,0.12) 0%, rgba(90,209,255,0.06) 100%), #18192a;
+  filter: blur(0.5px);
+}
+.light .landing-bg {
+  background: radial-gradient(ellipse 120% 80% at 50% 0%, rgba(123,97,255,0.08) 0%, rgba(90,209,255,0.03) 100%), #f7f8fa;
+}
+
+/* Utility for subtle border in both themes */
+.border-white\/10 {
+  border-color: rgba(255,255,255,0.10) !important;
+}
+
+/* Parallax and fade for landing page hero */
+@media (min-width: 640px) {
+  .parallax-hero-text {
+    transition: transform 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .parallax-orb {
+    transition: transform 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1);
+  }
+}
+
+/* JS for scroll-based parallax/fade (to be added in landing page) */

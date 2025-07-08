@@ -75,7 +75,10 @@ export default function OnboardingScrollEnforcer({ children }: { children?: Reac
   };
 
   // Loading state: don't show modal or allow scroll enforcement until profile check is done
-  const contextValue = { showModal: !!showModal && !hasProfile };
+  // For signed out users or when not on landing page, showModal should be false
+  const contextValue = { 
+    showModal: isSignedIn && pathname === "/" ? (!!showModal && !hasProfile) : false 
+  };
 
   return (
     <OnboardingModalContext.Provider value={contextValue}>

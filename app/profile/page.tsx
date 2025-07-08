@@ -13,6 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { Loader2, Edit, Save, X, User, Mail, MapPin, Calendar, Briefcase, GraduationCap, Heart, Users, Target, Zap } from 'lucide-react';
+import { BackgroundGradient, FloatingShapes } from '@/components/scroll-animations';
 
 interface Profile {
   id: string;
@@ -121,10 +122,10 @@ export default function ProfilePage() {
 
   if (!isLoaded || isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <span>Loading profile...</span>
+      <div className="min-h-screen bg-helix-dark flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-helix-gradient-start mx-auto mb-4"></div>
+          <p className="text-helix-text-light">Loading profile...</p>
         </div>
       </div>
     );
@@ -132,10 +133,10 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen bg-helix-dark flex items-center justify-center">
+        <Card className="w-full max-w-md glass border border-white/10">
           <CardContent className="pt-6">
-            <p className="text-center text-muted-foreground">Please sign in to view your profile</p>
+            <p className="text-center text-helix-text-light">Please sign in to view your profile</p>
           </CardContent>
         </Card>
       </div>
@@ -143,31 +144,33 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen bg-helix-dark relative overflow-hidden">
+      <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
+      <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
+      <div className="container mx-auto px-6 py-12">
+        <div className="max-w-6xl mx-auto space-y-8">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
-              <p className="text-gray-600 mt-1">Manage your profile information and preferences</p>
+              <h1 className="text-4xl font-black text-white">Profile</h1>
+              <p className="text-xl text-helix-text-light mt-2">Manage your profile information and preferences</p>
             </div>
             {!isEditing ? (
-              <Button onClick={() => setIsEditing(true)} className="flex items-center space-x-2">
-                <Edit className="h-4 w-4" />
+              <Button onClick={() => setIsEditing(true)} className="flex items-center space-x-3 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold px-6 py-3">
+                <Edit className="h-5 w-5" />
                 <span>Edit Profile</span>
               </Button>
             ) : (
-              <div className="flex space-x-2">
-                <Button onClick={handleCancel} variant="outline" className="flex items-center space-x-2">
-                  <X className="h-4 w-4" />
+              <div className="flex space-x-4">
+                <Button onClick={handleCancel} variant="outline" className="flex items-center space-x-3 border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold px-6 py-3">
+                  <X className="h-5 w-5" />
                   <span>Cancel</span>
                 </Button>
-                <Button onClick={handleSave} disabled={isSaving} className="flex items-center space-x-2">
+                <Button onClick={handleSave} disabled={isSaving} className="flex items-center space-x-3 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold px-6 py-3">
                   {isSaving ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
-                    <Save className="h-4 w-4" />
+                    <Save className="h-5 w-5" />
                   )}
                   <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
                 </Button>
@@ -176,43 +179,43 @@ export default function ProfilePage() {
           </div>
 
           {profile && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Profile Card */}
               <div className="lg:col-span-1">
-                <Card>
+                <Card className="glass border border-white/10 rounded-[20px] shadow-2xl">
                   <CardHeader className="text-center">
-                    <div className="flex justify-center mb-4">
-                      <Avatar className="h-24 w-24">
+                    <div className="flex justify-center mb-6">
+                      <Avatar className="h-32 w-32 border-4 border-white/20">
                         <AvatarImage src={user.imageUrl} alt={profile.full_name} />
-                        <AvatarFallback className="text-lg">
+                        <AvatarFallback className="text-2xl bg-white/10 text-white">
                           {profile.full_name?.charAt(0) || user.firstName?.charAt(0) || 'U'}
                         </AvatarFallback>
                       </Avatar>
                     </div>
-                    <CardTitle className="text-xl">{profile.full_name || user.fullName}</CardTitle>
-                    <CardDescription>{profile.bio || 'No bio added yet'}</CardDescription>
+                    <CardTitle className="text-2xl text-white font-black">{profile.full_name || user.fullName}</CardTitle>
+                    <CardDescription className="text-helix-text-light text-lg">{profile.bio || 'No bio added yet'}</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <Mail className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">{user.primaryEmailAddress?.emailAddress}</span>
+                  <CardContent className="space-y-6">
+                    <div className="flex items-center space-x-4">
+                      <Mail className="h-5 w-5 text-helix-gradient-start" />
+                      <span className="text-base text-helix-text-light">{user.primaryEmailAddress?.emailAddress}</span>
                     </div>
                     {profile.location && (
-                      <div className="flex items-center space-x-3">
-                        <MapPin className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm text-gray-600">{profile.location}</span>
+                      <div className="flex items-center space-x-4">
+                        <MapPin className="h-5 w-5 text-helix-gradient-start" />
+                        <span className="text-base text-helix-text-light">{profile.location}</span>
                       </div>
                     )}
                     {profile.experience_level && (
-                      <div className="flex items-center space-x-3">
-                        <Briefcase className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm text-gray-600">{profile.experience_level}</span>
+                      <div className="flex items-center space-x-4">
+                        <Briefcase className="h-5 w-5 text-helix-gradient-start" />
+                        <span className="text-base text-helix-text-light">{profile.experience_level}</span>
                       </div>
                     )}
                     {profile.availability && (
-                      <div className="flex items-center space-x-3">
-                        <Calendar className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm text-gray-600">{profile.availability}</span>
+                      <div className="flex items-center space-x-4">
+                        <Calendar className="h-5 w-5 text-helix-gradient-start" />
+                        <span className="text-base text-helix-text-light">{profile.availability}</span>
                       </div>
                     )}
                   </CardContent>
@@ -220,79 +223,82 @@ export default function ProfilePage() {
               </div>
 
               {/* Profile Details */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-8">
                 {/* Basic Information */}
-                <Card>
+                <Card className="glass border border-white/10 rounded-[20px] shadow-2xl">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <User className="h-5 w-5" />
+                    <CardTitle className="flex items-center space-x-3 text-xl font-black text-white">
+                      <User className="h-6 w-6 text-helix-gradient-start" />
                       <span>Basic Information</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="full_name">Full Name</Label>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label htmlFor="full_name" className="text-white font-bold">Full Name</Label>
                         {isEditing ? (
                           <Input
                             id="full_name"
                             value={formData.full_name || ''}
                             onChange={(e) => handleInputChange('full_name', e.target.value)}
                             placeholder="Enter your full name"
+                            className="bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl"
                           />
                         ) : (
-                          <p className="text-sm text-gray-600">{profile.full_name || 'Not specified'}</p>
+                          <p className="text-base text-helix-text-light">{profile.full_name || 'Not specified'}</p>
                         )}
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="location">Location</Label>
+                      <div className="space-y-3">
+                        <Label htmlFor="location" className="text-white font-bold">Location</Label>
                         {isEditing ? (
                           <Input
                             id="location"
                             value={formData.location || ''}
                             onChange={(e) => handleInputChange('location', e.target.value)}
                             placeholder="Enter your location"
+                            className="bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl"
                           />
                         ) : (
-                          <p className="text-sm text-gray-600">{profile.location || 'Not specified'}</p>
+                          <p className="text-base text-helix-text-light">{profile.location || 'Not specified'}</p>
                         )}
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="bio">Bio</Label>
+                    <div className="space-y-3">
+                      <Label htmlFor="bio" className="text-white font-bold">Bio</Label>
                       {isEditing ? (
                         <Textarea
                           id="bio"
                           value={formData.bio || ''}
                           onChange={(e) => handleInputChange('bio', e.target.value)}
                           placeholder="Tell us about yourself"
-                          rows={3}
+                          rows={4}
+                          className="bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl"
                         />
                       ) : (
-                        <p className="text-sm text-gray-600">{profile.bio || 'No bio added yet'}</p>
+                        <p className="text-base text-helix-text-light">{profile.bio || 'No bio added yet'}</p>
                       )}
                     </div>
                   </CardContent>
                 </Card>
 
                 {/* Experience & Goals */}
-                <Card>
+                <Card className="glass border border-white/10 rounded-[20px] shadow-2xl">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Target className="h-5 w-5" />
+                    <CardTitle className="flex items-center space-x-3 text-xl font-black text-white">
+                      <Target className="h-6 w-6 text-helix-gradient-start" />
                       <span>Experience & Goals</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="experience_level">Experience Level</Label>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label htmlFor="experience_level" className="text-white font-bold">Experience Level</Label>
                         {isEditing ? (
                           <Select value={formData.experience_level || ''} onValueChange={(value) => handleInputChange('experience_level', value)}>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-white/10 border-white/20 text-white rounded-xl">
                               <SelectValue placeholder="Select experience level" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-helix-dark border-white/20">
                               <SelectItem value="beginner">Beginner</SelectItem>
                               <SelectItem value="intermediate">Intermediate</SelectItem>
                               <SelectItem value="advanced">Advanced</SelectItem>
@@ -300,17 +306,17 @@ export default function ProfilePage() {
                             </SelectContent>
                           </Select>
                         ) : (
-                          <p className="text-sm text-gray-600">{profile.experience_level || 'Not specified'}</p>
+                          <p className="text-base text-helix-text-light">{profile.experience_level || 'Not specified'}</p>
                         )}
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="availability">Availability</Label>
+                      <div className="space-y-3">
+                        <Label htmlFor="availability" className="text-white font-bold">Availability</Label>
                         {isEditing ? (
                           <Select value={formData.availability || ''} onValueChange={(value) => handleInputChange('availability', value)}>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-white/10 border-white/20 text-white rounded-xl">
                               <SelectValue placeholder="Select availability" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-helix-dark border-white/20">
                               <SelectItem value="full-time">Full-time</SelectItem>
                               <SelectItem value="part-time">Part-time</SelectItem>
                               <SelectItem value="weekends">Weekends only</SelectItem>
@@ -318,7 +324,7 @@ export default function ProfilePage() {
                             </SelectContent>
                           </Select>
                         ) : (
-                          <p className="text-sm text-gray-600">{profile.availability || 'Not specified'}</p>
+                          <p className="text-base text-helix-text-light">{profile.availability || 'Not specified'}</p>
                         )}
                       </div>
                     </div>
@@ -326,18 +332,19 @@ export default function ProfilePage() {
                 </Card>
 
                 {/* Skills */}
-                <Card>
+                <Card className="glass border border-white/10 rounded-[20px] shadow-2xl">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Zap className="h-5 w-5" />
+                    <CardTitle className="flex items-center space-x-3 text-xl font-black text-white">
+                      <Zap className="h-6 w-6 text-helix-gradient-start" />
                       <span>Skills</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-6">
                     {isEditing && (
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-4">
                         <Input
                           placeholder="Add a skill"
+                          className="bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl flex-1"
                           onKeyPress={(e) => {
                             if (e.key === 'Enter') {
                               addArrayItem('skills', e.currentTarget.value);
@@ -352,21 +359,22 @@ export default function ProfilePage() {
                             addArrayItem('skills', input.value);
                             input.value = '';
                           }}
+                          className="border-2 border-white/20 text-white hover:bg-white/10 rounded-xl font-bold"
                         >
                           Add
                         </Button>
                       </div>
                     )}
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-3">
                       {(formData.skills || profile.skills || []).map((skill, index) => (
-                        <Badge key={index} variant="secondary" className="flex items-center space-x-1">
+                        <Badge key={index} variant="secondary" className="flex items-center space-x-2 bg-white/10 border border-white/20 text-helix-text-light px-4 py-2 rounded-full font-bold">
                           <span>{skill}</span>
                           {isEditing && (
                             <button
                               onClick={() => removeArrayItem('skills', index)}
-                              className="ml-1 hover:text-red-500"
+                              className="ml-1 hover:text-red-400 transition-colors"
                             >
-                              <X className="h-3 w-3" />
+                              <X className="h-4 w-4" />
                             </button>
                           )}
                         </Badge>
@@ -376,18 +384,19 @@ export default function ProfilePage() {
                 </Card>
 
                 {/* Interests */}
-                <Card>
+                <Card className="glass border border-white/10 rounded-[20px] shadow-2xl">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Heart className="h-5 w-5" />
+                    <CardTitle className="flex items-center space-x-3 text-xl font-black text-white">
+                      <Heart className="h-6 w-6 text-helix-gradient-start" />
                       <span>Interests</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-6">
                     {isEditing && (
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-4">
                         <Input
                           placeholder="Add an interest"
+                          className="bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl flex-1"
                           onKeyPress={(e) => {
                             if (e.key === 'Enter') {
                               addArrayItem('interests', e.currentTarget.value);
@@ -402,21 +411,22 @@ export default function ProfilePage() {
                             addArrayItem('interests', input.value);
                             input.value = '';
                           }}
+                          className="border-2 border-white/20 text-white hover:bg-white/10 rounded-xl font-bold"
                         >
                           Add
                         </Button>
                       </div>
                     )}
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-3">
                       {(formData.interests || profile.interests || []).map((interest, index) => (
-                        <Badge key={index} variant="outline" className="flex items-center space-x-1">
+                        <Badge key={index} variant="outline" className="flex items-center space-x-2 border-2 border-white/20 text-helix-text-light px-4 py-2 rounded-full font-bold">
                           <span>{interest}</span>
                           {isEditing && (
                             <button
                               onClick={() => removeArrayItem('interests', index)}
-                              className="ml-1 hover:text-red-500"
+                              className="ml-1 hover:text-red-400 transition-colors"
                             >
-                              <X className="h-3 w-3" />
+                              <X className="h-4 w-4" />
                             </button>
                           )}
                         </Badge>
@@ -426,18 +436,19 @@ export default function ProfilePage() {
                 </Card>
 
                 {/* Goals */}
-                <Card>
+                <Card className="glass border border-white/10 rounded-[20px] shadow-2xl">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Target className="h-5 w-5" />
+                    <CardTitle className="flex items-center space-x-3 text-xl font-black text-white">
+                      <Target className="h-6 w-6 text-helix-gradient-start" />
                       <span>Goals</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-6">
                     {isEditing && (
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-4">
                         <Input
                           placeholder="Add a goal"
+                          className="bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl flex-1"
                           onKeyPress={(e) => {
                             if (e.key === 'Enter') {
                               addArrayItem('goals', e.currentTarget.value);
@@ -452,21 +463,22 @@ export default function ProfilePage() {
                             addArrayItem('goals', input.value);
                             input.value = '';
                           }}
+                          className="border-2 border-white/20 text-white hover:bg-white/10 rounded-xl font-bold"
                         >
                           Add
                         </Button>
                       </div>
                     )}
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-3">
                       {(formData.goals || profile.goals || []).map((goal, index) => (
-                        <Badge key={index} variant="default" className="flex items-center space-x-1">
+                        <Badge key={index} variant="default" className="flex items-center space-x-2 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white px-4 py-2 rounded-full font-bold">
                           <span>{goal}</span>
                           {isEditing && (
                             <button
                               onClick={() => removeArrayItem('goals', index)}
-                              className="ml-1 hover:text-red-500"
+                              className="ml-1 hover:text-red-400 transition-colors"
                             >
-                              <X className="h-3 w-3" />
+                              <X className="h-4 w-4" />
                             </button>
                           )}
                         </Badge>
@@ -476,22 +488,22 @@ export default function ProfilePage() {
                 </Card>
 
                 {/* Collaboration Preferences */}
-                <Card>
+                <Card className="glass border border-white/10 rounded-[20px] shadow-2xl">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Users className="h-5 w-5" />
+                    <CardTitle className="flex items-center space-x-3 text-xl font-black text-white">
+                      <Users className="h-6 w-6 text-helix-gradient-start" />
                       <span>Collaboration Preferences</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="preferred_collaboration">Preferred Collaboration Style</Label>
+                  <CardContent className="space-y-6">
+                    <div className="space-y-3">
+                      <Label htmlFor="preferred_collaboration" className="text-white font-bold">Preferred Collaboration Style</Label>
                       {isEditing ? (
                         <Select value={formData.preferred_collaboration || ''} onValueChange={(value) => handleInputChange('preferred_collaboration', value)}>
-                          <SelectTrigger>
+                          <SelectTrigger className="bg-white/10 border-white/20 text-white rounded-xl">
                             <SelectValue placeholder="Select collaboration style" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="bg-helix-dark border-white/20">
                             <SelectItem value="team-player">Team Player</SelectItem>
                             <SelectItem value="independent">Independent</SelectItem>
                             <SelectItem value="mentor">Mentor</SelectItem>
@@ -500,69 +512,73 @@ export default function ProfilePage() {
                           </SelectContent>
                         </Select>
                       ) : (
-                        <p className="text-sm text-gray-600">{profile.preferred_collaboration || 'Not specified'}</p>
+                        <p className="text-base text-helix-text-light">{profile.preferred_collaboration || 'Not specified'}</p>
                       )}
                     </div>
                   </CardContent>
                 </Card>
 
                 {/* Social Links */}
-                <Card>
+                <Card className="glass border border-white/10 rounded-[20px] shadow-2xl">
                   <CardHeader>
-                    <CardTitle>Social Links</CardTitle>
+                    <CardTitle className="text-xl font-black text-white">Social Links</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="website">Website</Label>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label htmlFor="website" className="text-white font-bold">Website</Label>
                         {isEditing ? (
                           <Input
                             id="website"
                             value={formData.website || ''}
                             onChange={(e) => handleInputChange('website', e.target.value)}
                             placeholder="https://yourwebsite.com"
+                            className="bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl"
                           />
                         ) : (
-                          <p className="text-sm text-gray-600">{profile.website || 'Not specified'}</p>
+                          <p className="text-base text-helix-text-light">{profile.website || 'Not specified'}</p>
                         )}
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="github">GitHub</Label>
+                      <div className="space-y-3">
+                        <Label htmlFor="github" className="text-white font-bold">GitHub</Label>
                         {isEditing ? (
                           <Input
                             id="github"
                             value={formData.github || ''}
                             onChange={(e) => handleInputChange('github', e.target.value)}
                             placeholder="https://github.com/username"
+                            className="bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl"
                           />
                         ) : (
-                          <p className="text-sm text-gray-600">{profile.github || 'Not specified'}</p>
+                          <p className="text-base text-helix-text-light">{profile.github || 'Not specified'}</p>
                         )}
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="linkedin">LinkedIn</Label>
+                      <div className="space-y-3">
+                        <Label htmlFor="linkedin" className="text-white font-bold">LinkedIn</Label>
                         {isEditing ? (
                           <Input
                             id="linkedin"
                             value={formData.linkedin || ''}
                             onChange={(e) => handleInputChange('linkedin', e.target.value)}
                             placeholder="https://linkedin.com/in/username"
+                            className="bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl"
                           />
                         ) : (
-                          <p className="text-sm text-gray-600">{profile.linkedin || 'Not specified'}</p>
+                          <p className="text-base text-helix-text-light">{profile.linkedin || 'Not specified'}</p>
                         )}
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="twitter">Twitter</Label>
+                      <div className="space-y-3">
+                        <Label htmlFor="twitter" className="text-white font-bold">Twitter</Label>
                         {isEditing ? (
                           <Input
                             id="twitter"
                             value={formData.twitter || ''}
                             onChange={(e) => handleInputChange('twitter', e.target.value)}
                             placeholder="https://twitter.com/username"
+                            className="bg-white/10 border-white/20 text-white placeholder:text-helix-text-light rounded-xl"
                           />
                         ) : (
-                          <p className="text-sm text-gray-600">{profile.twitter || 'Not specified'}</p>
+                          <p className="text-base text-helix-text-light">{profile.twitter || 'Not specified'}</p>
                         )}
                       </div>
                     </div>

@@ -2,10 +2,10 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
-import { BackgroundDesign } from "@/components/ui/background-design"
 import { Header } from "@/components/ui/header"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/next"
+import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
 
@@ -26,15 +26,21 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider publishableKey={clerkPublishableKey}>
-      <html lang="en">
-        <body className={inter.className + " bg-white text-black"}>
-          <OnboardingScrollEnforcer>
-            <BackgroundDesign />
-            <Header />
-            <main className="relative z-10 min-h-screen">{children}</main>
-            <Toaster />
-            <Analytics />
-          </OnboardingScrollEnforcer>
+      <html lang="en" suppressHydrationWarning>
+        <body className={`${inter.className} bg-helix-dark-blue`}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <OnboardingScrollEnforcer>
+              <Header />
+              <main className="relative z-10 min-h-screen">{children}</main>
+              <Toaster />
+              <Analytics />
+            </OnboardingScrollEnforcer>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

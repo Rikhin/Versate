@@ -10,6 +10,7 @@ import { Badge } from "./badge";
 import { createClient } from "@/lib/supabase";
 import { useOnboardingModal } from "@/components/onboarding/OnboardingScrollEnforcer";
 import { useRouter } from "next/navigation";
+import { FaTwitter, FaInstagram } from 'react-icons/fa';
 
 export function Header() {
   const { isSignedIn, user } = useUser();
@@ -17,7 +18,14 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const userMenuRef = useRef<HTMLDivElement>(null);
-  const { showModal } = useOnboardingModal();
+  let showModal = false;
+  try {
+    const { showModal: modalState } = useOnboardingModal();
+    showModal = modalState;
+  } catch (error) {
+    // Context not available, navigation should work normally
+    showModal = false;
+  }
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
   const [findDropdownOpen, setFindDropdownOpen] = useState(false);
   const router = useRouter();
@@ -77,128 +85,130 @@ export function Header() {
   }, [showModal, findDropdownOpen]);
 
   return (
-    <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur border-b border-gray-200" style={{minHeight: '80px'}}>
-      <div className="w-full flex items-center justify-center px-0" style={{maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto', paddingLeft: '24px', paddingRight: '24px', minHeight: '80px'}}>
-        <div className="flex items-center w-full mx-auto gap-2 md:gap-6 justify-center min-h-[80px]" style={{minHeight: '80px'}}>
-          {/* Left: Logo group */}
-          <div className="flex items-center flex-shrink-0 min-w-[120px] md:min-w-[160px] lg:min-w-[180px] justify-start">
-            <Link href="/" className="flex items-center gap-2 group">
-              <Trophy className="h-6 w-6 md:h-7 md:w-7 text-black group-hover:scale-110 transition-transform" />
-              <div>
-                <span className="text-base md:text-xl font-bold text-black leading-tight max-w-[120px] sm:max-w-none truncate">Versate</span>
-                <p className="text-xs md:text-sm text-gray-500 -mt-1 font-medium hidden sm:block max-w-[100px] sm:max-w-none truncate">built by Rikhin Kavuru</p>
-              </div>
-            </Link>
-          </div>
-          {/* Center: Nav links */}
-          <nav className="flex-grow items-center gap-4 md:gap-8 text-sm md:text-base font-semibold uppercase tracking-wider justify-center hidden sm:flex">
-            {/* <Link href="/#works" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Features</Link> */}
-            <div
-              className="relative group"
-              onMouseEnter={() => { if (!showModal) setFindDropdownOpen(true); }}
-              onMouseLeave={() => setFindDropdownOpen(false)}
+    <header className="sticky top-0 z-40 w-full bg-[#111216]">
+      <div className="w-full flex items-center justify-between px-12" style={{maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto', minHeight: '80px'}}>
+        {/* Left: Logo */}
+        <div className="flex items-center gap-8 min-w-[180px]">
+          <Link href="/" className="flex items-center gap-2">
+            <Trophy className="w-7 h-7 text-[#7b61ff]" />
+            <span className="font-black text-2xl text-white">Versate</span>
+          </Link>
+        </div>
+        {/* Center: Nav */}
+        <nav className="flex gap-10 items-center justify-center text-base font-semibold text-white">
+          <div
+            className="relative group"
+            onMouseEnter={() => { if (!showModal) setFindDropdownOpen(true); }}
+            onMouseLeave={() => setFindDropdownOpen(false)}
+          >
+            <button
+              className="transition pointer-events-auto flex items-center gap-1 uppercase text-white hover:text-helix-gradient-start focus:text-helix-gradient-start focus:outline-none focus:ring-2 focus:ring-helix-gradient-start"
+              tabIndex={showModal ? -1 : 0}
+              aria-disabled={showModal}
+              style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
+              onClick={() => { if (!showModal) setFindDropdownOpen((open) => !open); }}
             >
-              <button
-                className="hover:opacity-60 transition pointer-events-auto flex items-center gap-1 uppercase"
-                tabIndex={showModal ? -1 : 0}
-                aria-disabled={showModal}
-                style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
-                onClick={() => { if (!showModal) setFindDropdownOpen((open) => !open); }}
+              FIND
+              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div className="absolute left-1/2 -translate-x-1/2 w-32 h-6 top-full z-30" style={{ pointerEvents: 'auto' }} onMouseEnter={() => { if (!showModal) setFindDropdownOpen(true); }} onMouseLeave={() => setFindDropdownOpen(false)} />
+            {findDropdownOpen && !showModal && (
+              <div
+                className="absolute left-1/2 -translate-x-1/2 mt-2 w-48 glass bg-helix-dark/90 border border-white/10 shadow-xl rounded-2xl z-60 flex flex-col"
+                onMouseEnter={() => setFindDropdownOpen(true)}
+                onMouseLeave={() => setFindDropdownOpen(false)}
               >
-                FIND
-                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-              </button>
-              {/* Transparent buffer to expand hover zone */}
-              <div className="absolute left-1/2 -translate-x-1/2 w-32 h-6 top-full z-30" style={{ pointerEvents: 'auto' }} onMouseEnter={() => { if (!showModal) setFindDropdownOpen(true); }} onMouseLeave={() => setFindDropdownOpen(false)} />
-              {findDropdownOpen && !showModal && (
-                <div
-                  className="absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg z-60 flex flex-col"
-                  onMouseEnter={() => setFindDropdownOpen(true)}
-                  onMouseLeave={() => setFindDropdownOpen(false)}
-                >
-                  <button className="py-3 px-6 text-left hover:bg-gray-100" onClick={() => { router.push('/competitions'); setFindDropdownOpen(false); }}>Competitions</button>
-                  <button className="py-3 px-6 text-left hover:bg-gray-100" onClick={() => { router.push('/summer-programs'); setFindDropdownOpen(false); }}>Summer Programs</button>
-                  <button className="py-3 px-6 text-left hover:bg-gray-100" onClick={() => { router.push('/scholarships'); setFindDropdownOpen(false); }}>Scholarships</button>
-                </div>
-              )}
-            </div>
-            <Link href="/connect" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Connect</Link>
-            <Link href="/ai-search" className="hover:opacity-60 transition pointer-events-auto text-indigo-700" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>AI Search</Link>
-            <Link href="/dashboard/plans" className="hover:opacity-60 transition pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Plans</Link>
-            {isSignedIn && (
-              <Link href="/messages" className="hover:opacity-60 transition relative pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>
-                Messages
-                {unreadCount > 0 && (
-                  <Badge 
-                    variant="destructive" 
-                    className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                  >
-                    {unreadCount > 99 ? '99+' : unreadCount}
-                  </Badge>
-                )}
-              </Link>
+                <button className="py-4 px-8 text-left hover:bg-helix-gradient-start/10 text-white font-bold transition" onClick={() => { router.push('/competitions'); setFindDropdownOpen(false); }}>Competitions</button>
+                <button className="py-4 px-8 text-left hover:bg-helix-gradient-start/10 text-white font-bold transition" onClick={() => { router.push('/summer-programs'); setFindDropdownOpen(false); }}>Summer Programs</button>
+                <button className="py-4 px-8 text-left hover:bg-helix-gradient-start/10 text-white font-bold transition" onClick={() => { router.push('/scholarships'); setFindDropdownOpen(false); }}>Scholarships</button>
+              </div>
             )}
-          </nav>
+          </div>
+          <Link href="/connect" className="transition pointer-events-auto hover:text-helix-gradient-start focus:text-helix-gradient-start text-white" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Connect</Link>
+          <Link href="/ai-search" className="transition pointer-events-auto hover:text-helix-gradient-start focus:text-helix-gradient-start text-white" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>AI Search</Link>
+          <Link href="/dashboard/plans" className="transition pointer-events-auto hover:text-helix-gradient-start focus:text-helix-gradient-start text-white" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>Plans</Link>
+          {isSignedIn && (
+            <Link href="/messages" className="transition relative pointer-events-auto hover:text-helix-gradient-start focus:text-helix-gradient-start text-white" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>
+              Messages
+              {unreadCount > 0 && (
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white font-bold shadow-lg"
+                >
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </Badge>
+              )}
+            </Link>
+          )}
+        </nav>
+        {/* Right: Social, dashboard/profile */}
+        <div className="flex items-center gap-8 min-w-[180px] justify-end">
+          <a href="https://twitter.com/your-link" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform text-white/80 hover:text-[#1da1f2]">
+            <FaTwitter className="w-6 h-6" />
+          </a>
+          <a href="https://instagram.com/your-link" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform text-white/80 hover:text-[#e1306c]">
+            <FaInstagram className="w-6 h-6" />
+          </a>
           {/* Hamburger menu for mobile */}
           <button
-            className="sm:hidden flex items-center justify-center p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 ml-2 w-10 h-10"
+            className="sm:hidden flex items-center justify-center p-2 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-helix-gradient-start ml-2 w-10 h-10"
             onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
             aria-label="Open menu"
             aria-expanded={mobileDropdownOpen}
           >
             <span className="flex flex-col items-center justify-center w-6 h-6 gap-1">
-              <span className="block w-6 h-0.5 bg-black rounded"></span>
-              <span className="block w-6 h-0.5 bg-black rounded"></span>
-              <span className="block w-6 h-0.5 bg-black rounded"></span>
+              <span className="block w-6 h-0.5 bg-white rounded"></span>
+              <span className="block w-6 h-0.5 bg-white rounded"></span>
+              <span className="block w-6 h-0.5 bg-white rounded"></span>
             </span>
           </button>
           {/* Right: User actions/profile */}
           <div className="flex items-center flex-shrink-0 min-w-[120px] md:min-w-[160px] lg:min-w-[180px] justify-end gap-4 md:gap-6">
-          {isSignedIn ? (
-            <>
+            {isSignedIn ? (
+              <>
                 <Link href="/dashboard" className="hidden sm:block pointer-events-auto" tabIndex={showModal ? -1 : 0} aria-disabled={showModal} style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}>
-                  <button className="px-3 md:px-4 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition text-xs md:text-sm" disabled={showModal}>Dashboard</button>
-              </Link>
-              {/* Custom User Menu */}
-              <div className="relative" ref={userMenuRef}>
-                <button
+                  <button className="px-4 py-2 rounded-full border-2 border-white/20 text-white font-bold bg-white/10 hover:bg-helix-gradient-start/20 transition text-base shadow-md">Dashboard</button>
+                </Link>
+                {/* Custom User Menu */}
+                <div className="relative" ref={userMenuRef}>
+                  <button
                     onClick={() => !showModal && setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center space-x-1 md:space-x-2 p-1 md:p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="flex items-center space-x-2 p-2 rounded-full hover:bg-white/10 transition-colors border-2 border-white/10"
                     disabled={showModal}
                     aria-disabled={showModal}
                     tabIndex={showModal ? -1 : 0}
                     style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
-                >
-                  <Avatar className="h-6 w-6 md:h-8 md:w-8">
-                    <AvatarImage src={user?.imageUrl} alt={user?.fullName || 'User'} />
-                    <AvatarFallback className="text-xs md:text-sm">
-                      {user?.firstName?.charAt(0) || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <ChevronDown className={`h-3 w-3 md:h-4 md:w-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
-                </button>
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user?.imageUrl} alt={user?.fullName || 'User'} />
+                      <AvatarFallback className="text-lg bg-white/10 text-white">
+                        {user?.firstName?.charAt(0) || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <ChevronDown className={`h-4 w-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                  </button>
                   {isUserMenuOpen && !showModal && (
-                  <div className="absolute right-0 mt-2 w-48 md:w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                    <div className="px-3 md:px-4 py-2 md:py-3 border-b border-gray-100">
-                      <p className="text-xs md:text-sm font-medium text-gray-900">{user?.fullName}</p>
-                      <p className="text-xs text-gray-500">{user?.primaryEmailAddress?.emailAddress}</p>
-                    </div>
-                    <div className="py-1">
-                      <Link
-                        href="/profile"
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    <div className="absolute right-0 mt-2 w-56 glass bg-helix-dark/95 rounded-2xl shadow-xl border border-white/10 py-2 z-50">
+                      <div className="px-4 py-3 border-b border-white/10">
+                        <p className="text-sm font-bold text-white">{user?.fullName}</p>
+                        <p className="text-xs text-helix-text-light">{user?.primaryEmailAddress?.emailAddress}</p>
+                      </div>
+                      <div className="py-1">
+                        <Link
+                          href="/profile"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center px-4 py-3 text-base text-white hover:bg-helix-gradient-start/10 font-bold rounded-xl transition-colors"
                           tabIndex={showModal ? -1 : 0}
                           aria-disabled={showModal}
                           style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
-                      >
-                        <User className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
-                        View Profile
-                      </Link>
+                        >
+                          <User className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
+                          View Profile
+                        </Link>
                         <Link
                           href="/messages"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors relative"
+                          className="flex items-center px-4 py-3 text-base text-white hover:bg-helix-gradient-start/10 font-bold rounded-xl transition-colors"
                           tabIndex={showModal ? -1 : 0}
                           aria-disabled={showModal}
                           style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
@@ -208,57 +218,57 @@ export function Header() {
                           {unreadCount > 0 && (
                             <Badge 
                               variant="destructive" 
-                              className="ml-auto h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs"
+                              className="ml-auto h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white font-bold shadow-lg"
                             >
                               {unreadCount > 99 ? '99+' : unreadCount}
                             </Badge>
                           )}
                         </Link>
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center px-4 py-3 text-base text-white hover:bg-helix-gradient-start/10 font-bold rounded-xl transition-colors"
                           tabIndex={showModal ? -1 : 0}
                           aria-disabled={showModal}
                           style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
-                      >
-                        <Settings className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
-                        Dashboard
-                      </Link>
+                        >
+                          <Settings className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
+                          Dashboard
+                        </Link>
+                      </div>
+                      <div className="border-t border-white/10 pt-1">
+                        <SignOutButton>
+                          <button className="flex items-center w-full px-4 py-3 text-base text-white hover:bg-helix-gradient-start/10 font-bold rounded-xl transition-colors" disabled={showModal}>
+                            <LogOut className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
+                            Sign Out
+                          </button>
+                        </SignOutButton>
+                      </div>
                     </div>
-                    <div className="border-t border-gray-100 pt-1">
-                      <SignOutButton>
-                          <button className="flex items-center w-full px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition-colors" disabled={showModal}>
-                          <LogOut className="h-3 w-3 md:h-4 md:w-4 mr-2 md:mr-3" />
-                          Sign Out
-                        </button>
-                      </SignOutButton>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </>
-          ) : (
-            <>
-              <SignInButton mode="modal">
-                <button className="px-2 md:px-4 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition text-xs md:text-sm" disabled={showModal}>Sign In</button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="px-2 md:px-4 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-900 transition text-xs md:text-sm" disabled={showModal}>Sign Up</button>
-              </SignUpButton>
-            </>
-          )}
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <SignInButton mode="modal">
+                  <button className="px-2 md:px-4 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition text-xs md:text-sm" disabled={showModal}>Sign In</button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="px-2 md:px-4 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-900 transition text-xs md:text-sm" disabled={showModal}>Sign Up</button>
+                </SignUpButton>
+              </>
+            )}
           </div>
         </div>
       </div>
 
       {/* Mobile dropdown nav */}
       {mobileDropdownOpen && (
-        <div className="absolute left-0 top-full w-full bg-white border-b border-gray-200 shadow-lg z-40 flex flex-col items-center py-4 sm:hidden">
+        <div className="absolute left-0 top-full w-full bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-lg z-40 flex flex-col items-center py-4 sm:hidden">
           {/* <Link href="/#works" className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100" onClick={() => setMobileDropdownOpen(false)}>Features</Link> */}
           <div className="w-full">
             <button
-              className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100 flex items-center justify-center gap-2"
+              className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white flex items-center justify-center gap-2"
               onClick={() => {
                 const dropdown = document.getElementById('mobile-find-dropdown');
                 if (dropdown) dropdown.classList.toggle('hidden');
@@ -266,22 +276,26 @@ export function Header() {
             >
               Find <ChevronDown className="h-4 w-4 inline" />
             </button>
-            <div id="mobile-find-dropdown" className="hidden w-full bg-white border-t border-gray-100">
+            <div id="mobile-find-dropdown" className="hidden w-full bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
               <button
-                className="py-3 px-6 w-full text-left text-base font-normal hover:bg-gray-100"
+                className="py-3 px-6 w-full text-left text-base font-normal hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white"
                 onClick={() => { window.location.href = '/competitions'; setMobileDropdownOpen(false); }}
               >Competitions</button>
               <button
-                className="py-3 px-6 w-full text-left text-base font-normal hover:bg-gray-100"
+                className="py-3 px-6 w-full text-left text-base font-normal hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white"
                 onClick={() => { window.location.href = '/summer-programs'; setMobileDropdownOpen(false); }}
               >Summer Programs</button>
+              <button
+                className="py-3 px-6 w-full text-left text-base font-normal hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white"
+                onClick={() => { window.location.href = '/scholarships'; setMobileDropdownOpen(false); }}
+              >Scholarships</button>
             </div>
           </div>
-          <Link href="/connect" className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100" onClick={() => setMobileDropdownOpen(false)}>Connect</Link>
-          <Link href="/ai-search" className="py-3 px-6 w-full text-center text-base font-semibold text-indigo-700 hover:bg-indigo-50" onClick={() => setMobileDropdownOpen(false)}>AI Search</Link>
-          <Link href="/dashboard/plans" className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100" onClick={() => setMobileDropdownOpen(false)}>Plans</Link>
+          <Link href="/connect" className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white" onClick={() => setMobileDropdownOpen(false)}>Connect</Link>
+          <Link href="/ai-search" className="py-3 px-6 w-full text-center text-base font-semibold text-indigo-700 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20" onClick={() => setMobileDropdownOpen(false)}>AI Search</Link>
+          <Link href="/dashboard/plans" className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white" onClick={() => setMobileDropdownOpen(false)}>Plans</Link>
           {isSignedIn && (
-            <Link href="/messages" className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100" onClick={() => setMobileDropdownOpen(false)}>
+            <Link href="/messages" className="py-3 px-6 w-full text-center text-base font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white" onClick={() => setMobileDropdownOpen(false)}>
               Messages
               {unreadCount > 0 && (
                 <Badge 

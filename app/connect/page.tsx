@@ -22,7 +22,7 @@ import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer";
 
 // Custom styles for filter boxes
-const filterBoxClass = "h-10 md:h-11 text-sm md:text-base font-normal border border-gray-300 focus:border-blue-500 focus:bg-blue-50/30 hover:bg-gray-50 rounded-lg px-3 transition-colors duration-150 min-w-[120px] md:min-w-[160px] bg-white appearance-none"
+const filterBoxClass = "h-12 sm:h-14 md:h-16 text-lg md:text-xl font-normal border-2 border-white/20 focus:border-helix-gradient-start focus:bg-white/10 hover:bg-white/10 rounded-full px-6 transition-colors duration-150 min-w-[140px] sm:min-w-[160px] md:min-w-[200px] bg-white/10 text-white backdrop-blur-sm appearance-none"
 
 export default function ConnectPage() {
   const [mentors, setMentors] = useState<MentorProfile[]>([])
@@ -200,148 +200,75 @@ export default function ConnectPage() {
     return () => { cancelled = true; };
   }, [isSignedIn]);
 
+  // Load sent emails
+  useEffectEmails(() => {
+    let cancelled = false;
+    if (isSignedIn) {
+      setLoadingEmails(true);
+      fetch("/api/email/sent")
+        .then(res => res.ok ? res.json() : [])
+        .then(data => { if (!cancelled) setSentEmails(data) })
+        .catch(() => setSentEmails([]))
+        .finally(() => { if (!cancelled) setLoadingEmails(false) });
+    } else {
+      setSentEmails([]);
+    }
+    return () => { cancelled = true; };
+  }, [isSignedIn]);
+
   // Load states
   useEffect(() => {
-    fetch('/state_abbreviations.csv')
+    fetch("/public/state_abbreviations.csv")
       .then(res => res.text())
-      .then(text => {
-        const parsed = Papa.parse(text, { header: false });
-        setAllStates(parsed.data.filter((row: any) => row[1]).map((row: any) => row[1].replace(/"/g, '')));
-      });
+      .then(csv => {
+        Papa.parse(csv, {
+          header: true,
+          complete: (results) => {
+            const states = results.data.map((row: any) => row.State).filter(Boolean);
+            setAllStates(states);
+          }
+        });
+      })
+      .catch(() => setAllStates([]));
   }, []);
 
-  // Load emails
-  useEffectEmails(() => {
-    if (activeTab === "emails" && isSignedIn) {
-      setLoadingEmails(true)
-      fetch("/api/email/sent")
-        .then(res => {
-          console.log('Sent emails response status:', res.status);
-          return res.json();
-        })
-        .then(data => {
-          console.log('Sent emails data:', data);
-          setSentEmails(data.emails || []);
-        })
-        .catch(error => {
-          console.error('Error fetching sent emails:', error);
-          setSentEmails([]);
-        })
-        .finally(() => setLoadingEmails(false))
-    }
-  }, [activeTab, isSignedIn])
+  // Extract unique values for filters
+  const companyGroups = Array.from(new Set(shuffledMentors.map(m => m.company).filter(Boolean))).sort();
+  const jobGroups = Array.from(new Set(shuffledMentors.map(m => m.jobTitle).filter(Boolean))).sort();
+  const yearGroups = Array.from(new Set(shuffledMentors.map(m => m.yearsExperience).filter(Boolean))).sort();
+  const allSkills = Array.from(new Set(students.flatMap(s => s.skills || []).filter(Boolean))).sort();
 
-  // Handle auth modal
-  useEffect(() => {
-    if (isLoaded && !isSignedIn) setShowAuthModal(true);
-    else setShowAuthModal(false);
-  }, [isSignedIn, isLoaded]);
+  // Filter students
+  const filteredStudents = students.filter(s => {
+    const sTerm = search.toLowerCase();
+    const matchesSearch = !sTerm || 
+      `${s.first_name} ${s.last_name}`.toLowerCase().includes(sTerm) ||
+      s.skills?.some((skill: string) => skill.toLowerCase().includes(sTerm)) ||
+      s.competitions?.some((comp: string) => comp.toLowerCase().includes(sTerm));
+    
+    const matchesSkill = !filterSkill || s.skills?.includes(filterSkill);
+    const matchesCompetition = !filterCompetition || s.competitions?.includes(filterCompetition);
+    
+    return matchesSearch && matchesSkill && matchesCompetition;
+  });
 
-  // Handle page changes
   const handlePageChange = (newPage: number) => {
-    const filters = {
-      state: filterState,
-      company: filterCompany,
-      jobTitle: filterJob,
-      yearsExperience: filterYears
-    };
-    loadMentors(newPage, search, filters);
+    if (newPage >= 1 && newPage <= pagination.totalPages) {
+      const filters = {
+        state: filterState,
+        company: filterCompany,
+        jobTitle: filterJob,
+        yearsExperience: filterYears,
+        email: filterEmail
+      };
+      loadMentors(newPage, search, filters);
+    }
   };
 
-  // Grouped filter options
-  const yearGroups = [
-    { label: "All", value: "" },
-    { label: "< 5 years", value: "<5" },
-    { label: "5-10 years", value: "5-10" },
-    { label: "10+ years", value: "10+" },
-  ]
-  const jobGroups = [
-    { label: "All", value: "" },
-    { label: "Research", value: "research" },
-    { label: "Engineering", value: "engineer" },
-    { label: "Data/Analytics", value: "data" },
-    { label: "Professor/Teacher", value: "prof" },
-    { label: "Other", value: "other" },
-  ]
-  const companyGroups = [
-    { label: "All", value: "" },
-    { label: "University", value: "university" },
-    { label: "School", value: "school" },
-    { label: "Company", value: "company" },
-    { label: "Other", value: "other" },
-  ]
-
-  // Extract unique skills and competitions from students
-  const allSkills = Array.from(new Set(students.flatMap(s => s.skills || []))).sort();
-  const allCompetitions = Array.from(new Set(students.flatMap(s => s.competitions || []))).sort();
-
-  // Filtering logic with grouping
-  const filtered = mentors.filter(m => {
-    const s = search.toLowerCase()
-    // Years experience grouping
-    let yearsGroup = "other"
-    const y = parseInt(m.yearsExperience)
-    if (!isNaN(y)) {
-      if (y < 5) yearsGroup = "<5"
-      else if (y < 10) yearsGroup = "5-10"
-      else yearsGroup = "10+"
-    }
-    // Job title grouping
-    let jobGroup = "other"
-    const jt = m.jobTitle.toLowerCase()
-    if (jt.includes("research")) jobGroup = "research"
-    else if (jt.includes("engineer")) jobGroup = "engineer"
-    else if (jt.includes("data")) jobGroup = "data"
-    else if (jt.includes("prof") || jt.includes("teach")) jobGroup = "prof"
-    // Company grouping
-    let companyGroup = "other"
-    const c = m.company.toLowerCase()
-    if (c.includes("university")) companyGroup = "university"
-    else if (c.includes("school")) companyGroup = "school"
-    else if (c.match(/inc|llc|corp|company|technologies|solutions|systems/)) companyGroup = "company"
-
-    return (
-      (!s || m.name.toLowerCase().includes(s) || m.company.toLowerCase().includes(s) || m.jobTitle.toLowerCase().includes(s)) &&
-      (!filterState || m.state === filterState) &&
-      (!filterCompany || companyGroup === filterCompany) &&
-      (!filterJob || jobGroup === filterJob) &&
-      (!filterYears || yearsGroup === filterYears)
-    )
-  })
-
-  // Student filter logic
-  const filteredStudents = students.filter(s => {
-    const sText = search.toLowerCase();
-    const matchesSkill = !filterSkill || (s.skills && s.skills.includes(filterSkill));
-    const matchesCompetition = !filterCompetition || (s.competitions && s.competitions.includes(filterCompetition));
-    return (
-      (!sText || `${s.first_name} ${s.last_name}`.toLowerCase().includes(sText) || s.school?.toLowerCase().includes(sText) || s.skills?.some((sk: string) => sk.toLowerCase().includes(sText))) &&
-      (!filterState || s.location === filterState) &&
-      matchesSkill && matchesCompetition
-    );
-  })
-
-  // Unique states
-  const states = Array.from(new Set(mentors.map(m => m.state).filter(Boolean)))
-
   const handleProfileClick = (profile: any, type: "mentor" | "student") => {
-    const profileData = {
-      name: type === "mentor" ? profile.name : `${profile.first_name} ${profile.last_name}`,
-      email: profile.email,
-      company: profile.company,
-      jobTitle: profile.jobTitle,
-      yearsExperience: profile.yearsExperience,
-      state: profile.state || profile.location,
-      linkedin: profile.linkedin,
-      type,
-      school: profile.school,
-      grade: profile.grade_level,
-      interests: profile.skills,
-      userId: profile.id || profile.userId || undefined
-    }
-    setSelectedProfile(profileData)
-    setIsModalOpen(true)
-  }
+    setSelectedProfile({ ...profile, type });
+    setIsModalOpen(true);
+  };
 
   const clearFilters = () => {
     setSearch("");
@@ -359,273 +286,220 @@ export default function ConnectPage() {
 
   return (
     <OnboardingScrollEnforcer>
-      <div className="min-h-screen bg-white relative overflow-hidden">
-        <BackgroundGradient startColor="from-gray-50/50" endColor="to-gray-100/50" triggerStart="top center" triggerEnd="center center" />
+      <div className="w-full min-h-screen bg-helix-dark relative overflow-hidden">
+        <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
         <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
-        <div className="relative z-10">
-          {isLoaded && (
-            <>
-              {/* Header */}
-              <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-                <div className="container mx-auto px-8 py-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <Users className="h-8 w-8 text-black" />
-                      <div>
-                        <span className="text-2xl font-black text-black">Versate</span>
-                        <p className="text-sm text-gray-600">Connect</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      {!isSignedIn ? (
-                        <>
-                          <SignInButton mode="modal">
-                            <Button variant="outline" className="border-2 border-black text-black hover:bg-black hover:text-white">
-                              Sign In
-                            </Button>
-                          </SignInButton>
-                          <SignUpButton mode="modal">
-                            <Button className="bg-black text-white hover:bg-gray-800">
-                              Get Started
-                            </Button>
-                          </SignUpButton>
-                        </>
-                      ) : (
-                        <Link href="/dashboard">
-                          <Button className="bg-black text-white hover:bg-gray-800">
-                            Dashboard
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
+        <div className="container mx-auto px-6 py-16">
+          <div className="mb-16 text-center">
+            <h1 className="text-6xl md:text-7xl font-black bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end bg-clip-text text-transparent mb-6 drop-shadow-lg">Connect</h1>
+            <h2 className="text-5xl md:text-6xl font-black text-helix-gradient-start mb-6">Mentors & Students</h2>
+            <p className="text-xl text-helix-text-light mb-10 max-w-2xl mx-auto">Browse and connect with real mentors and students from across the country. Use the filters to find the right expertise, background, or collaborators for your needs.</p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
+            <Button 
+              variant={activeTab === "mentor" ? "default" : "outline"} 
+              onClick={() => setActiveTab("mentor")}
+              className={activeTab === "mentor" ? "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow" : "border-2 border-white/20 text-white hover:bg-white/10 rounded-full"}
+            >
+              Mentors
+            </Button>
+            <Button 
+              variant={activeTab === "student" ? "default" : "outline"} 
+              onClick={() => setActiveTab("student")}
+              className={activeTab === "student" ? "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow" : "border-2 border-white/20 text-white hover:bg-white/10 rounded-full"}
+            >
+              Students
+            </Button>
+            <Button 
+              variant={activeTab === "emails" ? "default" : "outline"} 
+              onClick={() => setActiveTab("emails")}
+              className={activeTab === "emails" ? "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow" : "border-2 border-white/20 text-white hover:bg-white/10 rounded-full"}
+            >
+              Emails
+            </Button>
+          </div>
+          <div className="glass border border-white/10 rounded-[20px] shadow-xl px-8 py-6 flex flex-wrap items-center justify-center gap-4 mb-16">
+            <div className="flex-1 relative flex items-center h-12 sm:h-14 md:h-16">
+              <Input
+                placeholder="Search by name, company, or job title..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="pl-6 border-2 border-white/20 focus:border-helix-gradient-start bg-white/10 text-white placeholder-helix-text-light backdrop-blur-sm rounded-full text-lg md:text-xl h-12 sm:h-14 md:h-16"
+              />
+            </div>
+            <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
+              <CustomDropdown placeholder="State" options={allStates} value={filterState} onChange={setFilterState} />
+            </div>
+            <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
+              <CustomDropdown label="Company" placeholder="Company" options={companyGroups} value={filterCompany} onChange={(v: string) => { setFilterCompany(v); setPage(0); }} />
+            </div>
+            <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
+              <CustomDropdown label="Job Title" placeholder="Job Title" options={jobGroups} value={filterJob} onChange={(v: string) => { setFilterJob(v); setPage(0); }} />
+            </div>
+            <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
+              <CustomDropdown label="Experience" placeholder="Experience" options={yearGroups} value={filterYears} onChange={(v: string) => { setFilterYears(v); setPage(0); }} />
+            </div>
+            <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
+              <CustomDropdown label="Email" placeholder="Email Provided" options={["Yes", "No"]} value={filterEmail} onChange={(v: string) => { setFilterEmail(v); setPage(0); }} />
+            </div>
+            <Button variant="outline" className="h-12 sm:h-14 md:h-16 border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold text-lg" onClick={clearFilters}>Clear</Button>
+          </div>
+          <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
+            {activeTab === "mentor" && (
+              <div>
+                {loadingMentors ? (
+                  <div className="text-center py-16">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-helix-gradient-start mx-auto mb-4"></div>
+                    <p className="text-helix-text-light text-lg">Loading mentors...</p>
                   </div>
-                </div>
-              </header>
-              {/* Main Content */}
-              <div className="container mx-auto px-4 md:px-8 py-8 md:py-16">
-                <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
-                  {/* Header Section */}
-                  <div className="text-center mb-8 md:mb-16">
-                    <h1 className="text-3xl md:text-6xl md:text-7xl font-black text-black mb-4 md:mb-8 leading-none">
-                      Connect<br /><span className="text-gray-400">Mentors & Students</span>
-                    </h1>
-                    <p className="text-base md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                      Browse and connect with real mentors and students from across the country. Use the filters to find the right expertise, background, or collaborators for your needs.
-                    </p>
-                  </div>
-                  {/* Tab Bar */}
-                  <div className="flex gap-2 mb-8 justify-center">
-                    <Button variant={activeTab === "mentor" ? "default" : "outline"} onClick={() => setActiveTab("mentor")}>Mentors</Button>
-                    <Button variant={activeTab === "student" ? "default" : "outline"} onClick={() => setActiveTab("student")}>Students</Button>
-                    <Button variant={activeTab === "emails" ? "default" : "outline"} onClick={() => setActiveTab("emails")}>Emails</Button>
-                  </div>
-                  {/* Info Bubble for Emails Tab */}
-                  {activeTab === "emails" && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-center gap-3">
-                      <Mail className="h-6 w-6 text-blue-400" />
-                      <span className="text-blue-900 text-sm">
-                        Only emails you send from Versate are shown here.<br />Replies from mentors will appear in your regular inbox.
-                      </span>
-                    </div>
-                  )}
-                  {/* Search and Filters */}
-                  {activeTab !== "emails" && (
-                    <div className="flex flex-col md:flex-row gap-4 items-center md:items-center">
-                      <div className="flex-1 relative flex items-center h-10">
-                        <Input
-                          placeholder="Search by name, company, or job title..."
-                          value={search}
-                          onChange={e => setSearch(e.target.value)}
-                          className={`pl-4 ${filterBoxClass} placeholder-gray-400 h-10`}
-                          style={{ minHeight: 40 }}
-                        />
-                      </div>
-                      {/* State Filter */}
-                      <div className="relative min-w-[120px] h-10 flex items-center">
-                        <CustomDropdown placeholder="State" options={allStates} value={filterState} onChange={setFilterState} />
-                      </div>
-                      {/* Mentor Filters */}
-                      {activeTab === "mentor" && (
-                        <>
-                          <div className="relative min-w-[120px] h-10 flex items-center">
-                            <CustomDropdown label="Company" placeholder="Company" options={companyGroups} value={filterCompany} onChange={(v: string) => { setFilterCompany(v); setPage(0); }} />
-                          </div>
-                          <div className="relative min-w-[120px] h-10 flex items-center">
-                            <CustomDropdown label="Job Title" placeholder="Job Title" options={jobGroups} value={filterJob} onChange={(v: string) => { setFilterJob(v); setPage(0); }} />
-                          </div>
-                          <div className="relative min-w-[120px] h-10 flex items-center">
-                            <CustomDropdown label="Experience" placeholder="Experience" options={yearGroups} value={filterYears} onChange={(v: string) => { setFilterYears(v); setPage(0); }} />
-                          </div>
-                          <div className="relative min-w-[120px] h-10 flex items-center">
-                            <CustomDropdown label="Email" placeholder="Email Provided" options={["Yes", "No"]} value={filterEmail} onChange={(v: string) => { setFilterEmail(v); setPage(0); }} />
-                          </div>
-                        </>
-                      )}
-                      {/* Student Filters */}
-                      {activeTab === "student" && (
-                        <>
-                          <div className="relative min-w-[120px] h-10 flex items-center">
-                            <CustomDropdown placeholder="Skill" options={allSkills.filter((sk: string) => sk.toLowerCase().includes(skillSearch.toLowerCase()))} value={filterSkill} onChange={(v: string) => { setFilterSkill(v); setPage(0); }} />
-                          </div>
-                          <div className="relative min-w-[120px] h-10 flex items-center">
-                            <CustomDropdown placeholder="Competition" options={competitions.map(c => c.name).filter((name: string) => name.toLowerCase().includes(competitionSearch.toLowerCase()))} value={filterCompetition} onChange={(v: string) => { setFilterCompetition(v); setPage(0); }} />
-                          </div>
-                        </>
-                      )}
-                      <Button variant="outline" className="h-10" onClick={clearFilters}>Clear</Button>
-                    </div>
-                  )}
-                  {/* Tab Content */}
-                  {activeTab === "mentor" && (
-                    <div>
-                      {loadingMentors ? (
-                        <div className="text-center py-8">
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                          <p className="text-gray-500 mt-2">Loading mentors...</p>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-10">
-                            {mentors.map((m, i) => (
-                              <div key={"mentor-"+i} className="focus:outline-none focus:ring-4 focus:ring-black/30 rounded-xl">
-                                <Card 
-                                  className="border-2 border-blue-200 shadow-lg hover:shadow-blue-300/40 hover:border-blue-400 ring-1 ring-blue-100/40 transition hover:scale-105 cursor-pointer bg-white"
-                                >
-                                  <CardHeader className="pb-6">
-                                    <div className="flex justify-between items-start mb-4">
-                                      <Badge className="border-2 bg-blue-100 text-blue-800 border-blue-300 px-4 py-2 text-sm font-bold uppercase tracking-widest">Mentor</Badge>
-                                      <div className="text-3xl"><Users /></div>
-                                    </div>
-                                    <CardTitle className="text-xl font-bold text-gray-900 mb-1">{m.name}</CardTitle>
-                                    <div className="text-sm text-gray-600 mb-2">{m.jobTitle}</div>
-                                    <div className="text-sm text-gray-500 mb-2">{m.company}</div>
-                                  </CardHeader>
-                                  <CardContent className="flex flex-col gap-2">
-                                    <div className="flex items-center justify-between mt-2">
-                                      <div className="text-xs text-gray-500">{m.state}</div>
-                                      <Button size="sm" className="ml-auto" onClick={() => handleProfileClick(m, 'mentor')}>Connect</Button>
-                                    </div>
-                                  </CardContent>
-                                </Card>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12">
+                      {mentors.map((m, i) => (
+                        <div key={"mentor-"+i} className="focus:outline-none focus:ring-4 focus:ring-helix-gradient-start/30 rounded-[24px]">
+                          <Card 
+                            className="glass border border-white/10 shadow-xl hover:shadow-2xl hover:glow transition-all duration-300 cursor-pointer"
+                          >
+                            <CardHeader className="pb-8">
+                              <div className="flex justify-between items-start mb-6">
+                                <Badge className="border-2 bg-blue-400/20 text-blue-400 border-blue-400/30 px-4 py-2 text-sm font-bold uppercase tracking-widest">Mentor</Badge>
+                                <div className="text-4xl"><Users /></div>
                               </div>
-                            ))}
-                          </div>
-                          
-                          {/* Pagination Controls */}
-                          {pagination.totalPages > 1 && (
-                            <div className="flex justify-center items-center gap-2 mt-8">
-                              <Button
-                                variant="outline"
-                                onClick={() => handlePageChange(pagination.page - 1)}
-                                disabled={!pagination.hasPrev}
-                              >
-                                Previous
-                              </Button>
-                              
-                              <span className="text-sm text-gray-600">
-                                Page {pagination.page} of {pagination.totalPages}
-                              </span>
-                              
-                              <Button
-                                variant="outline"
-                                onClick={() => handlePageChange(pagination.page + 1)}
-                                disabled={!pagination.hasNext}
-                              >
-                                Next
-                              </Button>
-                            </div>
-                          )}
-                          
-                          {mentors.length === 0 && !loadingMentors && (
-                            <div className="text-center text-gray-500 mt-10">
-                              No mentors found matching your criteria.
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  )}
-                  {activeTab === "student" && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-10">
-                      {filteredStudents.map((s, i) => (
-                        <div key={"student-"+i} className="focus:outline-none focus:ring-4 focus:ring-black/30 rounded-xl">
-                          <Card className="border-2 border-green-200 shadow-lg hover:shadow-green-300/40 hover:border-green-400 ring-1 ring-green-100/40 transition hover:scale-105 cursor-pointer bg-white"> 
-                            <CardHeader className="pb-6">
-                              <div className="flex justify-between items-start mb-4">
-                                <Badge className="border-2 bg-green-100 text-green-800 border-green-300 px-4 py-2 text-sm font-bold uppercase tracking-widest">Student</Badge>
-                                <div className="text-3xl"><Users /></div>
-                              </div>
-                              <CardTitle className="text-2xl font-black text-black">{s.first_name} {s.last_name}</CardTitle>
-                              <div className="text-lg text-gray-600">{s.grade_level || "Student"}</div>
-                              <div className="text-md text-gray-500">{s.school}</div>
+                              <CardTitle className="text-2xl font-bold text-white mb-2">{m.name}</CardTitle>
+                              <div className="text-lg text-helix-text-light line-clamp-3 mb-2">{m.jobTitle}</div>
+                              <div className="text-base text-helix-text-light mb-2">{m.company}</div>
                             </CardHeader>
-                            <CardContent className="space-y-4">
-                              <div className="flex flex-wrap gap-1 mt-2">
-                                {s.skills && s.skills.slice(0, 3).map((skill: string) => (
-                                  <span key={skill} className="bg-gray-200 rounded px-2 py-1 text-xs text-gray-700">{skill}</span>
-                                ))}
-                                {s.skills && s.skills.length > 3 && (
-                                  <span className="bg-gray-200 rounded px-2 py-1 text-xs text-gray-700">+{s.skills.length - 3} more</span>
-                                )}
-                              </div>
-                              <div className="text-xs text-gray-500">Location: <span className="font-medium text-gray-700">{s.location}</span></div>
-                              {s.competitions && s.competitions.length > 0 && (
-                                <div className="text-xs text-gray-500">Competition: <span className="font-medium text-gray-700">{s.competitions[0]}</span></div>
-                              )}
-                              <div className="flex items-center justify-between mt-2">
-                                <div></div>
-                                <Button size="sm" className="ml-auto" onClick={() => handleProfileClick(s, 'student')}>Connect</Button>
+                            <CardContent className="flex flex-col gap-4">
+                              <div className="flex items-center justify-between mt-4">
+                                <div className="text-sm text-helix-text-light">{m.state}</div>
+                                <Button size="sm" className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold" onClick={() => handleProfileClick(m, 'mentor')}>Connect</Button>
                               </div>
                             </CardContent>
                           </Card>
                         </div>
                       ))}
                     </div>
-                  )}
-                  {activeTab === "emails" && (
-                    <div>
-                      {loadingEmails ? (
-                        <div className="text-center text-gray-500 py-8">Loading sent emails...</div>
-                      ) : sentEmails.length === 0 ? (
-                        <div className="text-center text-gray-500 py-8">No sent emails yet.</div>
-                      ) : (
-                        <div className="space-y-4">
-                          {sentEmails.map((email: any) => (
-                            <div key={email.id} className="border rounded-lg p-4 bg-white shadow-sm">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Mail className="h-4 w-4 text-blue-400" />
-                                <span className="font-semibold text-gray-800">To:</span>
-                                <span className="text-gray-700">{email.email_to}</span>
-                                <span className="ml-auto text-xs text-gray-400">{new Date(email.sent_at).toLocaleString()}</span>
-                              </div>
-                              <div className="font-bold text-gray-900 mb-1">{email.subject}</div>
-                              <div className="text-gray-700 text-sm italic">
-                                {email.body && email.body.length > 50 ? email.body.substring(0, 50) + "..." : email.body}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  {filtered.length === 0 && filteredStudents.length === 0 && <div className="text-center text-gray-500 mt-10">No mentors or students found.</div>}
-                </TextFade>
+                    
+                    {pagination.totalPages > 1 && (
+                      <div className="flex justify-center items-center gap-4 mt-12">
+                        <Button
+                          variant="outline"
+                          onClick={() => handlePageChange(pagination.page - 1)}
+                          disabled={!pagination.hasPrev}
+                          className="border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold"
+                        >
+                          Previous
+                        </Button>
+                        
+                        <span className="text-lg text-helix-text-light">
+                          Page {pagination.page} of {pagination.totalPages}
+                        </span>
+                        
+                        <Button
+                          variant="outline"
+                          onClick={() => handlePageChange(pagination.page + 1)}
+                          disabled={!pagination.hasNext}
+                          className="border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold"
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    )}
+                    
+                    {mentors.length === 0 && !loadingMentors && (
+                      <div className="text-center text-helix-text-light mt-16">
+                        <div className="text-3xl md:text-5xl font-black mb-4">No mentors found</div>
+                        <p className="text-lg md:text-xl mb-8">Try adjusting your search or filters</p>
+                        <Button 
+                          onClick={clearFilters}
+                          className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow font-bold text-lg px-8 py-4 rounded-full"
+                        >
+                          Clear Filters
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
-            </>
-          )}
+            )}
+            {activeTab === "student" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12">
+                {filteredStudents.map((s, i) => (
+                  <div key={"student-"+i} className="focus:outline-none focus:ring-4 focus:ring-helix-gradient-start/30 rounded-[24px]">
+                    <Card className="glass border border-white/10 shadow-xl hover:shadow-2xl hover:glow transition-all duration-300 cursor-pointer"> 
+                      <CardHeader className="pb-8">
+                        <div className="flex justify-between items-start mb-6">
+                          <Badge className="border-2 bg-green-400/20 text-green-400 border-green-400/30 px-4 py-2 text-sm font-bold uppercase tracking-widest">Student</Badge>
+                          <div className="text-4xl"><Users /></div>
+                        </div>
+                        <CardTitle className="text-2xl font-black text-white">{s.first_name} {s.last_name}</CardTitle>
+                        <div className="text-lg text-helix-text-light">{s.grade_level || "Student"}</div>
+                        <div className="text-base text-helix-text-light">{s.school}</div>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          {s.skills && s.skills.slice(0, 3).map((skill: string) => (
+                            <span key={skill} className="bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm text-helix-text-light">{skill}</span>
+                          ))}
+                          {s.skills && s.skills.length > 3 && (
+                            <span className="bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm text-helix-text-light">+{s.skills.length - 3} more</span>
+                          )}
+                        </div>
+                        <div className="text-sm text-helix-text-light">Location: <span className="font-medium text-white">{s.location}</span></div>
+                        {s.competitions && s.competitions.length > 0 && (
+                          <div className="text-sm text-helix-text-light">Competition: <span className="font-medium text-white">{s.competitions[0]}</span></div>
+                        )}
+                        <div className="flex items-center justify-between mt-4">
+                          <div></div>
+                          <Button size="sm" className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold" onClick={() => handleProfileClick(s, 'student')}>Connect</Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+              </div>
+            )}
+            {activeTab === "emails" && (
+              <div>
+                {loadingEmails ? (
+                  <div className="text-center text-helix-text-light py-16">Loading sent emails...</div>
+                ) : sentEmails.length === 0 ? (
+                  <div className="text-center text-helix-text-light py-16">No sent emails yet.</div>
+                ) : (
+                  <div className="space-y-6">
+                    {sentEmails.map((email: any) => (
+                      <div key={email.id} className="glass border border-white/10 rounded-[16px] p-6 shadow-xl">
+                        <div className="flex items-center gap-3 mb-4">
+                          <Mail className="h-5 w-5 text-helix-gradient-start" />
+                          <span className="font-bold text-white">To:</span>
+                          <span className="text-helix-text-light">{email.email_to}</span>
+                          <span className="ml-auto text-sm text-helix-text-light">{new Date(email.sent_at).toLocaleString()}</span>
+                        </div>
+                        <div className="font-bold text-white mb-2">{email.subject}</div>
+                        <div className="text-helix-text-light text-base italic">
+                          {email.body && email.body.length > 50 ? email.body.substring(0, 50) + "..." : email.body}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+            {mentors.length === 0 && filteredStudents.length === 0 && <div className="text-center text-helix-text-light mt-16">No mentors or students found.</div>}
+          </TextFade>
         </div>
         <ProfileModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} profile={selectedProfile} />
         {showAuthModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Sign in or Sign up</h2>
-              <p className="text-gray-500 text-center mb-4">Sign in or create an account to access Connect and start collaborating with mentors and students.</p>
-              <div className="flex w-full gap-2">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
+            <div className="glass border border-white/10 rounded-[24px] shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
+              <h2 className="text-2xl font-bold text-white mb-2">Sign in or Sign up</h2>
+              <p className="text-helix-text-light text-center mb-4">Sign in or create an account to access Connect and start collaborating with mentors and students.</p>
+              <div className="flex w-full gap-3">
                 <SignInButton mode="modal">
-                  <button className="flex-1 py-2 rounded-lg border border-black text-black font-semibold bg-white hover:bg-gray-100 transition">Sign In</button>
+                  <button className="flex-1 py-3 rounded-full border border-white/20 text-white font-bold bg-white/10 hover:bg-white/20 transition">Sign In</button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="flex-1 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-900 transition">Sign Up</button>
+                  <button className="flex-1 py-3 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white font-bold hover:shadow-xl glow transition">Sign Up</button>
                 </SignUpButton>
               </div>
             </div>
