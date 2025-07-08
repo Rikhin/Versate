@@ -102,7 +102,7 @@ export function Header() {
             onMouseLeave={() => setFindDropdownOpen(false)}
           >
             <button
-              className="transition pointer-events-auto flex items-center gap-1 uppercase text-white hover:text-helix-gradient-start focus:text-helix-gradient-start focus:outline-none focus:ring-2 focus:ring-helix-gradient-start"
+              className="transition pointer-events-auto flex items-center gap-1 text-white hover:text-helix-gradient-start focus:text-helix-gradient-start focus:outline-none focus:ring-2 focus:ring-helix-gradient-start"
               tabIndex={showModal ? -1 : 0}
               aria-disabled={showModal}
               style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}

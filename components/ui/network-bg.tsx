@@ -23,6 +23,8 @@ export const NetworkBG = (props: NetworkBGProps) => {
   const edges = useRef<any[]>([]);
   const animationRef = useRef<number>();
   const lastScrollY = useRef<number>(0);
+  let rotation = 0;
+  let lastTimestamp = 0;
 
   // Helper: Prim's algorithm for MST
   function computeMST(nodes: any[]) {
@@ -116,19 +118,19 @@ export const NetworkBG = (props: NetworkBGProps) => {
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
 
-    function draw() {
+    function draw(timestamp?: number) {
       if (!ctx) return;
       ctx.clearRect(0, 0, w, h);
       ctx.save();
-      ctx.fillStyle = "#111216"; // Pure black background
+      ctx.fillStyle = "#111216";
       ctx.fillRect(0, 0, w, h);
       ctx.restore();
 
       // Animate node positions
       for (let i = 0; i < dots.current.length; i++) {
         let d = dots.current[i];
-        d.x += d.vx;
-        d.y += d.vy;
+        d.x += d.vx * 1.5;
+        d.y += d.vy * 1.5;
         // Bounce off edges
         if (d.x < 0 || d.x > w) d.vx *= -1;
         if (d.y < 0 || d.y > h) d.vy *= -1;
@@ -136,6 +138,18 @@ export const NetworkBG = (props: NetworkBGProps) => {
 
       // Parallax: shift nodes vertically based on scroll
       const parallax = lastScrollY.current * 0.08;
+
+      // Add slow rotation
+      if (timestamp !== undefined) {
+        if (lastTimestamp) {
+          rotation += 0.0005 * (timestamp - lastTimestamp);
+        }
+        lastTimestamp = timestamp;
+      }
+      ctx.save();
+      ctx.translate(w / 2, h / 2);
+      ctx.rotate(rotation);
+      ctx.translate(-w / 2, -h / 2);
 
       // Draw edges (MST + extras)
       ctx.save();
@@ -161,6 +175,7 @@ export const NetworkBG = (props: NetworkBGProps) => {
         ctx.fillRect(x - size/2, y - size/2 + parallax, size, size);
         ctx.restore();
       }
+      ctx.restore();
       animationRef.current = requestAnimationFrame(draw);
     }
     animationRef.current = requestAnimationFrame(draw);

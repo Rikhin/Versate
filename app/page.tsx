@@ -147,10 +147,10 @@ export default function LandingPage() {
             </span>
           </div>
           <div ref={heroRef} className="relative z-10 flex flex-col items-start justify-center w-full parallax-hero-text">
-            <h1 className="text-4xl md:text-6xl font-bold mb-8 text-left leading-tight tracking-tight">
-              Enhance Your High School Experience With <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versa</span>
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 text-left leading-tight tracking-tight">
+              Enhance Your High School Experience with <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versa</span>
             </h1>
-            <p className="text-lg md:text-xl text-white/70 mb-8 max-w-2xl text-left leading-relaxed">Discover, connect, and build with the best students for competitions and projects.</p>
+            <p className="text-lg md:text-xl text-white/70 mb-12 max-w-2xl text-left leading-relaxed">Discover, connect, and build with the best students for competitions and projects.</p>
             <div className="flex flex-row items-center gap-6 mt-2">
               <Link href="/dashboard">
                 <button className="bg-white text-black font-semibold rounded px-6 py-3 text-base shadow-none border-none hover:bg-gray-100 transition">Go to Dashboard</button>
@@ -160,7 +160,7 @@ export default function LandingPage() {
         </section>
 
         {/* Stats Section */}
-        <section className="py-16">
+        <section className="py-12 md:py-16 -mt-8">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
               {stats.map((stat, index) => (
