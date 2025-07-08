@@ -17,13 +17,46 @@ function randomBetween(a: number, b: number) {
   return a + Math.random() * (b - a);
 }
 
+// 3D node structure
+interface Dot3D {
+  x: number;
+  y: number;
+  z: number;
+  vx: number;
+  vy: number;
+  vz: number;
+  color: string;
+  size: number;
+}
+
+function project3D(dot: { x: number; y: number; z: number }, w: number, h: number, fov: number = 500) {
+  // Simple perspective projection
+  const scale = fov / (fov + dot.z);
+  return {
+    x: w / 2 + dot.x * scale,
+    y: h / 2 + dot.y * scale,
+    scale,
+  };
+}
+
+function rotate3D(dot: Dot3D, rotX: number, rotZ: number) {
+  // Rotate around X axis
+  let y = dot.y * Math.cos(rotX) - dot.z * Math.sin(rotX);
+  let z = dot.y * Math.sin(rotX) + dot.z * Math.cos(rotX);
+  // Rotate around Z axis
+  let x = dot.x * Math.cos(rotZ) - y * Math.sin(rotZ);
+  y = dot.x * Math.sin(rotZ) + y * Math.cos(rotZ);
+  return { x, y, z };
+}
+
 export const NetworkBG = (props: NetworkBGProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const dots = useRef<any[]>([]);
+  const dots = useRef<Dot3D[]>([]);
   const edges = useRef<any[]>([]);
   const animationRef = useRef<number>();
   const lastScrollY = useRef<number>(0);
-  let rotation = 0;
+  let rotX = 0;
+  let rotZ = 0;
   let lastTimestamp = 0;
 
   // Helper: Prim's algorithm for MST
@@ -85,14 +118,16 @@ export const NetworkBG = (props: NetworkBGProps) => {
       canvas.width = w;
       canvas.height = h;
       // Re-randomize dot positions
-      const dotCount = getDotCount();
-      dots.current = Array.from({ length: dotCount }, (_, i) => ({
-        x: randomBetween(0, w),
-        y: randomBetween(0, h),
-        vx: randomBetween(-0.08, 0.08),
-        vy: randomBetween(-0.08, 0.08),
+      const dotCount = 64;
+      dots.current = Array.from({ length: dotCount }, () => ({
+        x: randomBetween(-200, 200),
+        y: randomBetween(-120, 120),
+        z: randomBetween(-200, 200),
+        vx: randomBetween(-0.5, 0.5),
+        vy: randomBetween(-0.5, 0.5),
+        vz: randomBetween(-0.5, 0.5),
         color: NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
-        size: [6, 12][Math.floor(Math.random() * 2)]
+        size: [6, 10][Math.floor(Math.random() * 2)]
       }));
       // Compute MST edges
       edges.current = computeMST(dots.current);
@@ -126,56 +161,62 @@ export const NetworkBG = (props: NetworkBGProps) => {
       ctx.fillRect(0, 0, w, h);
       ctx.restore();
 
-      // Animate node positions
+      // Animate node positions in 3D
       for (let i = 0; i < dots.current.length; i++) {
         let d = dots.current[i];
-        d.x += d.vx * 1.5;
-        d.y += d.vy * 1.5;
-        // Bounce off edges
-        if (d.x < 0 || d.x > w) d.vx *= -1;
-        if (d.y < 0 || d.y > h) d.vy *= -1;
+        d.x += d.vx;
+        d.y += d.vy;
+        d.z += d.vz;
+        // Bounce off a 3D box
+        if (d.x < -220 || d.x > 220) d.vx *= -1;
+        if (d.y < -140 || d.y > 140) d.vy *= -1;
+        if (d.z < -220 || d.z > 220) d.vz *= -1;
       }
 
-      // Parallax: shift nodes vertically based on scroll
-      const parallax = lastScrollY.current * 0.08;
-
-      // Add slow rotation
+      // Animate rotation
       if (timestamp !== undefined) {
         if (lastTimestamp) {
-          rotation += 0.0005 * (timestamp - lastTimestamp);
+          rotX += 0.0007 * (timestamp - lastTimestamp);
+          rotZ += 0.0005 * (timestamp - lastTimestamp);
         }
         lastTimestamp = timestamp;
       }
-      ctx.save();
-      ctx.translate(w / 2, h / 2);
-      ctx.rotate(rotation);
-      ctx.translate(-w / 2, -h / 2);
 
-      // Draw edges (MST + extras)
+      // Project and draw edges
       ctx.save();
+      ctx.globalAlpha = 0.13;
       ctx.strokeStyle = "#f3f4f6";
       ctx.lineWidth = 0.7;
-      ctx.globalAlpha = 0.13;
-      for (let [i, j] of edges.current) {
-        const a = dots.current[i];
-        const b = dots.current[j];
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y + parallax);
-        ctx.lineTo(b.x, b.y + parallax);
-        ctx.stroke();
+      for (let i = 0; i < dots.current.length; i++) {
+        for (let j = i + 1; j < dots.current.length; j++) {
+          const a = rotate3D(dots.current[i], rotX, rotZ);
+          const b = rotate3D(dots.current[j], rotX, rotZ);
+          // Only draw if close in 3D
+          const dist = Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2 + (a.z - b.z) ** 2);
+          if (dist < 120) {
+            const pa = project3D(a, w, h);
+            const pb = project3D(b, w, h);
+            ctx.beginPath();
+            ctx.moveTo(pa.x, pa.y);
+            ctx.lineTo(pb.x, pb.y);
+            ctx.stroke();
+          }
+        }
       }
       ctx.restore();
 
-      // Draw nodes as squares (above lines)
+      // Project and draw nodes
       for (let i = 0; i < dots.current.length; i++) {
-        const { x, y, color, size } = dots.current[i];
+        const d = rotate3D(dots.current[i], rotX, rotZ);
+        const p = project3D(d, w, h);
         ctx.save();
-        ctx.fillStyle = color;
+        ctx.fillStyle = dots.current[i].color;
         ctx.globalAlpha = 0.8;
-        ctx.fillRect(x - size/2, y - size/2 + parallax, size, size);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, dots.current[i].size * p.scale * 0.5, 0, 2 * Math.PI);
+        ctx.fill();
         ctx.restore();
       }
-      ctx.restore();
       animationRef.current = requestAnimationFrame(draw);
     }
     animationRef.current = requestAnimationFrame(draw);

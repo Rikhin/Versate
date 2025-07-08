@@ -148,7 +148,7 @@ export default function LandingPage() {
           </div>
           <div ref={heroRef} className="relative z-10 flex flex-col items-start justify-center w-full parallax-hero-text">
             <h1 className="text-4xl md:text-6xl font-bold mb-4 text-left leading-tight tracking-tight">
-              Enhance Your High School Experience with <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versa</span>
+              Enhance Your High School <span className="whitespace-nowrap">Experience with <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versa</span></span>
             </h1>
             <p className="text-lg md:text-xl text-white/70 mb-12 max-w-2xl text-left leading-relaxed">Discover, connect, and build with the best students for competitions and projects.</p>
             <div className="flex flex-row items-center gap-6 mt-2">
@@ -160,7 +160,7 @@ export default function LandingPage() {
         </section>
 
         {/* Stats Section */}
-        <section className="py-12 md:py-16 -mt-8">
+        <section className="py-12 md:py-16 mt-24">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
               {stats.map((stat, index) => (

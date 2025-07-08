@@ -10,7 +10,8 @@ import { Badge } from "./badge";
 import { createClient } from "@/lib/supabase";
 import { useOnboardingModal } from "@/components/onboarding/OnboardingScrollEnforcer";
 import { useRouter } from "next/navigation";
-import { FaTwitter, FaInstagram } from 'react-icons/fa';
+import { FaInstagram } from 'react-icons/fa';
+import { SiX } from 'react-icons/si';
 
 export function Header() {
   const { isSignedIn, user } = useUser();
@@ -144,7 +145,7 @@ export function Header() {
         {/* Right: Social, dashboard/profile */}
         <div className="flex items-center gap-8 min-w-[180px] justify-end">
           <a href="https://twitter.com/your-link" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform text-white/80 hover:text-[#1da1f2]">
-            <FaTwitter className="w-6 h-6" />
+            <SiX className="w-6 h-6" />
           </a>
           <a href="https://instagram.com/your-link" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform text-white/80 hover:text-[#e1306c]">
             <FaInstagram className="w-6 h-6" />
