@@ -147,10 +147,11 @@ export default function LandingPage() {
             </span>
           </div>
           <div ref={heroRef} className="relative z-10 flex flex-col items-start justify-center w-full parallax-hero-text">
-            <h1 className="text-6xl md:text-8xl font-bold mb-2 text-left leading-tight tracking-tight">
-              Enhance Your High School <span className="whitespace-nowrap">Experience with <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versa</span></span>
+            <h1 className="text-6xl md:text-7xl font-bold mb-4 text-left leading-tight tracking-tight">
+              Enhance Your<br />
+              <span className="whitespace-nowrap">High School Experience with <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versa</span></span>
             </h1>
-            <p className="text-xl md:text-2xl text-white/70 mb-12 max-w-2xl text-left leading-relaxed">Discover, connect, and build with the best students for competitions and projects.</p>
+            <p className="text-xl md:text-2xl text-white/70 mb-10 max-w-2xl text-left leading-relaxed">Discover, connect, and build with the best students for competitions and projects.</p>
             <div className="flex flex-row items-center gap-8 mt-8">
               <Link href="/dashboard">
                 <button className="bg-white text-black font-semibold rounded px-8 py-4 text-lg shadow-none border-none hover:bg-gray-100 transition">Go to Dashboard</button>
