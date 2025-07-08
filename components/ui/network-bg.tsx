@@ -118,11 +118,11 @@ export const NetworkBG = (props: NetworkBGProps) => {
       canvas.width = w;
       canvas.height = h;
       // Re-randomize dot positions
-      const dotCount = 64;
+      const dotCount = 110;
       dots.current = Array.from({ length: dotCount }, () => ({
-        x: randomBetween(-200, 200),
-        y: randomBetween(-120, 120),
-        z: randomBetween(-200, 200),
+        x: randomBetween(-420, 420),
+        y: randomBetween(-260, 260),
+        z: randomBetween(-420, 420),
         vx: randomBetween(-0.5, 0.5),
         vy: randomBetween(-0.5, 0.5),
         vz: randomBetween(-0.5, 0.5),
