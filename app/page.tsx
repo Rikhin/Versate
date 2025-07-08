@@ -141,32 +141,32 @@ export default function LandingPage() {
         <section id="home" className="flex flex-col items-start justify-center min-h-[90vh] w-full relative pl-12 md:pl-24">
           {/* Not backed by Y Combinator badge */}
           <div className="mb-8">
-            <span className="inline-flex items-center rounded-full border border-orange-500 px-4 py-1 text-orange-500 text-base font-semibold bg-transparent" style={{letterSpacing: '0.01em'}}>
-              <span className="bg-orange-500 text-white rounded w-6 h-6 flex items-center justify-center mr-2 font-bold text-sm" style={{fontFamily: 'Inter, sans-serif'}}>Y</span>
+            <span className="inline-flex items-center rounded-full border border-orange-500 px-6 py-3 text-orange-500 text-base font-semibold bg-transparent" style={{letterSpacing: '0.01em'}}>
+              <span className="bg-orange-500 text-white rounded w-6 h-6 flex items-center justify-center mr-3 font-bold text-sm" style={{fontFamily: 'Inter, sans-serif'}}>Y</span>
               Not Backed by Y Combinator
             </span>
           </div>
           <div ref={heroRef} className="relative z-10 flex flex-col items-start justify-center w-full parallax-hero-text">
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-12 text-left leading-tight tracking-tight">
+            <h1 className="text-4xl md:text-6xl font-bold mb-8 text-left leading-tight tracking-tight">
               Enhance Your High School Experience With <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versa</span>
             </h1>
-            <p className="text-xl md:text-2xl text-white/70 mb-10 max-w-2xl text-left">Discover, connect, and build with the best students for competitions and projects.</p>
+            <p className="text-lg md:text-xl text-white/70 mb-8 max-w-2xl text-left leading-relaxed">Discover, connect, and build with the best students for competitions and projects.</p>
             <div className="flex flex-row items-center gap-6 mt-2">
               <Link href="/dashboard">
-                <button className="bg-white text-black font-bold rounded px-8 py-4 text-lg shadow-none border-none hover:bg-gray-100 transition">Go to Dashboard</button>
+                <button className="bg-white text-black font-semibold rounded px-6 py-3 text-base shadow-none border-none hover:bg-gray-100 transition">Go to Dashboard</button>
               </Link>
             </div>
           </div>
         </section>
 
         {/* Stats Section */}
-        <section className="py-20">
+        <section className="py-16">
           <TextFade triggerStart="top 80%" triggerEnd="bottom 20%" stagger={0.1}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
               {stats.map((stat, index) => (
-                <div key={index} className="text-center py-8">
-                  <div className="text-4xl sm:text-5xl md:text-7xl font-black gradient-text-helix mb-4">{stat.value}</div>
-                  <div className="text-sm md:text-lg text-helix-text-light uppercase tracking-widest font-medium">{stat.label}</div>
+                <div key={index} className="text-center py-6">
+                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold gradient-text-helix mb-3">{stat.value}</div>
+                  <div className="text-sm md:text-base text-helix-text-light uppercase tracking-widest font-medium">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -174,122 +174,122 @@ export default function LandingPage() {
         </section>
 
         {/* Main Content Sections */}
-        <div className="space-y-32">
+        <div className="space-y-24">
           {/* Why Versate Section */}
-          <section className="glass p-12 md:p-20 rounded-[32px] border border-white/10 shadow-2xl">
-            <div className="text-center mb-16">
-              <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-white mb-8 ${inter.className}`}>
+          <section className="glass p-8 md:p-16 rounded-[24px] border border-white/10 shadow-xl">
+            <div className="text-center mb-12">
+              <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 ${inter.className}`}>
                 Why <span className="gradient-text-helix">Versate?</span>
               </h2>
-              <p className={`text-xl md:text-2xl text-helix-text-light max-w-4xl mx-auto leading-relaxed ${inter.className}`}>
+              <p className={`text-lg md:text-xl text-helix-text-light max-w-4xl mx-auto leading-relaxed ${inter.className}`}>
                 Versate provides info and access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.
               </p>
             </div>
-            <div className="flex flex-wrap justify-center gap-6 w-full">
-              <div className={`rounded-full border-2 border-helix-gradient-start/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-helix-gradient-start whitespace-nowrap ${inter.className}`}>Researchers</div>
-              <div className={`rounded-full border-2 border-green-400/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-green-400 whitespace-nowrap ${inter.className}`}>Admission Counselors</div>
-              <div className={`rounded-full border-2 border-blue-400/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-blue-400 whitespace-nowrap ${inter.className}`}>Y-Combinator Affiliates</div>
-              <div className={`rounded-full border-2 border-purple-400/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-purple-400 whitespace-nowrap ${inter.className}`}>Summer Programs</div>
-              <div className={`rounded-full border-2 border-pink-400/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-pink-400 whitespace-nowrap ${inter.className}`}>Competitions</div>
-              <div className={`rounded-full border-2 border-gray-400/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-gray-300 whitespace-nowrap ${inter.className}`}>Student Community</div>
+            <div className="flex flex-wrap justify-center gap-4 w-full">
+              <div className={`rounded-full border-2 border-helix-gradient-start/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-helix-gradient-start whitespace-nowrap ${inter.className}`}>Researchers</div>
+              <div className={`rounded-full border-2 border-green-400/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-green-400 whitespace-nowrap ${inter.className}`}>Admission Counselors</div>
+              <div className={`rounded-full border-2 border-blue-400/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-blue-400 whitespace-nowrap ${inter.className}`}>Y-Combinator Affiliates</div>
+              <div className={`rounded-full border-2 border-purple-400/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-purple-400 whitespace-nowrap ${inter.className}`}>Summer Programs</div>
+              <div className={`rounded-full border-2 border-pink-400/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-pink-400 whitespace-nowrap ${inter.className}`}>Competitions</div>
+              <div className={`rounded-full border-2 border-gray-400/30 bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-semibold text-gray-300 whitespace-nowrap ${inter.className}`}>Student Community</div>
             </div>
           </section>
 
           {/* Everything You Need to Succeed (Features) */}
-          <section className="glass p-12 md:p-20 rounded-[32px] border border-white/10 shadow-2xl">
-            <div className="text-center mb-16">
-              <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-white mb-8 ${inter.className}`}>
+          <section className="glass p-8 md:p-16 rounded-[24px] border border-white/10 shadow-xl">
+            <div className="text-center mb-12">
+              <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 ${inter.className}`}>
                 Everything You Need to <span className="gradient-text-helix">Succeed</span>
               </h2>
-              <p className={`text-xl md:text-2xl text-helix-text-light max-w-4xl mx-auto leading-relaxed ${inter.className}`}>
+              <p className={`text-lg md:text-xl text-helix-text-light max-w-4xl mx-auto leading-relaxed ${inter.className}`}>
                 Access to thousands of researchers, college admission counselors, Y-Combinator affiliates, summer programs, competitions, and communication with other student users.
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 w-full max-w-6xl mx-auto">
-              <div className="glass p-8 md:p-12 rounded-[24px] border border-white/10 text-center shadow-xl">
-                <div className="w-16 h-16 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end rounded-full flex items-center justify-center mx-auto mb-6 glow">
-                  <Users className="w-8 h-8 text-white" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 w-full max-w-6xl mx-auto">
+              <div className="glass p-6 md:p-8 rounded-[20px] border border-white/10 text-center shadow-lg">
+                <div className="w-12 h-12 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end rounded-full flex items-center justify-center mx-auto mb-4 glow">
+                  <Users className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Connect with Peers</h3>
-                <p className="text-helix-text-light text-lg leading-relaxed">Find like-minded students, form study groups, and collaborate on projects. Build meaningful connections that last beyond competitions.</p>
+                <h3 className="text-xl font-semibold text-white mb-3">Connect with Peers</h3>
+                <p className="text-helix-text-light text-base leading-relaxed">Find like-minded students, form study groups, and collaborate on projects. Build meaningful connections that last beyond competitions.</p>
               </div>
               
-              <div className="glass p-8 md:p-12 rounded-[24px] border border-white/10 text-center shadow-xl">
-                <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 glow">
-                  <Target className="w-8 h-8 text-white" />
+              <div className="glass p-6 md:p-8 rounded-[20px] border border-white/10 text-center shadow-lg">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 glow">
+                  <Target className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Discover Opportunities</h3>
-                <p className="text-helix-text-light text-lg leading-relaxed">Access curated competitions, research programs, and mentorship opportunities. Find the perfect fit for your interests and goals.</p>
+                <h3 className="text-xl font-semibold text-white mb-3">Discover Opportunities</h3>
+                <p className="text-helix-text-light text-base leading-relaxed">Access curated competitions, research programs, and mentorship opportunities. Find the perfect fit for your interests and goals.</p>
               </div>
               
-              <div className="glass p-8 md:p-12 rounded-[24px] border border-white/10 text-center shadow-xl">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 glow">
-                  <Zap className="w-8 h-8 text-white" />
+              <div className="glass p-6 md:p-8 rounded-[20px] border border-white/10 text-center shadow-lg">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 glow">
+                  <Zap className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Accelerate Growth</h3>
-                <p className="text-helix-text-light text-lg leading-relaxed">Get personalized recommendations, track your progress, and receive guidance from experts. Maximize your potential and achieve your goals faster.</p>
+                <h3 className="text-xl font-semibold text-white mb-3">Accelerate Growth</h3>
+                <p className="text-helix-text-light text-base leading-relaxed">Get personalized recommendations, track your progress, and receive guidance from experts. Maximize your potential and achieve your goals faster.</p>
               </div>
             </div>
           </section>
 
           {/* How It Works */}
-          <section className="glass p-12 md:p-20 rounded-[32px] border border-white/10 shadow-2xl">
-            <div className="text-center mb-16">
-              <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-white mb-8 ${inter.className}`}>
+          <section className="glass p-8 md:p-16 rounded-[24px] border border-white/10 shadow-xl">
+            <div className="text-center mb-12">
+              <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 ${inter.className}`}>
                 <span className="gradient-text-helix">How</span> It Works
               </h2>
             </div>
-            <div className="flex flex-col md:flex-row gap-8 md:gap-12 w-full justify-center items-stretch max-w-6xl mx-auto">
-              <Card className="flex-1 glass border border-white/10 rounded-[24px] shadow-xl p-8 md:p-12 flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end rounded-full flex items-center justify-center mb-6 glow">
-                  <span className="text-2xl font-black text-white">1</span>
+            <div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full justify-center items-stretch max-w-6xl mx-auto">
+              <Card className="flex-1 glass border border-white/10 rounded-[20px] shadow-lg p-6 md:p-8 flex flex-col items-center text-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end rounded-full flex items-center justify-center mb-4 glow">
+                  <span className="text-xl font-bold text-white">1</span>
                 </div>
-                <CardTitle className="text-2xl font-bold mb-4 text-white">Sign Up & Create Profile</CardTitle>
-                <CardDescription className="text-helix-text-light text-lg leading-relaxed">Tell us your interests, skills, and goals to get personalized matches and recommendations.</CardDescription>
+                <CardTitle className="text-xl font-semibold mb-3 text-white">Sign Up & Create Profile</CardTitle>
+                <CardDescription className="text-helix-text-light text-base leading-relaxed">Tell us your interests, skills, and goals to get personalized matches and recommendations.</CardDescription>
               </Card>
-              <Card className="flex-1 glass border border-white/10 rounded-[24px] shadow-xl p-8 md:p-12 flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mb-6 glow">
-                  <span className="text-2xl font-black text-white">2</span>
+              <Card className="flex-1 glass border border-white/10 rounded-[20px] shadow-lg p-6 md:p-8 flex flex-col items-center text-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mb-4 glow">
+                  <span className="text-xl font-bold text-white">2</span>
                 </div>
-                <CardTitle className="text-2xl font-bold mb-4 text-white">Connect & Collaborate</CardTitle>
-                <CardDescription className="text-helix-text-light text-lg leading-relaxed">Message, join teams, and work together on research, competitions, and projects.</CardDescription>
+                <CardTitle className="text-xl font-semibold mb-3 text-white">Connect & Collaborate</CardTitle>
+                <CardDescription className="text-helix-text-light text-base leading-relaxed">Message, join teams, and work together on research, competitions, and projects.</CardDescription>
               </Card>
-              <Card className="flex-1 glass border border-white/10 rounded-[24px] shadow-xl p-8 md:p-12 flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mb-6 glow">
-                  <span className="text-2xl font-black text-white">3</span>
+              <Card className="flex-1 glass border border-white/10 rounded-[20px] shadow-lg p-6 md:p-8 flex flex-col items-center text-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mb-4 glow">
+                  <span className="text-xl font-bold text-white">3</span>
                 </div>
-                <CardTitle className="text-2xl font-bold mb-4 text-white">Achieve & Grow</CardTitle>
-                <CardDescription className="text-helix-text-light text-lg leading-relaxed">Win competitions, publish research, and build your network with Versate's support.</CardDescription>
+                <CardTitle className="text-xl font-semibold mb-3 text-white">Achieve & Grow</CardTitle>
+                <CardDescription className="text-helix-text-light text-base leading-relaxed">Win competitions, publish research, and build your network with Versate's support.</CardDescription>
               </Card>
             </div>
           </section>
 
           {/* Supported Competitions */}
-          <section className="glass p-12 md:p-20 rounded-[32px] border border-white/10 shadow-2xl">
-            <div className="text-center mb-16">
-              <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-white mb-8 ${inter.className}`}>
+          <section className="glass p-8 md:p-16 rounded-[24px] border border-white/10 shadow-xl">
+            <div className="text-center mb-12">
+              <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 ${inter.className}`}>
                 Supported <span className="gradient-text-helix">Competitions</span>
               </h2>
-              <p className="text-xl md:text-2xl text-helix-text-light max-w-4xl mx-auto leading-relaxed">We support teams participating in prestigious academic competitions worldwide</p>
+              <p className="text-lg md:text-xl text-helix-text-light max-w-4xl mx-auto leading-relaxed">We support teams participating in prestigious academic competitions worldwide</p>
             </div>
-            <div className="flex flex-wrap justify-center gap-8 md:gap-12 w-full max-w-6xl mx-auto">
+            <div className="flex flex-wrap justify-center gap-6 md:gap-8 w-full max-w-6xl mx-auto">
               {competitions.slice(0, 8).map((competition) => (
                 <Link
                   key={competition.id}
                   href={`/competitions/${competition.id}`}
                   className="focus:outline-none focus:ring-4 focus:ring-helix-gradient-start/30"
                 >
-                  <div className="glass border border-white/10 rounded-[24px] shadow-xl px-10 py-10 w-72 h-56 hover:glow transition-all duration-300 flex flex-col items-center justify-center">
-                    <span className="text-5xl mb-4">{competition.icon}</span>
-                    <span className="text-xl font-bold leading-tight text-center text-white">{competition.name}</span>
+                  <div className="glass border border-white/10 rounded-[20px] shadow-lg px-8 py-8 w-64 h-48 hover:glow transition-all duration-300 flex flex-col items-center justify-center">
+                    <span className="text-4xl mb-3">{competition.icon}</span>
+                    <span className="text-lg font-semibold leading-tight text-center text-white">{competition.name}</span>
                   </div>
                 </Link>
               ))}
             </div>
-            <div className="flex justify-center mt-16">
+            <div className="flex justify-center mt-12">
               <Link href="/competitions">
-                <Button className="rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow font-bold text-xl px-12 py-6">
+                <Button className="rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow font-semibold text-lg px-10 py-4">
                   View All Competitions
                 </Button>
               </Link>
@@ -297,39 +297,39 @@ export default function LandingPage() {
           </section>
 
           {/* Pricing */}
-          <section className="glass p-12 md:p-20 rounded-[32px] border border-white/10 shadow-2xl">
-            <div className="text-center mb-16">
-              <div className="flex justify-center mb-8">
-                <span className={`inline-flex items-center text-lg font-bold text-white ${versateGradient} rounded-full px-6 py-3 tracking-wide glow`}>
-                  <Rocket className="w-5 h-5 mr-3" />
+          <section className="glass p-8 md:p-16 rounded-[24px] border border-white/10 shadow-xl">
+            <div className="text-center mb-12">
+              <div className="flex justify-center mb-6">
+                <span className={`inline-flex items-center text-base font-semibold text-white ${versateGradient} rounded-full px-6 py-3 tracking-wide glow`}>
+                  <Rocket className="w-4 h-4 mr-2" />
                   One-Time Purchase, Lifetime Access
                 </span>
               </div>
-              <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-white mb-8 ${inter.className}`}>Pricing</h2>
+              <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 ${inter.className}`}>Pricing</h2>
             </div>
-            <div className="w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-8 md:gap-8 justify-center items-stretch mb-16">
+            <div className="w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-6 md:gap-6 justify-center items-stretch mb-12">
               {plans.map((plan, i) => (
                 <div
                   key={plan.name}
-                  className={`flex-1 glass border border-white/10 rounded-[24px] shadow-xl p-8 md:p-12 flex flex-col items-center min-w-[320px] max-w-sm relative transition-all duration-300 ${i === 1 ? 'border-2 border-helix-gradient-start glow' : ''}`}
+                  className={`flex-1 glass border border-white/10 rounded-[20px] shadow-lg p-6 md:p-8 flex flex-col items-center min-w-[280px] max-w-sm relative transition-all duration-300 ${i === 1 ? 'border-2 border-helix-gradient-start glow' : ''}`}
                 >
                   {i === 1 && (
-                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-sm font-bold px-6 py-2 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white shadow-lg glow">Most Popular</span>
+                    <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-sm font-semibold px-4 py-1 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white shadow-lg glow">Most Popular</span>
                   )}
-                  <h2 className="text-2xl font-bold text-white mb-4">{plan.name}</h2>
-                  <p className="text-helix-text-light text-lg mb-6 text-center">{plan.description}</p>
-                  <div className="mb-6 flex items-center gap-3">
-                    {plan.oldPrice && <span className="text-helix-text-light line-through text-xl">${plan.oldPrice}</span>}
-                    <span className="text-4xl font-black gradient-text-helix">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
-                    {plan.price !== 0 && <span className="text-sm text-helix-text-light font-bold">USD</span>}
+                  <h2 className="text-xl font-semibold text-white mb-3">{plan.name}</h2>
+                  <p className="text-helix-text-light text-base mb-4 text-center">{plan.description}</p>
+                  <div className="mb-4 flex items-center gap-2">
+                    {plan.oldPrice && <span className="text-helix-text-light line-through text-lg">${plan.oldPrice}</span>}
+                    <span className="text-3xl font-bold gradient-text-helix">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
+                    {plan.price !== 0 && <span className="text-sm text-helix-text-light font-semibold">USD</span>}
                   </div>
-                  <ul className="text-left text-helix-text-light text-lg space-y-3 mt-6 mb-8 w-full max-w-xs">
+                  <ul className="text-left text-helix-text-light text-base space-y-2 mt-4 mb-6 w-full max-w-xs">
                     {plan.features.map((f, idx) => (
                       <li key={idx}>{f}</li>
                     ))}
                   </ul>
                   <button
-                    className={`mt-auto w-full py-4 rounded-full font-bold text-lg transition-all duration-300 bg-white/10 text-white hover:bg-white/20 border border-white/20`}
+                    className={`mt-auto w-full py-3 rounded-full font-semibold text-base transition-all duration-300 bg-white/10 text-white hover:bg-white/20 border border-white/20`}
                     disabled
                   >
                     {plan.cta}
@@ -339,12 +339,12 @@ export default function LandingPage() {
             </div>
             <div className="flex justify-center">
               {isSignedIn ? (
-                <Button size="lg" className="bg-white/10 text-helix-text-light font-bold text-xl px-12 py-6 rounded-full border border-white/20 cursor-not-allowed" disabled>
+                <Button size="lg" className="bg-white/10 text-helix-text-light font-semibold text-lg px-10 py-4 rounded-full border border-white/20 cursor-not-allowed" disabled>
                   Join Versate Now
                 </Button>
               ) : (
                 <Link href="/sign-up">
-                  <Button size="lg" className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow font-bold text-xl px-12 py-6 rounded-full">
+                  <Button size="lg" className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow font-semibold text-lg px-10 py-4 rounded-full">
                     Join Versate Now
                   </Button>
                 </Link>

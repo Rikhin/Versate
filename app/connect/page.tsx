@@ -291,9 +291,9 @@ export default function ConnectPage() {
         <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
         <div className="container mx-auto px-6 py-16">
           <div className="mb-16 text-center">
-            <h1 className="text-6xl md:text-7xl font-black bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end bg-clip-text text-transparent mb-6 drop-shadow-lg">Connect</h1>
-            <h2 className="text-5xl md:text-6xl font-black text-helix-gradient-start mb-6">Mentors & Students</h2>
-            <p className="text-xl text-helix-text-light mb-10 max-w-2xl mx-auto">Browse and connect with real mentors and students from across the country. Use the filters to find the right expertise, background, or collaborators for your needs.</p>
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end bg-clip-text text-transparent mb-4 drop-shadow-lg">Connect</h1>
+            <h2 className="text-3xl md:text-4xl font-bold text-helix-gradient-start mb-4">Mentors & Students</h2>
+            <p className="text-lg text-helix-text-light mb-8 max-w-2xl mx-auto">Browse and connect with real mentors and students from across the country. Use the filters to find the right expertise, background, or collaborators for your needs.</p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
             <Button 
@@ -365,9 +365,9 @@ export default function ConnectPage() {
                                 <Badge className="border-2 bg-blue-400/20 text-blue-400 border-blue-400/30 px-4 py-2 text-sm font-bold uppercase tracking-widest">Mentor</Badge>
                                 <div className="text-4xl"><Users /></div>
                               </div>
-                              <CardTitle className="text-2xl font-bold text-white mb-2">{m.name}</CardTitle>
-                              <div className="text-lg text-helix-text-light line-clamp-3 mb-2">{m.jobTitle}</div>
-                              <div className="text-base text-helix-text-light mb-2">{m.company}</div>
+                              <CardTitle className="text-xl font-semibold text-white mb-2">{m.name}</CardTitle>
+                              <div className="text-base text-helix-text-light line-clamp-3 mb-2">{m.jobTitle}</div>
+                              <div className="text-sm text-helix-text-light mb-2">{m.company}</div>
                             </CardHeader>
                             <CardContent className="flex flex-col gap-4">
                               <div className="flex items-center justify-between mt-4">
@@ -432,9 +432,9 @@ export default function ConnectPage() {
                           <Badge className="border-2 bg-green-400/20 text-green-400 border-green-400/30 px-4 py-2 text-sm font-bold uppercase tracking-widest">Student</Badge>
                           <div className="text-4xl"><Users /></div>
                         </div>
-                        <CardTitle className="text-2xl font-black text-white">{s.first_name} {s.last_name}</CardTitle>
-                        <div className="text-lg text-helix-text-light">{s.grade_level || "Student"}</div>
-                        <div className="text-base text-helix-text-light">{s.school}</div>
+                        <CardTitle className="text-xl font-semibold text-white">{s.first_name} {s.last_name}</CardTitle>
+                        <div className="text-base text-helix-text-light">{s.grade_level || "Student"}</div>
+                        <div className="text-sm text-helix-text-light">{s.school}</div>
                       </CardHeader>
                       <CardContent className="space-y-6">
                         <div className="flex flex-wrap gap-2 mt-4">

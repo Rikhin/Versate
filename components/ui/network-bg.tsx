@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 
 interface NetworkBGProps {
   className?: string;
@@ -7,14 +7,17 @@ interface NetworkBGProps {
 // Node color palette (blue, purple, pink shades)
 const NODE_COLORS = ["#7b61ff", "#5ad1ff", "#a78bfa", "#818cf8", "#6366f1", "#a5b4fc"];
 
-const getDotCount = () => (typeof window !== 'undefined' && window.innerWidth < 768 ? 20 : 48);
+const getDotCount = () => {
+  if (typeof window === 'undefined') return 48;
+  return window.innerWidth < 768 ? 20 : 48;
+};
 const getLineDistance = () => (typeof window !== 'undefined' && window.innerWidth < 768 ? 220 : 340);
 
 function randomBetween(a: number, b: number) {
   return a + Math.random() * (b - a);
 }
 
-export const NetworkBG: React.FC<NetworkBGProps> = (props) => {
+export const NetworkBG = (props: NetworkBGProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dots = useRef<any[]>([]);
   const edges = useRef<any[]>([]);
@@ -81,11 +84,11 @@ export const NetworkBG: React.FC<NetworkBGProps> = (props) => {
       canvas.height = h;
       // Re-randomize dot positions
       const dotCount = getDotCount();
-      dots.current = Array.from({ length: dotCount }, () => ({
+      dots.current = Array.from({ length: dotCount }, (_, i) => ({
         x: randomBetween(0, w),
         y: randomBetween(0, h),
-        vx: randomBetween(-0.03, 0.03),
-        vy: randomBetween(-0.03, 0.03),
+        vx: randomBetween(-0.08, 0.08),
+        vy: randomBetween(-0.08, 0.08),
         color: NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
         size: [6, 12][Math.floor(Math.random() * 2)]
       }));

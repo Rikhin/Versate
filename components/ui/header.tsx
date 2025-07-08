@@ -108,7 +108,7 @@ export function Header() {
               style={showModal ? { pointerEvents: 'none', opacity: 0.5 } : {}}
               onClick={() => { if (!showModal) setFindDropdownOpen((open) => !open); }}
             >
-              FIND
+              Find
               <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div className="absolute left-1/2 -translate-x-1/2 w-32 h-6 top-full z-30" style={{ pointerEvents: 'auto' }} onMouseEnter={() => { if (!showModal) setFindDropdownOpen(true); }} onMouseLeave={() => setFindDropdownOpen(false)} />
