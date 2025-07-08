@@ -120,7 +120,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden landing-bg">
+    <div className="min-h-screen relative overflow-hidden landing-bg antialiased">
       <NetworkBG />
       {/* Background Animations */}
       <BackgroundGradient 
@@ -138,7 +138,7 @@ export default function LandingPage() {
       {/* Main Content Container */}
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
         {/* Hero Section */}
-        <section id="home" className="flex flex-col items-start justify-center min-h-screen w-full relative pb-16 pl-8 sm:pl-12 md:pl-16">
+        <section id="home" className="flex flex-col items-start justify-center min-h-screen w-full relative pb-24 sm:pb-32 pl-4 sm:pl-8 md:pl-12">
           {/* Not backed by Y Combinator badge */}
           <div className="mb-6">
             <span className="inline-flex items-center rounded-full border border-orange-500/50 px-4 py-1.5 text-sm font-semibold text-orange-400 bg-orange-500/10 backdrop-blur-sm">
@@ -148,7 +148,7 @@ export default function LandingPage() {
           </div>
           <div ref={heroRef} className="relative z-10 flex flex-col items-start justify-center w-full parallax-hero-text">
             <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4 text-left leading-none tracking-tighter">
-              Enhance Your High<br />
+              <span className="whitespace-nowrap">Enhance Your High</span><br />
               School Experience<br />
               with <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versate</span>
             </h1>
