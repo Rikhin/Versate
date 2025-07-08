@@ -176,8 +176,8 @@ export const NetworkBG = (props: NetworkBGProps) => {
       // Animate rotation
       if (timestamp !== undefined) {
         if (lastTimestamp) {
-          rotX += 0.0007 * (timestamp - lastTimestamp);
-          rotZ += 0.0005 * (timestamp - lastTimestamp);
+          rotX += 0.00025 * (timestamp - lastTimestamp); // slower
+          rotZ += 0.00015 * (timestamp - lastTimestamp); // slower
         }
         lastTimestamp = timestamp;
       }

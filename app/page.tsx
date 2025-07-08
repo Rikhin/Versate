@@ -147,7 +147,7 @@ export default function LandingPage() {
             </span>
           </div>
           <div ref={heroRef} className="relative z-10 flex flex-col items-start justify-center w-full parallax-hero-text">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 text-left leading-[1.2] tracking-tight">
+            <h1 className="text-5xl md:text-7xl font-bold mb-4 text-left leading-[1.35] tracking-tight">
               Enhance Your High School <span className="whitespace-nowrap">Experience with <span className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Versa</span></span>
             </h1>
             <p className="text-lg md:text-xl text-white/70 mb-12 max-w-2xl text-left leading-relaxed">Discover, connect, and build with the best students for competitions and projects.</p>
