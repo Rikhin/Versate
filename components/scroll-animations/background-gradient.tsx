@@ -12,14 +12,16 @@ interface BackgroundGradientProps {
   endColor?: string
   triggerStart?: string
   triggerEnd?: string
+  opacity?: number
 }
 
 export function BackgroundGradient({
   className = "",
-  startColor = "from-blue-50",
-  endColor = "to-purple-50",
+  startColor = "from-blue-900",
+  endColor = "to-purple-900",
   triggerStart = "top center",
   triggerEnd = "bottom center",
+  opacity = 1,
 }: BackgroundGradientProps) {
   const gradientRef = useRef<HTMLDivElement>(null)
 
@@ -59,8 +61,9 @@ export function BackgroundGradient({
   return (
     <div
       ref={gradientRef}
-      className={`absolute inset-0 bg-gradient-to-br ${startColor} ${endColor} opacity-0 ${className}`}
-      style={{ zIndex: -1 }}
+      className={`absolute inset-0 w-full h-full bg-gradient-to-br ${startColor} ${endColor} ${className}`}
+      style={{ opacity }}
+      aria-hidden="true"
     />
   )
-} 
+}

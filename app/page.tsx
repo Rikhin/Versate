@@ -82,22 +82,24 @@ export default function LandingPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden antialiased bg-transparent">
-      {/* Background elements - reordered and adjusted */}
+      {/* Enhanced Background elements */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
-        {/* Background gradient - bottom layer */}
-        <BackgroundGradient className="absolute inset-0 w-full h-full opacity-100" />
-        {/* Network effect - middle layer */}
-        <NetworkBG className="absolute inset-0 w-full h-full opacity-10" />
-        {/* Floating shapes - top layer */}
-        <FloatingShapes className="absolute inset-0 w-full h-full opacity-100" />
+        <BackgroundGradient 
+          className="absolute inset-0 w-full h-full" 
+          startColor="from-[#0f0c29]"
+          endColor="to-[#302b63]"
+          opacity={0.9}
+        />
+        <NetworkBG className="absolute inset-0 w-full h-full opacity-30" />
+        <FloatingShapes className="absolute inset-0 w-full h-full opacity-70" />
       </div>
       
       {/* Main Content Container */}
       <main className="relative z-10 bg-transparent">
-        {/* Hero section */}
+        {/* Hero section - moved right and enhanced */}
         <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 lg:pt-40 lg:pb-32">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-left">
+            <div className="text-left max-w-4xl ml-auto">
               <AnimatedWrapper delay={0.1} type="fade" direction="up">
                 <div className="mb-4 sm:mb-6 inline-block">
                   <motion.span 
@@ -160,7 +162,7 @@ export default function LandingPage() {
                     transition={{ duration: 0.5, delay: 1 }}
                   >
                     <Link href="/dashboard">
-                      <button className="bg-white text-black font-semibold rounded-md px-6 py-3 text-base shadow-none border-none hover:bg-gray-200 transition hover:scale-105 transform transition-transform duration-300">
+                      <button className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] text-white font-semibold rounded-md px-6 py-3 text-base shadow-lg hover:shadow-xl hover:shadow-[#7b61ff]/30 transition-all hover:scale-105 transform duration-300 border-none">
                         Go to Dashboard
                       </button>
                     </Link>
@@ -176,41 +178,8 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Stats Section */}
-        <section className="py-12 md:py-16 mt-24">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 -mt-8">
-            {stats.map((stat, index) => (
-              <AnimatedWrapper 
-                key={index} 
-                delay={0.1 * index} 
-                type="fade" 
-                className="text-center py-6"
-              >
-                <motion.div 
-                  className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent mb-3 font-sans"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.1 * index }}
-                >
-                  {stat.value}
-                </motion.div>
-                <motion.div 
-                  className="text-sm md:text-base text-helix-text-light/90 uppercase tracking-widest font-medium font-sans"
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.15 * (index + 1) }}
-                >
-                  {stat.label}
-                </motion.div>
-              </AnimatedWrapper>
-            ))}
-          </div>
-        </section>
-
-        {/* Main Content Sections */}
-        <div className="relative z-10">
+        {/* Main Content Sections with enhanced spacing */}
+        <div className="relative z-10 space-y-32 py-20">
           {/* Why Choose Us Section */}
           <WhyChooseUs />
 
