@@ -94,9 +94,9 @@ export default function LandingPage() {
         {/* Hero section */}
         <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 lg:pt-40 lg:pb-32">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
+            <div className="text-left">
               <AnimatedWrapper delay={0.1} type="fade" direction="up">
-                <div className="mb-4 sm:mb-6">
+                <div className="mb-4 sm:mb-6 inline-block">
                   <motion.span 
                     className="inline-flex items-center rounded-full border border-orange-500/50 px-4 py-1.5 text-sm font-semibold text-orange-400 bg-orange-500/10 backdrop-blur-sm"
                     initial={{ opacity: 0, y: 20 }}

@@ -36,17 +36,17 @@ export function HowItWorks() {
         <AnimatedWrapper delay={0.1} type="fade" direction="up">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
-              How It <span className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end bg-clip-text text-transparent">Works</span>
+              How It <span className="text-primary">Works</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Get started with ColabBoard in just a few simple steps and unlock a world of opportunities.
+              Get started with Versate in just a few simple steps and unlock a world of opportunities.
             </p>
           </div>
         </AnimatedWrapper>
 
         <div className="relative">
           {/* Timeline line */}
-          <div className="absolute left-1/2 top-0 h-full w-0.5 bg-gradient-to-b from-helix-gradient-start/30 to-helix-gradient-end/30 -translate-x-1/2 hidden md:block"></div>
+          <div className="absolute left-1/2 top-0 h-full w-0.5 bg-gradient-to-b from-primary/30 to-primary/30 -translate-x-1/2 hidden md:block"></div>
           
           <div className="space-y-16 md:space-y-24">
             {steps.map((step, index) => {
@@ -70,17 +70,17 @@ export function HowItWorks() {
                       "w-full md:w-5/12",
                       isEven ? "md:text-right" : "md:text-left"
                     )}>
-                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-helix-gradient-start/10 to-helix-gradient-end/10 text-2xl mb-4 md:hidden">
+                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-2xl mb-4 md:hidden">
                         {step.icon}
                       </div>
-                      <span className="text-sm font-mono text-helix-gradient-start">{step.number}</span>
+                      <span className="text-sm font-mono text-primary">{step.number}</span>
                       <h3 className="text-2xl font-bold text-foreground mt-1 mb-3">{step.title}</h3>
                       <p className="text-muted-foreground">{step.description}</p>
                     </div>
                     
                     {/* Center dot */}
-                    <div className="hidden md:flex w-16 h-16 rounded-full bg-gradient-to-br from-helix-gradient-start/20 to-helix-gradient-end/20 items-center justify-center flex-shrink-0 relative z-10">
-                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-helix-gradient-start to-helix-gradient-end"></div>
+                    <div className="hidden md:flex w-16 h-16 rounded-full bg-primary/20 items-center justify-center flex-shrink-0 relative z-10">
+                      <div className="w-5 h-5 rounded-full bg-primary"></div>
                       <span className="absolute text-2xl">{step.icon}</span>
                     </div>
                     

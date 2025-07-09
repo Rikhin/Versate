@@ -6,12 +6,12 @@ import { AnimatedWrapper } from "../ui/animated-wrapper";
 
 export function CTA() {
   return (
-    <section className="py-24 bg-gradient-to-br from-helix-gradient-start/5 via-background to-helix-gradient-end/5">
+    <section className="py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <AnimatedWrapper delay={0.1} type="fade" direction="up">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
-              Ready to Accelerate Your <span className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end bg-clip-text text-transparent">Journey</span>?
+              Ready to Accelerate Your <span className="text-primary">Journey</span>?
             </h2>
             <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto">
               Join thousands of students who are building the future, one project at a time. It's free to get started!
@@ -21,7 +21,7 @@ export function CTA() {
               <SignUpButton mode="modal">
                 <Button 
                   size="lg" 
-                  className="group text-base font-semibold bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end hover:opacity-90 transition-opacity"
+                  className="group text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                   Get Started for Free
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -72,7 +72,7 @@ export function CTA() {
                 direction="up"
               >
                 <div>
-                  <div className="text-3xl font-bold bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end bg-clip-text text-transparent">
+                  <div className="text-3xl font-bold text-primary">
                     {stat.value}
                   </div>
                   <div className="text-sm text-muted-foreground mt-1">

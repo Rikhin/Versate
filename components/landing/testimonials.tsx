@@ -50,15 +50,15 @@ const testimonials = [
 
 export function Testimonials() {
   return (
-    <section className="py-20 bg-muted/20">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedWrapper delay={0.1} type="fade" direction="up">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
-              What Our <span className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end bg-clip-text text-transparent">Community</span> Says
+              What Our <span className="text-primary">Community</span> Says
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Join thousands of students who have accelerated their learning and career through ColabBoard.
+              Join thousands of students who have accelerated their learning and career through Versate.
             </p>
           </div>
         </AnimatedWrapper>
@@ -72,7 +72,7 @@ export function Testimonials() {
               direction="up"
             >
               <motion.div 
-                className="h-full bg-background/80 backdrop-blur-sm p-6 rounded-2xl border border-border/50 hover:border-helix-gradient-start/30 transition-all duration-300 hover:shadow-lg"
+                className="h-full bg-background/80 backdrop-blur-sm p-6 rounded-2xl border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg"
                 whileHover={{ y: -5 }}
               >
                 <div className="flex items-center mb-4">
