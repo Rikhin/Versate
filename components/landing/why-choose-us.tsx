@@ -59,7 +59,7 @@ export function WhyChooseUs() {
               direction="up"
             >
               <motion.div 
-                className="bg-background/50 backdrop-blur-sm p-6 rounded-2xl border border-border/50 hover:border-helix-gradient-start/30 transition-all duration-300 hover:shadow-lg hover:shadow-helix-gradient-start/10"
+                className="p-6 rounded-2xl border border-border/30 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
                 whileHover={{ y: -5 }}
               >
                 <div key={index} className="group relative p-6 rounded-xl border border-border/30 bg-card/20 backdrop-blur-sm hover:bg-card/30 transition-all duration-300 h-full">

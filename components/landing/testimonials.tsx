@@ -72,7 +72,7 @@ export function Testimonials() {
               direction="up"
             >
               <motion.div 
-                className="h-full bg-card/20 backdrop-blur-sm p-6 rounded-2xl border border-border/30 hover:border-primary/30 transition-all duration-300 hover:shadow-lg"
+                className="h-full p-6 rounded-2xl border border-border/30 hover:border-primary/30 transition-all duration-300 hover:shadow-lg backdrop-blur-sm"
                 whileHover={{ y: -5 }}
               >
                 <div className="flex items-center mb-4">
