@@ -50,7 +50,7 @@ const testimonials = [
 
 export function Testimonials() {
   return (
-    <section className="py-20 bg-background">
+    <section className="py-20 bg-transparent">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedWrapper delay={0.1} type="fade" direction="up">
           <div className="text-center mb-16">
@@ -72,7 +72,7 @@ export function Testimonials() {
               direction="up"
             >
               <motion.div 
-                className="h-full bg-background/80 backdrop-blur-sm p-6 rounded-2xl border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg"
+                className="h-full bg-card/20 backdrop-blur-sm p-6 rounded-2xl border border-border/30 hover:border-primary/30 transition-all duration-300 hover:shadow-lg"
                 whileHover={{ y: -5 }}
               >
                 <div className="flex items-center mb-4">

@@ -6,7 +6,7 @@ import { AnimatedWrapper } from "../ui/animated-wrapper";
 
 export function CTA() {
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 bg-transparent">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <AnimatedWrapper delay={0.1} type="fade" direction="up">
@@ -17,40 +17,42 @@ export function CTA() {
               Join thousands of students who are building the future, one project at a time. It's free to get started!
             </p>
             
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <SignUpButton mode="modal">
-                <Button 
-                  size="lg" 
-                  className="group text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                >
-                  Get Started for Free
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </SignUpButton>
-              
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="text-base font-semibold group"
-                asChild
-              >
-                <a href="#features">
-                  Learn More
-                  <svg 
-                    className="ml-2 h-4 w-4 group-hover:translate-y-0.5 transition-transform" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
+            <div className="relative overflow-hidden px-6 py-16 rounded-3xl bg-gradient-to-br from-helix-gradient-start/5 to-helix-gradient-end/5 backdrop-blur-sm border border-border/20 shadow-xl">
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <SignUpButton mode="modal">
+                  <Button 
+                    size="lg" 
+                    className="group text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                   >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M19 9l-7 7-7-7" 
-                    />
-                  </svg>
-                </a>
-              </Button>
+                    Get Started for Free
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </SignUpButton>
+                
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="text-base font-semibold group"
+                  asChild
+                >
+                  <a href="#features">
+                    Learn More
+                    <svg 
+                      className="ml-2 h-4 w-4 group-hover:translate-y-0.5 transition-transform" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M19 9l-7 7-7-7" 
+                      />
+                    </svg>
+                  </a>
+                </Button>
+              </div>
             </div>
             
             <p className="mt-6 text-sm text-muted-foreground">

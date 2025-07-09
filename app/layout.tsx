@@ -36,7 +36,7 @@ export default function RootLayout({
           >
           <OnboardingScrollEnforcer>
             <Header />
-            <main className="relative z-10 min-h-screen">{children}</main>
+            <main className="relative z-10 min-h-screen bg-transparent">{children}</main>
             <Toaster />
             <Analytics />
           </OnboardingScrollEnforcer>

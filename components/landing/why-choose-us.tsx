@@ -37,7 +37,7 @@ const features = [
 
 export function WhyChooseUs() {
   return (
-    <section className="py-20 bg-background">
+    <section className="py-20 bg-transparent">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedWrapper delay={0.1} type="fade" direction="up">
           <div className="text-center mb-16">
@@ -62,7 +62,7 @@ export function WhyChooseUs() {
                 className="bg-background/50 backdrop-blur-sm p-6 rounded-2xl border border-border/50 hover:border-helix-gradient-start/30 transition-all duration-300 hover:shadow-lg hover:shadow-helix-gradient-start/10"
                 whileHover={{ y: -5 }}
               >
-                <div key={index} className="group relative p-6 rounded-xl border border-border bg-card/50 hover:bg-card transition-all duration-300 h-full">
+                <div key={index} className="group relative p-6 rounded-xl border border-border/30 bg-card/20 backdrop-blur-sm hover:bg-card/30 transition-all duration-300 h-full">
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
                     {feature.icon}
                   </div>
