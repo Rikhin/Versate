@@ -37,13 +37,16 @@ const features = [
 
 export function WhyChooseUs() {
   return (
-    <section className="py-20 relative">
+    <section className="py-24 relative overflow-hidden">
+      {/* Background gradient */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0f0c29]/30 to-[#302b63]/30 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0f0c29]/20 to-[#302b63]/20" />
+        <div className="absolute -top-1/2 -right-1/4 w-full h-[200%] bg-radial-gradient(ellipse_at_center,rgba(123,97,255,0.1),transparent 70%) opacity-50" />
       </div>
+      
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedWrapper delay={0.1} type="fade" direction="up">
-          <div className="text-center mb-16">
+          <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">
               Why Choose Versate?
             </h2>
@@ -62,16 +65,28 @@ export function WhyChooseUs() {
               direction="up"
             >
               <motion.div 
-                key={index} 
-                className="p-8 rounded-2xl bg-gradient-to-br from-[#0f0c29]/50 to-[#302b63]/50 backdrop-blur-sm border border-white/5 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
-                whileHover={{ y: -5, scale: 1.02 }}
-                transition={{ type: 'spring', stiffness: 300 }}
+                className="group relative p-8 rounded-2xl bg-gradient-to-br from-[#0f0c29]/80 to-[#302b63]/80 backdrop-blur-sm border border-white/5 overflow-hidden"
+                whileHover={{ y: -8 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
               >
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-6">
-                  {feature.icon}
+                {/* Card background effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                
+                {/* Glow effect on hover */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-2xl opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300" />
+                
+                <div className="relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 text-white group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-secondary transition-all duration-300">
+                    {feature.title}
+                  </h3>
+                  <p className="text-white/70 leading-relaxed">{feature.description}</p>
                 </div>
-                <h3 className="text-xl font-semibold mb-3 text-white">{feature.title}</h3>
-                <p className="text-white/70">{feature.description}</p>
+                
+                {/* Bottom accent */}
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </motion.div>
             </AnimatedWrapper>
           ))}

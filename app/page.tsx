@@ -96,10 +96,10 @@ export default function LandingPage() {
       
       {/* Main Content Container */}
       <main className="relative z-10 bg-transparent">
-        {/* Hero section - moved right and enhanced */}
+        {/* Hero section - left aligned */}
         <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 lg:pt-40 lg:pb-32">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-left max-w-4xl ml-auto">
+            <div className="text-left max-w-4xl">
               <AnimatedWrapper delay={0.1} type="fade" direction="up">
                 <div className="mb-4 sm:mb-6 inline-block">
                   <motion.span 

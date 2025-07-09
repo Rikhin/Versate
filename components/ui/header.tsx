@@ -86,7 +86,7 @@ export function Header() {
   }, [showModal, findDropdownOpen]);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#111216]">
+    <header className="sticky top-0 z-50 w-full bg-[#0a0a0f] border-b border-white/10 backdrop-blur-md">
       <div className="w-full flex items-center justify-between px-12" style={{maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto', minHeight: '80px'}}>
         {/* Left: Logo */}
         <div className="flex items-center gap-8 min-w-[180px]">

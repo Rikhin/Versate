@@ -51,9 +51,12 @@ const testimonials = [
 export function Testimonials() {
   return (
     <section className="py-24 relative overflow-hidden">
+      {/* Background gradient */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0f0c29]/20 to-[#302b63]/20" />
+        <div className="absolute -right-1/4 -bottom-1/4 w-[150%] h-[150%] bg-radial-gradient(ellipse_at_center,rgba(123,97,255,0.05),transparent 70%) opacity-70" />
       </div>
+      
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedWrapper delay={0.1} type="fade" direction="up">
           <div className="text-center mb-20">
@@ -78,42 +81,87 @@ export function Testimonials() {
               type="fade" 
               direction="up"
             >
-              <motion.div 
-                className="h-full p-8 rounded-2xl bg-gradient-to-br from-[#0f0c29]/50 to-[#302b63]/50 backdrop-blur-sm border border-white/5 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 relative overflow-hidden group"
-                whileHover={{ y: -5, scale: 1.02 }}
-                transition={{ type: 'spring', stiffness: 300 }}
+              <motion.article 
+                className="group relative h-full p-8 rounded-2xl bg-gradient-to-br from-[#0f0c29]/80 to-[#302b63]/80 backdrop-blur-sm border border-white/5 overflow-hidden"
+                whileHover={{ y: -8 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
               >
-                {/* Decorative accent */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
+                {/* Card glow effect */}
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/30 to-secondary/30 rounded-2xl blur opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
                 
-                <div className="flex items-start mb-6">
-                  <Avatar className="h-14 w-14 mr-4 border-2 border-white/10">
-                    <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                    <AvatarFallback className="bg-white/10 text-white">
-                      {testimonial.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
+                {/* Top accent bar */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-secondary"></div>
+                
+                <div className="relative z-10 h-full flex flex-col">
+                  {/* Testimonial content */}
                   <div className="flex-1">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-semibold text-white">{testimonial.name}</h4>
-                        <p className="text-sm text-white/60">{testimonial.role}</p>
+                    <div className="flex items-start mb-6">
+                      <Avatar className="h-16 w-16 mr-4 border-2 border-white/10 group-hover:border-primary/50 transition-colors duration-300">
+                        <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
+                        <AvatarFallback className="bg-white/10 text-white group-hover:bg-primary/20 transition-colors duration-300">
+                          {testimonial.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="text-lg font-bold text-white group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-secondary transition-all duration-300">
+                              {testimonial.name}
+                            </h4>
+                            <p className="text-sm text-white/60 group-hover:text-white/80 transition-colors duration-300">
+                              {testimonial.role}
+                            </p>
+                          </div>
+                          
+                          {/* Rating */}
+                          <div className="flex items-center space-x-1 bg-white/5 px-2 py-1 rounded-full border border-white/5 group-hover:border-primary/30 transition-colors duration-300">
+                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                            <span className="text-sm font-medium text-white/90">{testimonial.rating}.0</span>
+                          </div>
+                        </div>
+                        
+                        {/* Stars */}
+                        <div className="flex mt-2">
+                          {[...Array(5)].map((_, i) => (
+                            <Star 
+                              key={i} 
+                              className={`w-4 h-4 ${i < testimonial.rating ? 'text-yellow-400 fill-current' : 'text-white/20'} group-hover:scale-110 transition-transform duration-300`} 
+                              style={{ transitionDelay: `${i * 50}ms` }}
+                            />
+                          ))}
+                        </div>
                       </div>
-                      <div className="flex items-center bg-white/5 px-3 py-1 rounded-full">
-                        {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            className={`w-3.5 h-3.5 ${i < testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-white/20'}`} 
-                          />
-                        ))}
+                    </div>
+                    
+                    {/* Testimonial text */}
+                    <blockquote className="relative pl-6 before:absolute before:left-0 before:top-0 before:text-5xl before:leading-none before:opacity-10 before:font-serif before:content-['\201C'] before:text-white group-hover:before:bg-gradient-to-r group-hover:before:from-primary group-hover:before:to-secondary group-hover:before:bg-clip-text group-hover:before:text-transparent transition-all duration-500">
+                      <p className="text-white/80 group-hover:text-white/90 leading-relaxed transition-colors duration-300">
+                        {testimonial.content}
+                      </p>
+                    </blockquote>
+                  </div>
+                  
+                  {/* Company logo or verification badge */}
+                  <div className="mt-6 pt-6 border-t border-white/5 group-hover:border-primary/20 transition-colors duration-300">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 border border-white/5 flex items-center justify-center text-white/80 group-hover:text-primary transition-colors duration-300">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24Z" fill="currentColor"/>
+                            <path d="M7 12L11 16L18 8" stroke="#0f0c29" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </div>
+                        <span className="text-sm text-white/60 group-hover:text-white/80 transition-colors duration-300">Verified Student</span>
+                      </div>
+                      
+                      <div className="text-xs text-white/40 group-hover:text-primary/80 transition-colors duration-300">
+                        {index + 1}/{testimonials.length}
                       </div>
                     </div>
                   </div>
                 </div>
-                <p className="text-white/80 italic relative pl-6 before:content-['\201C'] before:absolute before:left-0 before:top-0 before:text-4xl before:leading-none before:opacity-20 before:font-serif">
-                  {testimonial.content}
-                </p>
-              </motion.div>
+              </motion.article>
             </AnimatedWrapper>
           ))}
         </div>
