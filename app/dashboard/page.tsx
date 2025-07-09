@@ -1,324 +1,283 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useMemo } from "react"
 import { useUser } from "@clerk/nextjs"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
+import { useRequireProfile } from "@/hooks/use-require-profile"
+import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
+import { DashboardCard } from "@/components/dashboard/dashboard-card"
+import { StatsCard } from "@/components/dashboard/stats-card"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { 
   Trophy, 
   Users, 
   Target, 
-  Star, 
   ArrowRight, 
-  Code, 
-  Award, 
-  Zap,
-  Calendar,
-  MapPin,
-  BookOpen,
-  Settings,
-  BarChart3,
-  FolderOpen,
+  FolderOpen, 
   UserCheck,
-  TrendingUp
+  Calendar,
+  Code,
+  MessageSquare,
+  TrendingUp,
+  Plus,
+  MapPin
 } from "lucide-react"
 import Link from "next/link"
-import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
-import { SidebarProvider, Sidebar } from '@/components/ui/sidebar'
-import { useRequireProfile } from "@/hooks/use-require-profile"
-
-interface Profile {
-  id: string
-  user_id: string
-  full_name: string
-  bio: string
-  location: string
-  website: string
-  github: string
-  linkedin: string
-  twitter: string
-  experience_level: string
-  interests: string[]
-  skills: string[]
-  goals: string[]
-  availability: string
-  preferred_collaboration: string
-  created_at: string
-  updated_at: string
-}
 
 export default function DashboardPage() {
   const { loading, profile } = useRequireProfile()
 
-  if (loading) {
+  if (loading || !profile) {
     return (
-      <div className="min-h-screen bg-helix-dark flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-helix-gradient-start mx-auto mb-4"></div>
-          <p className="text-helix-text-light">Loading...</p>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-pulse flex flex-col items-center space-y-4">
+          <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
         </div>
       </div>
     )
   }
 
-  if (!profile) {
-    return null; // Will redirect, don't render anything
-  }
-
   const stats = [
-    { label: "Projects Joined", value: "", icon: FolderOpen, color: "text-blue-400" },
-    { label: "Teams Created", value: "", icon: Users, color: "text-green-400" },
-    { label: "Competitions", value: "", icon: Trophy, color: "text-purple-400" },
+    {
+      title: "Total Projects",
+      value: "12",
+      icon: FolderOpen,
+      trend: { value: "+12%", type: "increase" as const }
+    },
+    {
+      title: "Team Members",
+      value: "8",
+      icon: Users,
+      trend: { value: "+2", type: "increase" as const }
+    },
+    {
+      title: "Tasks Completed",
+      value: "42",
+      icon: Target,
+      trend: { value: "+5", type: "increase" as const }
+    },
+    {
+      title: "Connections",
+      value: "24",
+      icon: UserCheck,
+      trend: { value: "+3", type: "increase" as const }
+    }
   ]
-
-  const recentActivity: Array<{
-    type: string;
-    title: string;
-    description: string;
-    time: string;
-    icon: any;
-  }> = []
 
   const quickActions = [
     {
-      title: "Explore Projects",
-      description: "Find your next team",
-      icon: Target,
-      href: "/explore",
-      color: "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow",
+      title: "New Project",
+      description: "Start a new project",
+      icon: Plus,
+      href: "/projects/new"
     },
     {
-      title: "View Profiles",
-      description: "Connect with students",
-      icon: UserCheck,
-      href: "/connect",
-      color: "border-2 border-white/20 text-white hover:bg-white/10",
+      title: "Find Team",
+      description: "Connect with others",
+      icon: Users,
+      href: "/connect"
     },
     {
       title: "Competitions",
       description: "Browse opportunities",
-      icon: Award,
-      href: "/competitions",
-      color: "border-2 border-white/20 text-white hover:bg-white/10",
+      icon: Trophy,
+      href: "/competitions"
     },
     {
-      title: "My Profile",
-      description: "Edit your profile",
-      icon: Settings,
-      href: "/profile",
-      color: "border-2 border-white/20 text-white hover:bg-white/10",
-    },
+      title: "Messages",
+      description: "Check your inbox",
+      icon: MessageSquare,
+      href: "/messages"
+    }
   ]
 
   // Extract first name from full_name or fallback
   const firstName = profile.full_name?.split(' ')[0] || 'User'
 
-  // Profile completion calculation - using actual database fields
-  const profileFields = [
-    'first_name', 'last_name', 'email', 'school', 'grade_level', 'bio', 'skills', 'roles', 'experience_level', 'time_commitment', 'collaboration_style', 'location'
-  ];
-  const filledFields = profileFields.filter(key => {
-    const value = profile[key as keyof Profile];
-    if (Array.isArray(value)) {
-      return value && value.length > 0;
-    }
-    return value && value !== '';
-  }).length;
-  const profileCompletion = Math.min(100, Math.round((filledFields / profileFields.length) * 100));
+  // Calculate profile completion percentage
+  const profileCompletion = useMemo(() => {
+    if (!profile) return 0;
+    
+    const profileFields = [
+      profile.full_name,
+      profile.bio,
+      profile.location,
+      profile.interests,
+      profile.skills,
+      profile.experience_level,
+      profile.availability,
+      profile.preferred_collaboration
+    ];
+    
+    const filledFields = profileFields.filter(field => {
+      if (Array.isArray(field)) return field.length > 0;
+      return Boolean(field);
+    }).length;
+    
+    return Math.min(100, Math.round((filledFields / profileFields.length) * 100));
+  }, [profile]);
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen bg-helix-dark relative overflow-hidden flex">
-        <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
-        <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
-        
-        {/* Sidebar */}
-        <Sidebar className="hidden md:flex h-full fixed top-0 left-0 z-30">
-          <div className="h-full w-64 glass border-r border-white/10 shadow-md flex flex-col items-start px-6 py-8">
-            <span className="text-xl font-bold text-white whitespace-nowrap block mb-8">
-              Welcome back, {firstName}! 👋
-            </span>
-            {/* Add sidebar content here */}
-          </div>
-        </Sidebar>
-        
-        {/* Main Content */}
-        <div className="flex-1 transition-all duration-300 ease-in-out ml-0 md:ml-64">
-          <div className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-8">
-            <div className="glass border border-white/10 rounded-[24px] shadow-2xl px-8 py-10 md:px-12 md:py-14 space-y-12 md:space-y-16">
-              {/* Stats Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 w-full">
-                {stats.map((stat, index) => (
-                  <div key={index} className="glass border border-white/10 rounded-[16px] shadow-xl flex flex-col items-center justify-center py-8 w-full hover:glow transition-all duration-300">
-                    <div className={`mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-white/10 border border-white/20 ${stat.color}`}>{<stat.icon className="h-7 w-7" />}</div>
-                    <div className="text-2xl sm:text-3xl font-black text-white">{stat.value}</div>
-                    <div className="text-base sm:text-lg text-helix-text-light font-bold mt-2">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
+    <DashboardLayout>
+      {/* Welcome Section */}
+      <div className="mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+          Welcome back, <span className="text-helix-gradient-start">{firstName}</span>!
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400">Here's what's happening with your account today.</p>
+      </div>
 
-              {/* Quick Actions */}
-              <div className="space-y-6">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-6">Quick Actions</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 w-full">
-                  {quickActions.map((action, index) => (
-                    <Link key={index} href={action.href} className="w-full">
-                      <div className="glass border border-white/10 rounded-[16px] shadow-xl hover:shadow-2xl hover:glow transition-all duration-300 flex flex-col items-center justify-center h-32 sm:h-36 cursor-pointer w-full">
-                        <div className="mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-white/10 border border-white/20 text-helix-gradient-start">{<action.icon className="h-7 w-7" />}</div>
-                        <div className="text-lg font-bold text-white">{action.title}</div>
-                        <div className="text-sm text-helix-text-light mt-2 text-center">{action.description}</div>
-                      </div>
-                    </Link>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {stats.map((stat, index) => (
+          <StatsCard
+            key={index}
+            title={stat.title}
+            value={stat.value}
+            icon={stat.icon}
+            trend={stat.trend}
+          />
+        ))}
+      </div>
+
+      {/* Quick Actions */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Actions</h2>
+          <Link href="/explore" className="text-sm font-medium text-helix-gradient-start hover:underline">
+            View all
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {quickActions.map((action, index) => (
+            <Link key={index} href={action.href} className="group">
+              <div className="h-full p-6 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow-md bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <div className="flex items-center justify-center w-12 h-12 rounded-lg mb-4 bg-helix-gradient-start/10 dark:bg-helix-gradient-start/20">
+                  <action.icon className="h-6 w-6 text-helix-gradient-start" />
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{action.title}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{action.description}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Recent Activity */}
+        <div className="lg:col-span-2">
+          <DashboardCard 
+            title="Recent Activity"
+            description="Your latest actions and updates"
+            headerAction={
+              <Link href="/activity" className="text-sm font-medium text-helix-gradient-start hover:underline">
+                View all
+              </Link>
+            }
+          >
+            <div className="space-y-4">
+              {[1, 2, 3].map((_, index) => (
+                <div key={index} className="flex items-start p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                  <div className="flex-shrink-0 p-2 rounded-lg bg-helix-gradient-start/10 dark:bg-helix-gradient-start/20 mr-4">
+                    <MessageSquare className="h-5 w-5 text-helix-gradient-start" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      New message from Team Alpha
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      "Let's discuss the project requirements tomorrow at 2 PM"
+                    </p>
+                    <p className="text-xs text-gray-400 mt-2">2 hours ago</p>
+                  </div>
+                </div>
+              ))}
+              <div className="text-center py-4">
+                <Button variant="ghost" size="sm" className="text-helix-gradient-start">
+                  View all activity
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </DashboardCard>
+        </div>
+
+        {/* Profile Overview */}
+        <div className="space-y-6">
+          <DashboardCard title="Profile Overview">
+            <div className="flex flex-col items-center">
+              <Avatar className="h-20 w-20 mb-4">
+                <AvatarImage src="" alt={profile.full_name || 'User'} />
+                <AvatarFallback className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white text-xl">
+                  {profile.full_name?.split(' ').map((n: string) => n[0]).join('') || 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{profile.full_name || 'User'}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                <MapPin className="h-4 w-4 mr-1" />
+                {profile.location || 'Location not set'}
+              </p>
+              
+              <div className="w-full mt-6 space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-500 dark:text-gray-400">Profile Completion</span>
+                    <span className="font-medium">{profileCompletion}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end h-2 rounded-full" 
+                      style={{ width: `${profileCompletion}%` }}
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mt-4 justify-center">
+                  {(profile.interests || []).slice(0, 5).map((interest: string, index: number) => (
+                    <Badge 
+                      key={index} 
+                      variant="secondary" 
+                      className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    >
+                      {interest}
+                    </Badge>
                   ))}
                 </div>
+                
+                <Button variant="outline" className="w-full mt-4">
+                  Edit Profile
+                </Button>
               </div>
-
-              {/* Profile Overview */}
-              <div className="space-y-6">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-6">Profile Overview</h2>
-                <div className="glass border border-white/10 rounded-[16px] shadow-xl p-8 flex flex-col md:flex-row gap-8 items-center w-full">
-                  <div className="flex-1 w-full">
-                    <div className="flex items-center gap-4 mb-4">
-                      <span className="text-xl sm:text-2xl font-bold text-white">{(profile.full_name && profile.full_name.split(' ')[0]) || profile.first_name || "Your Name"}</span>
-                      {profile.experience_level && (
-                        <span className="flex items-center gap-2 text-sm bg-white/10 border border-white/20 text-helix-gradient-start px-4 py-2 rounded-full font-bold">
-                          <span className="inline-block w-3 h-3 bg-helix-gradient-start rounded-full"></span>
-                          {profile.experience_level}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 text-helix-text-light text-sm mb-4">
-                      {profile.location && <><MapPin className="h-5 w-5" />{profile.location}</>}
-                    </div>
-                    <div className="text-helix-text-light text-base mb-6">{profile.bio || <span className="italic text-helix-text-light">No bio added yet.</span>}</div>
-                    {profile.skills && profile.skills.length > 0 && (
-                      <div className="flex flex-wrap gap-3 mt-4">
-                        {profile.skills.map((skill: string, index: number) => (
-                          <span key={index} className="bg-white/10 border border-white/20 text-helix-text-light px-4 py-2 rounded-full text-sm font-bold">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex flex-col items-center gap-6 w-full max-w-xs">
-                    <Link href="/profile" className="w-full">
-                      <Button className="w-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full text-lg font-bold py-4">Edit Profile</Button>
-                    </Link>
-                    <div className="w-full">
-                      <div className="flex justify-between mb-3">
-                        <span className="text-sm text-helix-text-light">Profile completion</span>
-                        <span className="text-sm text-white font-bold">{profileCompletion}%</span>
-                      </div>
-                      <div className="relative h-4 bg-white/10 rounded-full overflow-hidden border border-white/20">
-                        <div
-                          className="absolute left-0 top-0 h-4 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end transition-all duration-500"
-                          style={{ width: `${profileCompletion}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
+            </div>
+          </DashboardCard>
+          
+          <DashboardCard title="Upcoming">
+            <div className="space-y-4">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 p-2 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 mr-3">
+                  <Calendar className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white">Team Meeting</h4>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Tomorrow, 2:00 PM</p>
                 </div>
               </div>
-
-              {/* Recent Activity */}
-              <div className="space-y-6">
-                <h2 className="text-2xl md:text-3xl font-black text-white mb-6">Recent Activity</h2>
-                <div className="space-y-4 w-full">
-                  {recentActivity.length > 0 ? (
-                    recentActivity.map((activity, index) => (
-                      <div key={index} className="glass border border-white/10 rounded-[16px] shadow-xl p-6 flex items-center gap-6 w-full">
-                        <div className="p-3 bg-white/10 border border-white/20 rounded-[12px]">
-                          <activity.icon className="h-6 w-6 text-helix-gradient-start" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-bold text-white text-lg">{activity.title}</div>
-                          <div className="text-base text-helix-text-light">{activity.description}</div>
-                        </div>
-                        <span className="text-sm text-helix-text-light">{activity.time}</span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="glass border border-white/10 rounded-[16px] shadow-xl p-12 flex items-center justify-center w-full">
-                      <div className="text-center text-helix-text-light">
-                        <div className="text-xl font-bold mb-4">No recent activity</div>
-                        <div className="text-base">Start exploring projects and connecting with teams to see your activity here.</div>
-                      </div>
-                    </div>
-                  )}
+              <div className="flex items-start">
+                <div className="flex-shrink-0 p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mr-3">
+                  <Code className="h-5 w-5" />
                 </div>
-              </div>
-
-              {/* Recommendations (swap Projects and Competitions, add View All) */}
-              <div className="space-y-6">
-                <h2 className="text-2xl md:text-3xl font-black text-white mb-6">Recommended for You</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-                  {/* Competitions card first */}
-                  <div className="glass border border-white/10 rounded-[16px] shadow-xl p-8 flex flex-col h-full w-full hover:glow transition-all duration-300">
-                    <div className="flex items-center space-x-4 mb-6">
-                      <div className="p-3 bg-green-400/20 border border-green-400/30 rounded-[12px]">
-                        <Trophy className="h-6 w-6 text-green-400" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-white text-lg">Hackathons</div>
-                        <div className="text-base text-helix-text-light">Perfect timing</div>
-                      </div>
-                    </div>
-                    <div className="text-base text-helix-text-light mb-6">
-                      Several hackathons are starting soon. Ready to compete?
-                    </div>
-                    <Button variant="outline" className="w-full mb-4 border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold">
-                      View Competitions
-                    </Button>
-                    <Link href="/competitions" className="w-full">
-                      <Button className="w-full mt-auto bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold">View All</Button>
-                    </Link>
-                  </div>
-                  {/* Projects card second */}
-                  <div className="glass border border-white/10 rounded-[16px] shadow-xl p-8 w-full hover:glow transition-all duration-300">
-                    <div className="flex items-center space-x-4 mb-6">
-                      <div className="p-3 bg-blue-400/20 border border-blue-400/30 rounded-[12px]">
-                        <Code className="h-6 w-6 text-blue-400" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-white text-lg">Web Development</div>
-                        <div className="text-base text-helix-text-light">Based on your skills</div>
-                      </div>
-                    </div>
-                    <div className="text-base text-helix-text-light mb-6">
-                      Join teams working on web applications and improve your frontend skills.
-                    </div>
-                    <Button variant="outline" className="w-full border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold">
-                      Explore Projects
-                    </Button>
-                  </div>
-                  {/* Team Building card remains last */}
-                  <div className="glass border border-white/10 rounded-[16px] shadow-xl p-8 w-full hover:glow transition-all duration-300">
-                    <div className="flex items-center space-x-4 mb-6">
-                      <div className="p-3 bg-purple-400/20 border border-purple-400/30 rounded-[12px]">
-                        <Users className="h-6 w-6 text-purple-400" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-white text-lg">Team Building</div>
-                        <div className="text-base text-helix-text-light">Network expansion</div>
-                      </div>
-                    </div>
-                    <div className="text-base text-helix-text-light mb-6">
-                      Connect with other students who share your interests and goals.
-                    </div>
-                    <Button variant="outline" className="w-full border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold">
-                      Browse Profiles
-                    </Button>
-                  </div>
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white">Project Deadline</h4>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">In 3 days</p>
                 </div>
               </div>
             </div>
-          </div>
+          </DashboardCard>
         </div>
       </div>
-    </SidebarProvider>
+    </DashboardLayout>
   )
 }
