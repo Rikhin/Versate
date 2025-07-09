@@ -82,11 +82,14 @@ export default function LandingPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden antialiased bg-transparent">
-      {/* Background elements */}
+      {/* Background elements - reordered and adjusted */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
-        <NetworkBG className="absolute inset-0 w-full h-full opacity-20" />
-        <BackgroundGradient className="absolute inset-0 w-full h-full" />
-        <FloatingShapes className="absolute inset-0 w-full h-full" />
+        {/* Background gradient - bottom layer */}
+        <BackgroundGradient className="absolute inset-0 w-full h-full opacity-100" />
+        {/* Network effect - middle layer */}
+        <NetworkBG className="absolute inset-0 w-full h-full opacity-10" />
+        {/* Floating shapes - top layer */}
+        <FloatingShapes className="absolute inset-0 w-full h-full opacity-100" />
       </div>
       
       {/* Main Content Container */}

@@ -64,7 +64,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground transition-colors duration-200;
+    @apply text-foreground transition-colors duration-200;
     min-height: 100vh;
     background: linear-gradient(120deg, #0A0A2A 0%, #1A1A3A 50%, #6C43A8 100%);
     background-size: 200% 200%;
