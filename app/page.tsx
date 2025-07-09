@@ -150,10 +150,10 @@ export default function LandingPage() {
       {/* Main Content Container */}
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
-        <section id="home" className="flex flex-col items-start justify-center min-h-screen w-full relative pb-24 sm:pb-32 pl-0 sm:pl-4 md:pl-8">
+        <section id="home" className="flex flex-col items-start justify-center min-h-[90vh] w-full relative pb-16 sm:pb-24 pl-0 sm:pl-4 md:pl-8">
           {/* Not backed by Y Combinator badge */}
           <AnimatedWrapper delay={0.2} type="slide" direction="left">
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <motion.span 
                 className="inline-flex items-center rounded-full border border-orange-500/50 px-4 py-1.5 text-sm font-semibold text-orange-400 bg-orange-500/10 backdrop-blur-sm"
                 initial={{ opacity: 0, y: 20 }}
@@ -167,7 +167,7 @@ export default function LandingPage() {
           </AnimatedWrapper>
           <div ref={heroRef} className="relative z-10 flex flex-col items-start justify-center w-full parallax-hero-text">
             <AnimatedWrapper delay={0.4} type="slide" direction="up">
-              <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4 text-left leading-[1.1] tracking-[-0.02em] font-sans">
+              <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold mb-2 sm:mb-4 text-left leading-[1.1] tracking-[-0.02em] font-sans">
                 <motion.span 
                   className="inline-block whitespace-nowrap"
                   initial={{ opacity: 0, y: 20 }}
