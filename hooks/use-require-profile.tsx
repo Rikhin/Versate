@@ -9,12 +9,31 @@ export function useRequireProfile() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
 
+  // Temporary mock profile
+  const mockProfile = {
+    id: "mock-profile-id",
+    full_name: "John Doe",
+    bio: "Passionate student developer",
+    location: "San Francisco, CA",
+    interests: ["AI", "Web Development", "Robotics"],
+    skills: ["JavaScript", "Python", "React"],
+    experience_level: "Intermediate",
+    availability: "Part-time",
+    preferred_collaboration: "Team projects"
+  };
+
   useEffect(() => {
     if (!isLoaded) return;
     if (!user) {
       router.replace("/sign-in");
       return;
     }
+    
+    // Temporary mock profile
+    setProfile(mockProfile);
+    setLoading(false);
+    
+    /*
     // Fetch profile
     const checkProfile = async () => {
       const res = await fetch(`/api/profiles/${user.id}`);
@@ -27,6 +46,7 @@ export function useRequireProfile() {
       }
     };
     checkProfile();
+    */
   }, [user, isLoaded, router]);
 
   return { loading, profile };

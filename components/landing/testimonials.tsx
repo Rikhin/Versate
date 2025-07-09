@@ -2,47 +2,48 @@ import { motion } from "framer-motion";
 import { AnimatedWrapper } from "../ui/animated-wrapper";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Star } from "lucide-react";
+import { Button } from "../ui/button"; // Import Button component
 
 const testimonials = [
   {
     name: "Alex Chen",
     role: "Computer Science Student",
-    avatar: "/avatars/alex.jpg",
+    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
     content: "Versate completely transformed how I found team members for hackathons. I went from struggling to find teammates to winning my first competition within months!",
     rating: 5
   },
   {
     name: "Jamie Rivera",
     role: "Engineering Student",
-    avatar: "/avatars/jamie.jpg",
+    avatar: "https://randomuser.me/api/portraits/women/2.jpg",
     content: "The quality of projects and competitions on this platform is outstanding. I've built connections that helped me land an amazing internship.",
     rating: 5
   },
   {
     name: "Taylor Kim",
     role: "Design Student",
-    avatar: "/avatars/taylor.jpg",
+    avatar: "https://randomuser.me/api/portraits/men/3.jpg",
     content: "As a designer, finding technical co-founders was always challenging. Versate connected me with brilliant developers who shared my vision.",
     rating: 4
   },
   {
     name: "Morgan Lee",
     role: "Computer Science Student",
-    avatar: "/avatars/morgan.jpg",
+    avatar: "https://randomuser.me/api/portraits/women/4.jpg",
     content: "The mentorship opportunities here are incredible. I've learned more in three months than I did in a year of self-study.",
     rating: 5
   },
   {
     name: "Casey Zhang",
     role: "Robotics Enthusiast",
-    avatar: "/avatars/casey.jpg",
+    avatar: "https://randomuser.me/api/portraits/men/5.jpg",
     content: "Finally a platform that understands what student developers need. The project management tools are a game-changer for team collaboration.",
     rating: 5
   },
   {
     name: "Riley Patel",
     role: "AI/ML Student",
-    avatar: "/avatars/riley.jpg",
+    avatar: "https://randomuser.me/api/portraits/women/6.jpg",
     content: "The AI matching system helped me find the perfect team for a research project that got published. Couldn't be happier with the results!",
     rating: 5
   }
@@ -164,6 +165,16 @@ export function Testimonials() {
               </motion.article>
             </AnimatedWrapper>
           ))}
+        </div>
+        
+        <div className="mt-16 text-center">
+          <Button 
+            variant="outline" 
+            className="px-8 py-6 text-lg bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 transition-colors duration-300"
+            onClick={() => window.location.href = '/testimonials'}
+          >
+            View More Reviews
+          </Button>
         </div>
       </div>
     </section>

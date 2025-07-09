@@ -161,16 +161,27 @@ export default function LandingPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, delay: 1 }}
                   >
-                    <Link href="/dashboard">
-                      <button className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] text-white font-semibold rounded-md px-6 py-3 text-base shadow-lg hover:shadow-xl hover:shadow-[#7b61ff]/30 transition-all hover:scale-105 transform duration-300 border-none">
-                        Go to Dashboard
+                    <Link href={isSignedIn ? "#" : "/sign-in"}>
+                      <button 
+                        className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] text-white font-semibold rounded-md px-6 py-3 text-base shadow-lg hover:shadow-xl hover:shadow-[#7b61ff]/30 transition-all hover:scale-105 transform duration-300 border-none"
+                        disabled={isSignedIn}
+                        aria-disabled={isSignedIn}
+                        onClick={(e) => {
+                          if (isSignedIn) {
+                            e.preventDefault();
+                          }
+                        }}
+                      >
+                        {isSignedIn ? "You're Signed In" : "Get Started"}
                       </button>
                     </Link>
-                    <Link href="#features">
-                      <button className="bg-transparent text-white font-semibold rounded-md px-6 py-3 text-base border border-white/30 hover:bg-white/10 transition hover:scale-105 transform transition-transform duration-300">
-                        Learn More
-                      </button>
-                    </Link>
+                    <Button 
+                      variant="outline" 
+                      className="px-8 py-6 text-lg bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 transition-colors duration-300"
+                      onClick={() => alert('Demo coming soon!')}
+                    >
+                      View Demo
+                    </Button>
                   </motion.div>
                 </AnimatedWrapper>
               </div>
@@ -245,7 +256,7 @@ export default function LandingPage() {
             </section>
 
             {/* How It Works Section */}
-            <section className="py-16 relative">
+            <section id="how-it-works" className="py-12 bg-gradient-to-b from-white to-gray-100 scroll-mt-20">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
                   <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">How It Works</h2>
@@ -306,8 +317,9 @@ export default function LandingPage() {
                         </div>
                         
                         <div className="w-1/2 flex justify-center">
-                          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-2xl font-bold text-white">
+                          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-2xl font-bold text-white relative">
                             {step.step}
+                            <div className="absolute w-16 h-1 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end top-1/2 transform -translate-y-1/2 -left-16"></div>
                           </div>
                         </div>
                       </div>
@@ -334,7 +346,7 @@ export default function LandingPage() {
                     <div className="absolute -right-32 -bottom-32 w-96 h-96 bg-gradient-to-r from-teal-400/20 to-cyan-500/20 rounded-full blur-3xl"></div>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
                     {[
                       {
                         name: "Alex Johnson",
@@ -426,10 +438,11 @@ export default function LandingPage() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <Button className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end hover:opacity-90 transition-opacity text-lg px-8 py-6">
-                        <Rocket className="mr-2 h-5 w-5" />
-                        Get Started Free
-                      </Button>
+                      <Link href="/plans">
+                        <Button className="bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] text-white font-semibold rounded-md px-8 py-4 text-lg shadow-lg hover:shadow-xl hover:shadow-[#7b61ff]/30 transition-all hover:scale-105 transform duration-300 border-none">
+                          Get Started Free
+                        </Button>
+                      </Link>
                     </motion.div>
                     <motion.div
                       whileHover={{ scale: 1.05 }}
