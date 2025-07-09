@@ -80,6 +80,29 @@ export default function LandingPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const steps = [
+    {
+      title: "Create Your Account",
+      description: "Sign up in seconds using your email or social accounts.",
+      icon: UserPlus,
+    },
+    {
+      title: "Set Up Your Workspace",
+      description: "Create a new project or join an existing team workspace.",
+      icon: LayoutTemplate,
+    },
+    {
+      title: "Invite Your Team",
+      description: "Collaborate with teammates by inviting them to your project.",
+      icon: Send,
+    },
+    {
+      title: "Start Creating",
+      description: "Use our powerful tools to build, test, and deploy your projects.",
+      icon: Rocket,
+    }
+  ]
+
   return (
     <div className="relative min-h-screen overflow-hidden antialiased bg-transparent">
       {/* Enhanced Background elements */}
@@ -270,56 +293,24 @@ export default function LandingPage() {
                   <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-helix-gradient-start to-helix-gradient-end z-0"></div>
                   
                   <div className="space-y-12 relative z-10">
-                    {[
-                      {
-                        step: 1,
-                        title: "Create Your Account",
-                        description: "Sign up in seconds using your email or social accounts.",
-                        icon: UserPlus,
-                        position: "left"
-                      },
-                      {
-                        step: 2,
-                        title: "Set Up Your Workspace",
-                        description: "Create a new project or join an existing team workspace.",
-                        icon: LayoutTemplate,
-                        position: "right"
-                      },
-                      {
-                        step: 3,
-                        title: "Invite Your Team",
-                        description: "Collaborate with teammates by inviting them to your project.",
-                        icon: Send,
-                        position: "left"
-                      },
-                      {
-                        step: 4,
-                        title: "Start Creating",
-                        description: "Use our powerful tools to build, test, and deploy your projects.",
-                        icon: Rocket,
-                        position: "right"
-                      }
-                    ].map((step, index) => (
+                    {steps.map((step, index) => (
                       <div 
-                        key={index}
-                        className={`flex ${step.position === 'left' ? 'flex-row' : 'flex-row-reverse'} items-center`}
+                        key={index} 
+                        className={`flex ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'} items-center`}
                       >
-                        <div className="w-1/2 px-8">
-                          <div className="bg-gradient-to-br from-gray-800 to-gray-900 backdrop-blur-lg rounded-2xl p-6 border border-white/10 hover:shadow-xl transition-shadow">
-                            <div className="flex items-center mb-4">
-                              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end mr-4">
-                                <step.icon className="h-6 w-6 text-white" />
-                              </div>
-                              <h3 className="text-xl font-bold text-white">{step.title}</h3>
+                        <div className="w-1/2 flex justify-center">
+                          <div className="relative">
+                            <div className="w-16 h-16 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end flex items-center justify-center text-white text-xl font-bold">
+                              {index + 1}
                             </div>
-                            <p className="text-gray-300">{step.description}</p>
+                            {/* Connector line from number to box */}
+                            <div className={`absolute top-1/2 w-16 h-0.5 bg-gradient-to-r ${index % 2 === 0 ? 'from-helix-gradient-end to-transparent right-0' : 'from-transparent to-helix-gradient-start left-0'}`}></div>
                           </div>
                         </div>
-                        
-                        <div className="w-1/2 flex justify-center">
-                          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-2xl font-bold text-white relative">
-                            {step.step}
-                            <div className="absolute w-16 h-1 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end top-1/2 transform -translate-y-1/2 -left-16"></div>
+                        <div className="w-1/2">
+                          <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10 shadow-lg">
+                            <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
+                            <p className="text-gray-300">{step.description}</p>
                           </div>
                         </div>
                       </div>

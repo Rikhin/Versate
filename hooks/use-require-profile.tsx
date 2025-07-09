@@ -2,25 +2,16 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import useSWR from 'swr';
+import fetcher from '../lib/fetcher';
 
 export function useRequireProfile() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<any>(null);
+  const userId = user?.id;
 
-  // Temporary mock profile
-  const mockProfile = {
-    id: "mock-profile-id",
-    full_name: "John Doe",
-    bio: "Passionate student developer",
-    location: "San Francisco, CA",
-    interests: ["AI", "Web Development", "Robotics"],
-    skills: ["JavaScript", "Python", "React"],
-    experience_level: "Intermediate",
-    availability: "Part-time",
-    preferred_collaboration: "Team projects"
-  };
+  const { data: profile, error } = useSWR(`/api/profiles/${userId}`, fetcher);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -29,25 +20,12 @@ export function useRequireProfile() {
       return;
     }
     
-    // Temporary mock profile
-    setProfile(mockProfile);
-    setLoading(false);
-    
-    /*
-    // Fetch profile
-    const checkProfile = async () => {
-      const res = await fetch(`/api/profiles/${user.id}`);
-      if (res.ok) {
-        const data = await res.json();
-        setProfile(data);
-        setLoading(false);
-      } else {
-        router.replace("/onboarding?required=1");
-      }
-    };
-    checkProfile();
-    */
-  }, [user, isLoaded, router]);
+    if (profile) {
+      setLoading(false);
+    } else if (error) {
+      router.replace("/onboarding?required=1");
+    }
+  }, [user, isLoaded, router, profile, error]);
 
   return { loading, profile };
 } 

@@ -3,6 +3,7 @@ import { AnimatedWrapper } from "../ui/animated-wrapper";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Star } from "lucide-react";
 import { Button } from "../ui/button"; // Import Button component
+import Link from 'next/link';
 
 const testimonials = [
   {
@@ -168,13 +169,13 @@ export function Testimonials() {
         </div>
         
         <div className="mt-16 text-center">
-          <Button 
-            variant="outline" 
-            className="px-8 py-6 text-lg bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 transition-colors duration-300"
-            onClick={() => window.location.href = '/testimonials'}
-          >
-            View More Reviews
-          </Button>
+          <Link href="/testimonials">
+            <Button 
+              className="px-8 py-6 text-lg bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 transition-colors duration-300"
+            >
+              View More Reviews
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
