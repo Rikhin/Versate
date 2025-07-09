@@ -76,17 +76,50 @@
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
 }
 
-/* Glassmorphism utility - consolidated */
-.glass {
-  background: transparent !important;
-  backdrop-filter: none !important;
-  border: none !important;
-  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.12);
+/* Modern Glassmorphism Effect */
+.glass-card {
+  background: rgba(15, 12, 41, 0.6) !important;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Glow utility - reduced intensity for subtlety */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(122, 92, 250, 0.1) 0%, rgba(90, 209, 255, 0.1) 100%);
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.25);
+}
+
+.glass-card:hover::before {
+  opacity: 1;
+}
+
+/* Glow utility - enhanced for better visibility */
 .glow {
-  box-shadow: 0 0 8px 2px rgba(108, 67, 168, 0.3), 0 0 16px 4px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 0 20px 4px rgba(122, 92, 250, 0.2), 0 0 30px 8px rgba(90, 209, 255, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+.glow:hover {
+  box-shadow: 0 0 25px 6px rgba(122, 92, 250, 0.3), 0 0 40px 12px rgba(90, 209, 255, 0.2);
 }
 
 /* Gradient text utility */

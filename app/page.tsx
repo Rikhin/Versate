@@ -88,18 +88,18 @@ export default function LandingPage() {
           className="absolute inset-0 w-full h-full" 
           startColor="from-[#0f0c29]"
           endColor="to-[#302b63]"
-          opacity={0.9}
+          opacity={1.0}
         />
-        <NetworkBG className="absolute inset-0 w-full h-full opacity-30" />
-        <FloatingShapes className="absolute inset-0 w-full h-full opacity-70" />
+        <NetworkBG className="absolute inset-0 w-full h-full opacity-50" />
+        <FloatingShapes className="absolute inset-0 w-full h-full opacity-90" />
       </div>
       
       {/* Main Content Container */}
       <main className="relative z-10 bg-transparent">
-        {/* Hero section - left aligned */}
-        <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 lg:pt-40 lg:pb-32">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-left max-w-4xl">
+        {/* Hero section - moved slightly up with adjusted padding */}
+        <section className="relative pt-16 pb-12 sm:pt-24 sm:pb-16 lg:pt-32 lg:pb-20">
+          <div className="container mx-auto px-4 sm:px-8 lg:px-12 xl:px-16">
+            <div className="text-left max-w-4xl ml-4 md:ml-8 lg:ml-12">
               <AnimatedWrapper delay={0.1} type="fade" direction="up">
                 <div className="mb-4 sm:mb-6 inline-block">
                   <motion.span 
@@ -147,8 +147,8 @@ export default function LandingPage() {
                 
                 <AnimatedWrapper delay={0.8} type="fade">
                   <p 
-                    className="text-lg md:text-xl text-white/90 mb-8 max-w-xl text-left leading-relaxed tracking-wide font-sans" 
-                    style={{ lineHeight: '1.7' }}
+                    className="text-lg md:text-xl text-white/90 mb-8 max-w-xl text-left tracking-wide font-sans" 
+                    style={{ lineHeight: '2.0' }}
                   >
                     Discover, connect, and build with the best students for competitions and projects.
                   </p>
@@ -178,19 +178,37 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Main Content Sections with enhanced spacing */}
-        <div className="relative z-10 space-y-32 py-20">
-          {/* Why Choose Us Section */}
-          <WhyChooseUs />
+        {/* Main Content Sections with card containers */}
+        <div className="relative z-10 py-20">
+          <div className="space-y-24">
+            {/* Why Choose Us Section */}
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="glass-card p-8 md:p-12">
+                <WhyChooseUs />
+              </div>
+            </div>
 
-          {/* How It Works Section */}
-          <HowItWorks />
+            {/* How It Works Section */}
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="glass-card p-8 md:p-12">
+                <HowItWorks />
+              </div>
+            </div>
 
-          {/* Testimonials Section */}
-          <Testimonials />
+            {/* Testimonials Section */}
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="glass-card p-8 md:p-12">
+                <Testimonials />
+              </div>
+            </div>
 
-          {/* Final CTA Section */}
-          <CTA />
+            {/* Final CTA Section */}
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="glass-card p-8 md:p-12">
+                <CTA />
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
