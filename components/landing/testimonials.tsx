@@ -1,4 +1,6 @@
-import { motion } from "framer-motion";
+"use client";
+
+import { motion, MotionConfig } from "framer-motion";
 import { AnimatedWrapper } from "../ui/animated-wrapper";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Star } from "lucide-react";
@@ -50,7 +52,11 @@ const testimonials = [
   }
 ];
 
-export function Testimonials() {
+interface TestimonialsProps {
+  expanded?: boolean;
+}
+
+export function Testimonials({ expanded = false }: TestimonialsProps) {
   return (
     <section className="py-24 relative overflow-hidden">
       {/* Background gradient */}
@@ -168,15 +174,17 @@ export function Testimonials() {
           ))}
         </div>
         
-        <div className="mt-16 text-center">
-          <Link href="/testimonials">
-            <Button 
-              className="px-8 py-6 text-lg bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 transition-colors duration-300"
-            >
-              View More Reviews
-            </Button>
-          </Link>
-        </div>
+        {!expanded && (
+          <div className="mt-16 text-center">
+            <Link href="/testimonials">
+              <Button 
+                className="px-8 py-6 text-lg bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 transition-colors duration-300"
+              >
+                View More Reviews
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

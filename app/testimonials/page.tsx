@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Testimonials from '@/components/landing/testimonials';
+import { Testimonials } from '@/components/landing/testimonials';
 
 export const metadata: Metadata = {
   title: 'Testimonials',

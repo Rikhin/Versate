@@ -31,7 +31,7 @@ export default function OnboardingScrollEnforcer({ children }: { children?: Reac
 
     const checkProfileAndAttach = async () => {
       try {
-        const res = await fetch(`/api/profiles/${user.id}`);
+        const res = await fetch(`/api/profiles/${user.id}`); // Using userId as the parameter name
         if (res.status === 404) {
           setHasProfile(false);
           // No profile, attach scroll listener

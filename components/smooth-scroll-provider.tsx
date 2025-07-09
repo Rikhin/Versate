@@ -1,47 +1,131 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from "react";
 
-interface SmoothScrollProviderProps {
-  children: React.ReactNode
+// Define the Lenis type interface based on the library's API
+interface LenisInstance {
+  raf: (time: number) => void;
+  destroy: () => void;
+  // Add other Lenis methods as needed
 }
 
-export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
-  const lenisRef = useRef<any>(null)
+interface LenisOptions {
+  duration?: number;
+  easing?: (t: number) => number;
+  // Add other Lenis options as needed
+}
+
+interface SmoothScrollProviderProps {
+  children: React.ReactNode;
+  options?: LenisOptions;
+  debug?: boolean;
+}
+
+export function SmoothScrollProvider({ 
+  children, 
+  options = {}, 
+  debug = false 
+}: SmoothScrollProviderProps) {
+  const lenisRef = useRef<LenisInstance | null>(null);
+  const rafIdRef = useRef<number | null>(null);
+  
+  // Default easing function
+  const defaultEasing = (t: number): number => 
+    Math.min(1, 1.001 - Math.pow(2, -10 * t));
 
   useEffect(() => {
-    // Dynamically import Lenis to avoid SSR issues
+    let isMounted = true;
+    
     const initLenis = async () => {
+      if (!isMounted) return;
+      
       try {
-        const Lenis = (await import("lenis")).default
+        // Dynamically import Lenis to avoid SSR issues
+        const Lenis = (await import("lenis")).default;
         
-        // Initialize Lenis smooth scrolling
+        if (!Lenis) {
+          throw new Error("Failed to load Lenis module");
+        }
+        
+        // Initialize Lenis with provided options or defaults
         lenisRef.current = new Lenis({
           duration: 1.2,
-          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        })
-
-        // RAF for smooth scrolling
-        function raf(time: number) {
-          lenisRef.current?.raf(time)
-          requestAnimationFrame(raf)
+          easing: defaultEasing,
+          ...options,
+        }) as unknown as LenisInstance;
+        
+        if (debug) {
+          console.log("Lenis initialized successfully");
         }
 
-        requestAnimationFrame(raf)
+        // Animation frame function
+        const raf = (time: number) => {
+          if (!isMounted) return;
+          
+          try {
+            lenisRef.current?.raf(time);
+            rafIdRef.current = requestAnimationFrame(raf);
+          } catch (error) {
+            console.error("Error in Lenis RAF:", error);
+            // Attempt to recover by cleaning up and reinitializing
+            if (lenisRef.current?.destroy) {
+              lenisRef.current.destroy();
+            }
+            lenisRef.current = null;
+            initLenis().catch(console.error);
+          }
+        };
+
+        // Start the animation loop
+        rafIdRef.current = requestAnimationFrame(raf);
+        
       } catch (error) {
-        console.warn("Failed to initialize Lenis smooth scrolling:", error)
+        console.error("Failed to initialize Lenis:", error);
+        // Fallback to native scroll if Lenis fails
+        if (debug) {
+          console.warn("Falling back to native scroll behavior");
+        }
       }
+    };
+
+    // Only initialize on client-side
+    if (typeof window !== "undefined") {
+      initLenis();
     }
 
-    initLenis()
-
-    // Cleanup
+    // Cleanup function
     return () => {
-      if (lenisRef.current?.destroy) {
-        lenisRef.current.destroy()
+      isMounted = false;
+      
+      // Cancel any pending animation frame
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
       }
-    }
-  }, [])
+      
+      // Clean up Lenis instance
+      if (lenisRef.current?.destroy) {
+        try {
+          lenisRef.current.destroy();
+          if (debug) {
+            console.log("Lenis instance destroyed");
+          }
+        } catch (error) {
+          console.error("Error destroying Lenis:", error);
+        } finally {
+          lenisRef.current = null;
+        }
+      }
+    };
+  }, [options, debug]);
 
-  return <>{children}</>
-} 
+  // Just render children - Lenis works with the DOM directly
+  return <>{children}</>;
+}
+
+// Utility function to get the Lenis instance if needed elsewhere
+export function useLenis() {
+  // In a real implementation, you would use React context to access the Lenis instance
+  // For simplicity, we're just returning null here
+  return null;
+}

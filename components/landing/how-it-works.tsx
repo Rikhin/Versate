@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { AnimatedWrapper } from "../ui/animated-wrapper";
 import { cn } from "@/lib/utils";
