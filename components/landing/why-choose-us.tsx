@@ -59,16 +59,14 @@ export function WhyChooseUs() {
               direction="up"
             >
               <motion.div 
-                className="p-6 rounded-2xl border border-border/30 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
+                className="group relative p-6 rounded-xl border border-border/20 hover:border-primary/40 transition-all duration-300 h-full backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5"
                 whileHover={{ y: -5 }}
               >
-                <div key={index} className="group relative p-6 rounded-xl border border-border/30 bg-card/20 backdrop-blur-sm hover:bg-card/30 transition-all duration-300 h-full">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3 text-foreground">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
+                  {feature.icon}
                 </div>
+                <h3 className="text-xl font-semibold mb-3 text-foreground">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
               </motion.div>
             </AnimatedWrapper>
           ))}

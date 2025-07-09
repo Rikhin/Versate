@@ -79,8 +79,8 @@ export function HowItWorks() {
                     </div>
                     
                     {/* Center dot */}
-                    <div className="hidden md:flex w-16 h-16 rounded-full bg-primary/20 items-center justify-center flex-shrink-0 relative z-10">
-                      <div className="w-5 h-5 rounded-full bg-primary"></div>
+                    <div className="hidden md:flex w-16 h-16 rounded-full bg-primary/10 items-center justify-center flex-shrink-0 relative z-10 border border-primary/20">
+                      <div className="w-5 h-5 rounded-full border-2 border-primary"></div>
                       <span className="absolute text-2xl">{step.icon}</span>
                     </div>
                     

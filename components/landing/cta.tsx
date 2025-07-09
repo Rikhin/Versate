@@ -17,7 +17,7 @@ export function CTA() {
               Join thousands of students who are building the future, one project at a time. It's free to get started!
             </p>
             
-            <div className="relative overflow-hidden px-6 py-16 rounded-3xl bg-gradient-to-br from-primary/5 to-primary/10 backdrop-blur-sm border border-border/20">
+            <div className="relative overflow-hidden px-6 py-16 rounded-3xl bg-gradient-to-br from-primary/5 to-primary/5 border border-border/20">
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <SignUpButton mode="modal">
                   <Button 
