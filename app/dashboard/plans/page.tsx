@@ -1,163 +1,125 @@
 "use client";
-import React from "react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, Rocket, ArrowRight } from "lucide-react";
+
 import { useRouter } from "next/navigation";
-import { BackgroundGradient, FloatingShapes } from "@/components/scroll-animations";
-
-const versateGradient = "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end";
-const versateTextGradient = "gradient-text-helix";
-
-const plans = [
-  {
-    name: "Starter - Free",
-    price: 0,
-    oldPrice: null,
-    priceId: null,
-    description: "Get started with Versate's core features and discover your first opportunities.",
-    features: [
-      "✔️ Unlimited search of public competitions and programs",
-      "✔️ Smart filters and recommendations",
-      "✔️ Access to basic team matching",
-      "✔️ Community support forum",
-      "✔️ Save favorite opportunities",
-    ],
-    cta: "Get Started",
-  },
-  {
-    name: "Plus - Lifetime Access",
-    price: 49.99,
-    oldPrice: 99.99,
-    priceId: "price_xxx_plus",
-    description: "Unlock advanced analytics, premium matching, and exclusive resources.",
-    features: [
-      "✔️ All Starter features",
-      "✔️ Advanced team matching & AI recommendations",
-      "✔️ Access to premium competitions & programs",
-      "✔️ Early access to new features",
-      "✔️ Priority support",
-    ],
-    cta: "Upgrade to Plus",
-  },
-  {
-    name: "Pro - Lifetime Access",
-    price: 99.99,
-    oldPrice: 199.99,
-    priceId: "price_xxx_pro",
-    description: "For power users: full access to Versate's ecosystem, integrations, and custom tools.",
-    features: [
-      "✔️ All Plus features",
-      "✔️ Custom integrations (Slack, Notion, etc.)",
-      "✔️ API access & automation tools",
-      "✔️ Dedicated onboarding & support",
-      "✔️ Invite-only community events",
-    ],
-    cta: "Go Pro",
-  },
-];
-
-// Mock user subscription state
-const mockUserSubscription = {
-  plan: "Pro", // "Free", "Pro", or "Enterprise"
-  stripeCustomerId: "cus_mock123",
-  stripeSubscriptionId: "sub_mock123",
-};
 
 export default function PlansPage() {
-  const [selected, setSelected] = useState(0);
-  const [showSuccess, setShowSuccess] = useState(false);
   const router = useRouter();
 
-  async function handleContinue() {
-    const plan = plans[selected];
-    if (plan.price === 0) {
-      setShowSuccess(true);
+  const plans = [
+    {
+      name: "Starter - Free",
+      price: 0,
+      description: "Get started with our core features",
+      features: [
+        "Unlimited search of public competitions",
+        "Basic team matching",
+        "Community support"
+      ],
+      cta: "Get Started",
+      primary: false,
+    },
+    {
+      name: "Plus",
+      price: 9.99,
+      description: "For serious competitors",
+      features: [
+        "Everything in Free",
+        "Advanced matching",
+        "Priority support"
+      ],
+      cta: "Start Free Trial",
+      primary: true,
+    },
+    {
+      name: "Pro",
+      price: 19.99,
+      description: "For teams and professionals",
+      features: [
+        "Everything in Plus",
+        "Premium features",
+        "Dedicated support"
+      ],
+      cta: "Start Free Trial",
+      primary: false,
+    },
+  ];
+
+  const handleSelectPlan = (plan: any) => {
+    if (plan.name === "Starter - Free") {
+      router.push("/dashboard");
     } else {
-      // POST to /api/stripe/checkout
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId: plan.priceId }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert(data.error || "Failed to start checkout");
-      }
+      window.location.href = 'https://buy.stripe.com/test_28o2bQ4pJc6d3Uc000';
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-helix-dark relative overflow-hidden flex flex-col items-center justify-start py-20 px-6 lg:px-8">
-      <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
-      <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
-      <div className="relative z-10 w-full max-w-7xl">
-      {/* Versate pill with icon */}
-        <div className="flex justify-center mb-8">
-          <span className={`inline-flex items-center text-base md:text-lg font-bold text-white ${versateGradient} rounded-full px-6 py-3 tracking-wide shadow-xl glow`}>
-            <Rocket className="w-5 h-5 mr-3" />
-          One-Time Purchase, Lifetime Access
-        </span>
-      </div>
-      {/* Title */}
-        <h1 className="text-5xl md:text-7xl md:text-8xl font-black text-white text-center mb-8 leading-none">
-          <span className={versateTextGradient}>Accelerate</span> Search.<br />Boost <span className={versateTextGradient}>Success.</span>
-      </h1>
-      {/* Subtitle */}
-        <p className="text-xl md:text-2xl text-helix-text-light text-center mb-16 max-w-4xl mx-auto leading-relaxed">
-        Versate empowers students and teams to discover, connect, and win. Enjoy smart matching, curated opportunities, and a supportive community—built to help you reach your goals faster.
-      </p>
-      {/* Pricing Cards */}
-        <div className="w-full flex flex-col md:flex-row gap-8 md:gap-6 justify-center items-stretch mb-12">
-        {plans.map((plan, i) => (
-          <div
-            key={plan.name}
-              className={`flex-1 glass border border-white/10 rounded-[24px] shadow-xl p-8 flex flex-col items-center min-w-[280px] max-w-sm relative transition-all duration-300 ${i === 1 ? 'border-2 border-helix-gradient-start glow' : selected === i ? 'border-2 border-helix-gradient-start glow' : 'hover:glow'}`}
-          >
-            {i === 1 && (
-                <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-sm font-bold px-6 py-2 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white shadow-xl glow">Most Popular</span>
-            )}
-              <h2 className="text-2xl font-bold text-white mb-4">{plan.name}</h2>
-              <p className="text-helix-text-light text-base mb-6 text-center leading-relaxed">{plan.description}</p>
-              <div className="mb-6 flex items-center gap-3">
-                {plan.oldPrice && <span className="text-helix-text-light line-through text-xl">${plan.oldPrice}</span>}
-                <span className="text-4xl font-black text-white">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
-                {plan.price !== 0 && <span className="text-sm text-helix-text-light font-bold">USD</span>}
-            </div>
-              <ul className="text-left text-helix-text-light text-base space-y-3 mt-6 mb-8 w-full max-w-xs">
-              {plan.features.map((f, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-helix-gradient-start mt-0.5 flex-shrink-0" />
-                    <span>{f.replace('✔️ ', '')}</span>
-                  </li>
-              ))}
-            </ul>
-            <button
-                className={`mt-auto w-full py-4 rounded-full font-bold text-lg transition-all duration-300 ${selected === i ? 'bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white shadow-xl glow' : 'bg-white/10 border-2 border-white/20 text-white hover:bg-white/20'}`}
-              onClick={() => setSelected(i)}
+    <div className="min-h-screen bg-gray-50 py-16 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Choose Your Plan
+          </h1>
+          <p className="text-xl text-gray-600">
+            Select the plan that works best for you
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {plans.map((plan, i) => (
+            <div
+              key={i}
+              className={`rounded-xl overflow-hidden shadow-lg ${
+                plan.primary ? 'ring-2 ring-blue-500 transform md:-translate-y-2' : 'bg-white'
+              }`}
             >
-              {selected === i ? "Selected" : plan.cta}
-            </button>
-          </div>
-        ))}
-      </div>
-      {/* Continue Button */}
-        <div className="w-full flex justify-center">
-        <Button
-            className="w-full max-w-5xl py-6 rounded-full font-bold text-xl bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow flex items-center justify-center gap-3"
-          onClick={handleContinue}
-        >
-          Continue
-            <ArrowRight className="h-6 w-6" />
-        </Button>
-      </div>
-      {/* Success Message for Free Plan */}
-      {showSuccess && (
-          <div className="mt-8 text-green-400 font-bold text-center text-lg">You have successfully selected the free Starter plan!</div>
-      )}
+              <div className="p-6 h-full flex flex-col">
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    {plan.name}
+                  </h3>
+                  <div className="flex items-baseline">
+                    <span className="text-4xl font-bold">${plan.price}</span>
+                    <span className="ml-2 text-gray-500">/month</span>
+                  </div>
+                  <p className="mt-2 text-gray-600">{plan.description}</p>
+                </div>
+
+                <ul className="mb-8 space-y-2">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start">
+                      <svg
+                        className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  onClick={() => handleSelectPlan(plan)}
+                  className={`mt-auto w-full py-3 px-4 rounded-md font-medium transition-colors ${
+                    plan.primary
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                  }`}
+                >
+                  {plan.cta}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
-} 
+}
