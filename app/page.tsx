@@ -81,7 +81,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden antialiased">
+    <div className="relative min-h-screen overflow-hidden antialiased bg-transparent">
       {/* Background elements */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <NetworkBG className="absolute inset-0 w-full h-full opacity-20" />
@@ -90,7 +90,7 @@ export default function LandingPage() {
       </div>
       
       {/* Main Content Container */}
-      <main className="relative z-10">
+      <main className="relative z-10 bg-transparent">
         {/* Hero section */}
         <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 lg:pt-40 lg:pb-32">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">

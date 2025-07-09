@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <ClerkProvider publishableKey={clerkPublishableKey}>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.className} bg-helix-dark-blue`}>
+        <body className={inter.className}>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
