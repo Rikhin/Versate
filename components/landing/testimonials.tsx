@@ -1,9 +1,11 @@
-import { motion, AnimatePresence } from "framer-motion";
+"use client";
+
 import { AnimatedWrapper } from "../ui/animated-wrapper";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Star } from "lucide-react";
-import { Button } from "../ui/button"; // Import Button component
+import { Button } from "../ui/button";
 import Link from 'next/link';
+import { motion, AnimatePresence } from "../ui/motion";
 
 const testimonials = [
   {
@@ -108,12 +110,32 @@ export function Testimonials() {
                       <div className="flex-1">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h4 className="text-lg font-bold text-white group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-secondary transition-all duration-300">
-                              {testimonial.name}
-                            </h4>
-                            <p className="text-sm text-white/60 group-hover:text-white/80 transition-colors duration-300">
-                              {testimonial.role}
-                            </p>
+                            <AnimatePresence mode="wait">
+                              <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.5 }}
+                                className="w-full"
+                              >
+                                <h4 className="text-lg font-bold text-white group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-secondary transition-all duration-300">
+                                  {testimonial.name}
+                                </h4>
+                                <p className="text-sm text-white/60 group-hover:text-white/80 transition-colors duration-300">
+                                  {testimonial.role}
+                                </p>
+                              </motion.div>
+                            </AnimatePresence>
+                            <div className="flex mt-2">
+                              {[...Array(5)].map((_, i) => (
+                                <Star 
+                                  key={i} 
+                                  className={`w-4 h-4 ${i < testimonial.rating ? 'text-yellow-400 fill-current' : 'text-white/20'} group-hover:scale-110 transition-transform duration-300`} 
+                                  style={{ transitionDelay: `${i * 50}ms` }}
+                                />
+                              ))}
+                            </div>
                           </div>
                           
                           {/* Rating */}
@@ -121,17 +143,6 @@ export function Testimonials() {
                             <Star className="w-4 h-4 text-yellow-400 fill-current" />
                             <span className="text-sm font-medium text-white/90">{testimonial.rating}.0</span>
                           </div>
-                        </div>
-                        
-                        {/* Stars */}
-                        <div className="flex mt-2">
-                          {[...Array(5)].map((_, i) => (
-                            <Star 
-                              key={i} 
-                              className={`w-4 h-4 ${i < testimonial.rating ? 'text-yellow-400 fill-current' : 'text-white/20'} group-hover:scale-110 transition-transform duration-300`} 
-                              style={{ transitionDelay: `${i * 50}ms` }}
-                            />
-                          ))}
                         </div>
                       </div>
                     </div>
