@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Loader2, Mail, Building, Briefcase, MapPin, Link as LinkIcon, User, GraduationCap, BookOpen, Send } from "lucide-react"
+import { Loader2, Mail, Building, Briefcase, MapPin, Link as LinkIcon, User, GraduationCap, BookOpen, Send, Sparkles } from "lucide-react"
 
 interface ProfileData {
   name: string
@@ -34,7 +34,23 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
   const [emailSubject, setEmailSubject] = useState("")
   const [emailBody, setEmailBody] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
-  const [userProfile, setUserProfile] = useState<any>(null)
+  const [userProfile, setUserProfile] = useState<{
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    imageUrl?: string;
+    [key: string]: unknown;
+  } | null>(null)
+  const [formData, setFormData] = useState<{
+    name?: string;
+    title?: string;
+    company?: string;
+    location?: string;
+    bio?: string;
+    website?: string;
+    [key: string]: unknown;
+  }>({})
 
   useEffect(() => {
     // Fetch current user's profile
