@@ -11,7 +11,6 @@ import { StatsCard } from "@/components/dashboard/stats-card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Profile } from "@/types/profile"
 import { 
   Trophy, 
   Users, 
@@ -24,13 +23,11 @@ import {
   MessageSquare,
   TrendingUp,
   Plus,
-  MapPin,
-  Loader2,
-  AlertCircle
+  MapPin
 } from "lucide-react"
 import Link from "next/link"
 
-function ErrorFallback({ error, resetErrorBoundary }: { error: Error, resetErrorBoundary: () => void }) {
+function ErrorFallback({ error, resetErrorBoundary }: any) {
   return (
     <div role="alert" className="p-6 bg-red-50 rounded-lg">
       <h2 className="text-lg font-semibold text-red-800">Something went wrong</h2>
@@ -46,59 +43,14 @@ function ErrorFallback({ error, resetErrorBoundary }: { error: Error, resetError
 }
 
 export default function DashboardPage() {
-  const router = useRouter()
-  const { loading, profile, error } = useRequireProfile()
+  const { loading, profile } = useRequireProfile()
 
-  if (loading) {
+  if (loading || !profile) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-helix-gradient-start mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-800">Loading your dashboard</h2>
-          <p className="text-gray-600 mt-2">This will just take a moment...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-        <div className="text-center max-w-md">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 mb-4">
-            <AlertCircle className="h-6 w-6 text-red-600" />
-          </div>
-          <h2 className="text-xl font-semibold text-gray-900">Unable to load profile</h2>
-          <p className="mt-2 text-gray-600">
-            We couldn't load your profile information. Please try again or contact support if the problem persists.
-          </p>
-          <div className="mt-6">
-            <Button
-              onClick={() => window.location.reload()}
-              className="bg-helix-gradient-start hover:bg-helix-gradient-end text-white"
-            >
-              Try again
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (!profile) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900">Profile not found</h2>
-          <p className="mt-2 text-gray-600">Please complete your profile setup to continue.</p>
-          <div className="mt-6">
-            <Button
-              onClick={() => router.push('/onboarding')}
-              className="bg-helix-gradient-start hover:bg-helix-gradient-end text-white"
-            >
-              Go to Onboarding
-            </Button>
-          </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-pulse flex flex-col items-center space-y-4">
+          <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
         </div>
       </div>
     )
@@ -158,8 +110,13 @@ export default function DashboardPage() {
     }
   ]
 
+  // Extract first name from full_name or fallback
+  const firstName = profile.full_name?.split(' ')[0] || 'User'
+
   // Calculate profile completion percentage
   const profileCompletion = useMemo(() => {
+    if (!profile) return 0;
+    
     const profileFields = [
       profile.full_name,
       profile.bio,
@@ -196,9 +153,7 @@ export default function DashboardPage() {
           {/* Welcome Section */}
           <div className="mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-              Welcome back, <span className="text-helix-gradient-start">
-                {profile.full_name?.split(' ')[0] || 'User'}
-              </span>!
+              Welcome back, <span className="text-helix-gradient-start">{firstName}</span>!
             </h1>
             <p className="text-gray-500 dark:text-gray-400">Here's what's happening with your account today.</p>
           </div>
@@ -283,14 +238,16 @@ export default function DashboardPage() {
               <DashboardCard title="Profile Overview">
                 <div className="flex flex-col items-center">
                   <Avatar className="h-20 w-20 mb-4">
-                    <AvatarImage src={profile.avatar_url} alt={profile.full_name || 'User'} />
+                    <AvatarImage src="" alt={profile.full_name || 'User'} />
                     <AvatarFallback className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white text-xl">
-                      {profile.full_name?.split(' ').map(n => n[0]).join('') || 'U'}
+                      {profile.full_name?.split(' ').map((n: string) => n[0]).join('') || 'U'}
                     </AvatarFallback>
                   </Avatar>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {profile.full_name || 'User'}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{profile.full_name || 'User'}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                    <MapPin className="h-4 w-4 mr-1" />
+                    {profile.location || 'Location not set'}
+                  </p>
                   
                   <div className="w-full mt-6 space-y-4">
                     <div>
@@ -307,7 +264,7 @@ export default function DashboardPage() {
                     </div>
                     
                     <div className="flex flex-wrap gap-2 mt-4 justify-center">
-                      {(profile.interests || []).slice(0, 5).map((interest, index) => (
+                      {(profile.interests || []).slice(0, 5).map((interest: string, index: number) => (
                         <Badge 
                           key={index} 
                           variant="secondary" 

@@ -53,7 +53,7 @@ export default function AISearchPage() {
     async function fetchProfilePlan() {
       if (!userId) return;
       try {
-        const res = await fetch(`/api/profiles/${userId}`); // Using userId as the parameter name
+        const res = await fetch(`/api/profiles/${userId}`);
         if (res.ok) {
           const data = await res.json();
           setProfilePlan(data?.plan || data?.profile?.plan || 'Free');

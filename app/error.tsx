@@ -1,4 +1,6 @@
-"use client"
+'use client';
+
+export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -51,9 +53,9 @@ export default function Error({
     
     // Return a cleanup function to flush events
     return () => {
-      const client = Sentry.getCurrentHub().getClient();
-      if (client) {
-        client.flush(2000);
+      // Sentry.flush is available in the latest SDK for client-side flushing
+      if (typeof Sentry.flush === 'function') {
+        Sentry.flush(2000);
       }
     };
   }, [error, errorMessage, statusCode]);

@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { Trophy, Users, Zap, Code, MessageSquare, BookOpen, Award } from "lucide-react";
 import { AnimatedWrapper } from "../ui/animated-wrapper";
