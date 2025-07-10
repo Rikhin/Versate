@@ -3,19 +3,16 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Progress } from "@/components/ui/progress";
-import { User, Code, Trophy, Target, ArrowRight, ArrowLeft, Loader2, AlertCircle, MapPin, School, Calendar, Star, Search } from "lucide-react";
+import { Loader2, AlertCircle, ArrowRight, ArrowLeft, User, Code, Target, Star } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations";
 import Papa from 'papaparse';
-import { competitions } from '@/lib/competitions-data';
 import { RecommendedTeammatesModal } from "@/components/recommended-teammates-modal";
 
 interface CompetitionInterest {
@@ -38,6 +35,16 @@ interface OnboardingFormData {
   profileImageUrl?: string;
 }
 
+// Add RecommendedTeammate interface for type safety
+interface RecommendedTeammate {
+  user_id: string;
+  first_name: string;
+  last_name: string;
+  avatar_url?: string;
+  bio?: string;
+  similarity: number;
+}
+
 function CityDropdown({ value, onChange }: { value: string, onChange: (val: string) => void }) {
   const [cities, setCities] = useState<{ city: string, state_id: string }[]>([]);
   const [search, setSearch] = useState('');
@@ -48,7 +55,7 @@ function CityDropdown({ value, onChange }: { value: string, onChange: (val: stri
       .then(res => res.text())
       .then(text => {
         const parsed = Papa.parse(text, { header: true });
-        setCities(parsed.data.map((row: any) => ({ city: row.city, state_id: row.state_id })).filter((row: any) => row.city && row.state_id));
+        setCities(parsed.data.map((row: unknown) => ({ city: (row as { city: string, state_id: string }).city, state_id: (row as { city: string, state_id: string }).state_id })).filter((row: unknown) => (row as { city: string, state_id: string }).city && (row as { city: string, state_id: string }).state_id));
         setLoading(false);
       });
   }, []);
@@ -99,18 +106,13 @@ export function OnboardingForm() {
   const [error, setError] = useState<string | null>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const [imagePreview, setImagePreview] = useState<string>(user?.imageUrl || "");
-  const [recommended, setRecommended] = useState<any[]>([]);
+  const [recommended, setRecommended] = useState<RecommendedTeammate[]>([]);
   const [showRecommended, setShowRecommended] = useState(false);
-  const [competitionSearch, setCompetitionSearch] = useState("");
-  const [selectedCompetitions, setSelectedCompetitions] = useState<{ [key: string]: CompetitionInterest[] }>({});
-
-  // Wait for user to load or if user is null
-  if (!isLoaded || !user) return <div>Loading...</div>;
-
+  const [selectedCompetitions] = useState<{ [key: string]: CompetitionInterest[] }>({}); // Remove setSelectedCompetitions
   const [formData, setFormData] = useState<OnboardingFormData>({
-    firstName: user.firstName || "",
-    lastName: user.lastName || "",
-    email: user.emailAddresses?.[0]?.emailAddress || "",
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    email: user?.emailAddresses?.[0]?.emailAddress || "",
     city: "",
     gradeLevel: "",
     bio: "",
@@ -120,6 +122,14 @@ export function OnboardingForm() {
     location: "",
     competitions: [],
   });
+  // Move useEffect(() => { ... }, [currentStep]) above the early return
+  useEffect(() => {
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [currentStep]);
+  // Wait for user to load or if user is null
+  if (!isLoaded || !user) return <div>Loading...</div>;
 
   const totalSteps = 4;
   const progress = (currentStep / totalSteps) * 100;
@@ -164,24 +174,6 @@ export function OnboardingForm() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
-  };
-
-  const handleCompetitionToggle = (competitionId: string, interest: 'competing' | 'looking_for_partner' | 'looking_for_mentor', checked: boolean) => {
-    setSelectedCompetitions(prev => {
-      const current = prev[competitionId] || [];
-      let updated;
-      
-      if (checked) {
-        updated = [...current, { competitionId, interest }];
-      } else {
-        updated = current.filter(c => !(c.competitionId === competitionId && c.interest === interest));
-      }
-      
-      return {
-        ...prev,
-        [competitionId]: updated
-      };
-    });
   };
 
   const handleSubmit = async () => {
@@ -241,17 +233,6 @@ export function OnboardingForm() {
     }
   };
 
-  useEffect(() => {
-    if (topRef.current) {
-      topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [currentStep]);
-
-  const filteredCompetitions = competitions.filter(comp =>
-    comp.name.toLowerCase().includes(competitionSearch.toLowerCase()) ||
-    comp.category.toLowerCase().includes(competitionSearch.toLowerCase())
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50/60 to-indigo-100/60 dark:from-zinc-900 dark:to-zinc-950 flex items-center justify-center px-2 py-8">
       <BackgroundGradient startColor="from-gray-50/50" endColor="to-gray-100/50" triggerStart="top center" triggerEnd="center center" />
@@ -267,7 +248,7 @@ export function OnboardingForm() {
                     Welcome to <span className="text-indigo-400">Versate</span>
               </div>
                   <p className="text-lg md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                Let's get to know you better so we can match you with the perfect teammates
+                Let&apos;s get to know you better so we can match you with the perfect teammates
               </p>
             </div>
 
@@ -432,7 +413,7 @@ export function OnboardingForm() {
                           <Star className="h-8 w-8 text-indigo-500" />
                           <h2 className="text-2xl md:text-3xl font-semibold text-black">Tell Your Story</h2>
                         </div>
-                        <p className="text-lg text-gray-500">Share a bit about yourself and what you're passionate about</p>
+                        <p className="text-lg text-gray-500">Share a bit about yourself and what you&apos;re passionate about</p>
                       </div>
                       <div className="space-y-3">
                         <Label className="text-base font-normal text-black">Bio *</Label>

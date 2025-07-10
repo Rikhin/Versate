@@ -14,17 +14,14 @@ export async function POST(request: NextRequest) {
     }
     const supabase = createServerClient();
     // Mark all messages from partnerId to userId as read
-    const { error } = await supabase
+    await supabase
       .from("messages")
       .update({ is_read: true })
       .eq("sender_id", partnerId)
       .eq("recipient_id", userId)
       .eq("is_read", false);
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 } 

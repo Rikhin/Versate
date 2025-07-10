@@ -31,7 +31,7 @@ export async function helixSearch(collection: string, queryEmbedding: number[], 
 }
 
 // Helper function to add content to the vector store
-export async function helixInsert(collection: string, id: string, embedding: number[], metadata: any) {
+export async function helixInsert(collection: string, id: string, embedding: number[], metadata: unknown) {
   return helix.query('insert', {
     collection,
     vectors: [

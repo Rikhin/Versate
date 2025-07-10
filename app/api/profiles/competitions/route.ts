@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const supabase = createServerClient();
 
     // First, get the user's profile
-    const { data: profile, error: profileError } = await supabase
+    const { error: profileError } = await supabase
       .from("profiles")
       .select("id")
       .eq("user_id", userId)

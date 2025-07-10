@@ -22,28 +22,14 @@ interface Project {
 
 interface ProjectsTableProps {
   projects: Project[];
-  error?: any;
+  error?: unknown;
   competition: { name: string };
   searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-interface ColumnDef<Project> {
-  header: string;
-  accessor: keyof Project;
 }
 
 const PAGE_SIZE = 10;
 
 export default function ProjectsTable({ projects, error, competition }: ProjectsTableProps) {
-  const columns: ColumnDef<Project>[] = [
-    { header: 'Title', accessor: 'title' },
-    { header: 'Authors', accessor: 'authors' },
-    { header: 'Category', accessor: 'category' },
-    { header: 'Description', accessor: 'description' },
-    { header: 'Awards', accessor: 'awards' },
-    { header: 'Date', accessor: 'created_at' },
-  ];
-
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<keyof Project>("created_at");

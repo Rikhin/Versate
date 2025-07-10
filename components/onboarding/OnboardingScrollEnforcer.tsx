@@ -45,7 +45,7 @@ export default function OnboardingScrollEnforcer({ children }: { children?: Reac
         } else {
           setHasProfile(true);
         }
-      } catch (err) {
+      } catch {
         setHasProfile(true); // fail safe: assume has profile
       } finally {
         setProfileChecked(true);
@@ -64,7 +64,7 @@ export default function OnboardingScrollEnforcer({ children }: { children?: Reac
     hasNavigated.current = true;
     try {
       router.replace("/onboarding?required=1");
-    } catch (e) {
+    } catch {
       // fail silently
     }
   };

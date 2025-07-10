@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
     const result = await helixSearch('mentors', embedding, 5);
 
     return NextResponse.json({ results: result });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('RAG API error:', error);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: (error as Error).message || 'Internal server error' }, { status: 500 });
   }
 } 

@@ -112,9 +112,9 @@ export async function loadAllMentors(): Promise<MentorProfile[]> {
       }
       const text = await res.text()
       const { data } = Papa.parse(text, { header: true, skipEmptyLines: true })
-      let state = getStateFromFilename(file)
+      const state = getStateFromFilename(file)
       
-      for (const row of data as any[]) {
+      for (const row of data as unknown as Record<string, string>[]) {
         // Skip incomplete
         if (!row["Title"] || !row["URL"]) {
           continue
@@ -272,7 +272,7 @@ export async function loadAllSummerPrograms(): Promise<SummerProgram[]> {
   const res = await fetch("/webset-summer_programs_competitive_high_school_u_s.csv");
   const text = await res.text();
   const { data } = Papa.parse(text, { header: true, skipEmptyLines: true });
-  return (data as any[]).map(row => ({
+  return (data as unknown as Record<string, string>[]).map(row => ({
     url: row["URL"] || "",
     title: row["Title"] || row["Name of Summer Program (Result)"] || "",
     description: row["Description"] || row["Description of summer program (Result)"] || "",
@@ -293,7 +293,7 @@ export async function loadAllScholarships(): Promise<Scholarship[]> {
   const res = await fetch("/Universities_Schoolarships_All_Around_the_World.csv");
   const text = await res.text();
   const { data } = Papa.parse(text, { header: true, skipEmptyLines: true });
-  return (data as any[]).map(row => ({
+  return (data as unknown as Record<string, string>[]).map(row => ({
     title: row["title"] || "",
     degrees: row["degrees"] || "",
     funds: row["funds"] || "",

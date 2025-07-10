@@ -3,13 +3,19 @@ import React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Rocket, ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { BackgroundGradient, FloatingShapes } from "@/components/scroll-animations";
 
-const versateGradient = "bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end";
-const versateTextGradient = "gradient-text-helix";
+interface Plan {
+  name: string;
+  price: number;
+  oldPrice: number | null;
+  priceId: string | null;
+  description: string;
+  features: string[];
+  cta: string;
+}
 
-const plans = [
+const plans: Plan[] = [
   {
     name: "Starter - Free",
     price: 0,
@@ -57,17 +63,9 @@ const plans = [
   },
 ];
 
-// Mock user subscription state
-const mockUserSubscription = {
-  plan: "Pro", // "Free", "Pro", or "Enterprise"
-  stripeCustomerId: "cus_mock123",
-  stripeSubscriptionId: "sub_mock123",
-};
-
 export default function PlansPage() {
   const [selected, setSelected] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
-  const router = useRouter();
 
   async function handleContinue() {
     const plan = plans[selected];
@@ -80,7 +78,7 @@ export default function PlansPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ priceId: plan.priceId }),
       });
-      const data = await res.json();
+      const data: { url?: string; error?: string } = await res.json();
       if (data.url) {
         window.location.href = data.url;
       } else {
@@ -96,14 +94,14 @@ export default function PlansPage() {
       <div className="relative z-10 w-full max-w-7xl">
       {/* Versate pill with icon */}
         <div className="flex justify-center mb-8">
-          <span className={`inline-flex items-center text-base md:text-lg font-bold text-white ${versateGradient} rounded-full px-6 py-3 tracking-wide shadow-xl glow`}>
+          <span className={`inline-flex items-center text-base md:text-lg font-bold text-white bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end rounded-full px-6 py-3 tracking-wide shadow-xl glow`}>
             <Rocket className="w-5 h-5 mr-3" />
           One-Time Purchase, Lifetime Access
         </span>
       </div>
       {/* Title */}
         <h1 className="text-5xl md:text-7xl md:text-8xl font-black text-white text-center mb-8 leading-none">
-          <span className={versateTextGradient}>Accelerate</span> Search.<br />Boost <span className={versateTextGradient}>Success.</span>
+          <span className="gradient-text-helix">Accelerate</span> Search.<br />Boost <span className="gradient-text-helix">Success.</span>
       </h1>
       {/* Subtitle */}
         <p className="text-xl md:text-2xl text-helix-text-light text-center mb-16 max-w-4xl mx-auto leading-relaxed">

@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { auth } from "@clerk/nextjs/server";
 import { createServerClient } from "@/lib/supabase/server";
+import Link from "next/link";
 
 export default async function TestOnboardingPage() {
   const { userId } = await auth();
@@ -52,15 +53,15 @@ export default async function TestOnboardingPage() {
       </div>
       
       <div className="mt-8 space-y-2">
-        <a href="/onboarding" className="block text-blue-600 hover:underline">
+        <Link href="/onboarding" className="block text-blue-600 hover:underline">
           Go to Onboarding
-        </a>
-        <a href="/dashboard" className="block text-blue-600 hover:underline">
+        </Link>
+        <Link href="/dashboard" className="block text-blue-600 hover:underline">
           Go to Dashboard
-        </a>
-        <a href="/" className="block text-blue-600 hover:underline">
+        </Link>
+        <Link href="/" className="block text-blue-600 hover:underline">
           Go to Home
-        </a>
+        </Link>
       </div>
     </div>
   );

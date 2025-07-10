@@ -1,15 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { useAuth, useUser } from '@clerk/nextjs';
-import { ChevronLeft, ChevronRight, Send, Search, MessageSquare, Users, Calendar, Award, BookOpen, Lightbulb, Zap, Sparkles, Star, Target, TrendingUp, Globe, Rocket, Brain, Code, Database, Cloud, Shield, Lock, Key, Eye, Heart, Plus, Trash2, Clock, FileText, ChevronDown } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import { useRouter } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer";
 import { BackgroundGradient, FloatingShapes } from "@/components/scroll-animations";
-
-const VERSATE_PRIMARY = '#6366F1';
 
 interface Message {
   id: string;
@@ -18,26 +13,15 @@ interface Message {
   timestamp: Date;
 }
 
-interface ChatHistory {
-  id: string;
-  title: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export default function AISearchPage() {
   const { userId } = useAuth();
-  const { user } = useUser();
-  const router = useRouter();
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [profilePlan, setProfilePlan] = useState<string>('Free');
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Auto-scroll to bottom when new messages are added
   useEffect(() => {
@@ -58,7 +42,7 @@ export default function AISearchPage() {
           const data = await res.json();
           setProfilePlan(data?.plan || data?.profile?.plan || 'Free');
         }
-      } catch (e) {
+      } catch {
         setProfilePlan('Free');
       }
     }
@@ -68,7 +52,6 @@ export default function AISearchPage() {
   const startNewSearch = () => {
     setMessages([]);
     setHasSearched(false);
-    setError('');
   };
 
   const handleSend = async (e?: React.FormEvent) => {
@@ -76,7 +59,6 @@ export default function AISearchPage() {
     const searchQuery = query.trim();
     if (!searchQuery) return;
     setLoading(true);
-    setError("");
     setHasSearched(true);
     // Add user message
     const userMessage: Message = {
@@ -110,15 +92,12 @@ export default function AISearchPage() {
       } else {
         setMessages(prev => prev.map(m => m.id === aiMessageId ? { ...m, content: 'Error: Failed to get response.' } : m));
       }
-    } catch (err) {
+    } catch {
       setMessages(prev => prev.map(m => m.id === aiMessageId ? { ...m, content: 'Error: Failed to get response.' } : m));
     } finally {
       setLoading(false);
     }
   };
-
-  // Personalized greeting
-  const greeting = user?.firstName ? `Welcome, ${user.firstName}!` : 'Welcome to AI Search';
 
   if (!userId) {
     return (
@@ -215,91 +194,107 @@ export default function AISearchPage() {
                 </button>
               </div>
 
-              {/* Search History */}
-              <div className="px-6 mb-4">
-                  <h3 className="text-xs font-bold text-helix-text-light mb-2 tracking-wide uppercase">Search History</h3>
+              {/* Chat History */}
+              <div className="flex-1 overflow-y-auto px-6">
                 <div className="space-y-2">
-                  {/* chatHistory.slice(0, 3).map((chat, index) => (
-                      <div key={index} className="text-xs text-helix-text-light hover:bg-white/10 p-2 rounded-full cursor-pointer truncate">
-                      {chat.title}
+                  {messages.length > 0 && (
+                    <div className="text-sm text-helix-text-light mb-4">Recent Searches</div>
+                  )}
+                  {messages.map((message, idx) => (
+                    <div key={idx} className="text-sm text-helix-text-light hover:text-white cursor-pointer p-2 rounded hover:bg-white/5 transition-colors">
+                      {message.content.substring(0, 50)}...
                     </div>
-                  )) */}
+                  ))}
                 </div>
               </div>
             </>
           )}
         </div>
-        {/* Bottom Section: Profile/plan/upgrade always visible, flush to bottom, matches chat input bar */}
-        <div className="mt-auto mb-8 flex flex-col items-center px-6 w-full">
-          {/* Profile icon and plan/upgrade button here */}
-          <div className="flex flex-col items-center w-full">
-            <div className="mb-3 flex justify-center w-full">
-              <img
-                src={user?.imageUrl || '/placeholder-user.jpg'}
-                alt="Profile"
-                  className={`${sidebarOpen ? 'h-11 w-11' : 'h-8 w-8'} rounded-full border-2 border-white/20 shadow-sm transition-all duration-300`}
-              />
-            </div>
-            {sidebarOpen && (
-              <>
-                  <div className="text-sm text-helix-text-light mb-3">Current Plan: <span className="font-bold text-helix-gradient-start">{profilePlan}</span></div>
-                <button
-                    className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white text-sm px-4 py-2 rounded-full font-bold hover:shadow-xl glow transition"
-                  onClick={() => router.push('/dashboard/plans')}
-                >
-                  Upgrade
-                </button>
-              </>
-            )}
-          </div>
-        </div>
       </aside>
-      
-      {/* Main Content - Adjusted for fixed sidebar */}
-      <main className={`flex-1 flex flex-col h-screen transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
-        {/* Welcome Bubble (no arrow) */}
-        {!hasSearched && messages.length === 0 && (
-          <div className="absolute left-1/2 top-1/4 transform -translate-x-1/2 flex flex-col items-center z-10">
-            <div className="mx-auto w-96 md:w-[600px] flex flex-col items-center text-center">
-                <div className="glass border border-white/10 rounded-full p-6 mb-6 glow">
-                  <Sparkles className="h-12 w-12 text-helix-gradient-start" />
-              </div>
-                <div className="font-black text-4xl md:text-5xl mb-6 text-white">Welcome, {user?.firstName || 'there'}!</div>
-                <div className="text-helix-text-light text-lg md:text-xl leading-relaxed">
-                Ask me anything about competitions, projects, opportunities, or any topic you'd like to explore. I'm here to help you find the information you need.
-              </div>
-            </div>
+
+      {/* Main Chat Area */}
+      <main className="flex-1 flex flex-col ml-0 lg:ml-64 transition-all duration-300">
+        {/* Header */}
+        <header className="glass border-b border-white/10 p-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <h1 className="text-xl font-bold text-white">AI Search</h1>
+            <div className="text-sm text-helix-text-light">Powered by Versate</div>
           </div>
-        )}
-        {/* Chat Area */}
-        <div className="flex flex-col w-full mx-auto flex-1 justify-end min-h-[60vh]" style={{ paddingTop: hasSearched || messages.length > 0 ? '2rem' : 0, paddingBottom: 0 }}>
-          <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-8 pb-32">
-            {messages.map((msg, idx) => (
-                <div key={msg.id} className={`my-4 flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`glass border border-white/10 rounded-[16px] px-6 py-4 max-w-[70%] shadow-xl text-base whitespace-pre-line ${msg.type === 'user' ? 'bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white' : 'text-white'}`}>
-                  {msg.content}
+          <div className="flex items-center space-x-2">
+            <div className="text-sm text-helix-text-light">Plan: {profilePlan}</div>
+          </div>
+        </header>
+
+        {/* Chat Messages */}
+        <div 
+          ref={chatContainerRef}
+          className="flex-1 overflow-y-auto p-6 space-y-6"
+        >
+          {!hasSearched && (
+            <div className="text-center py-12">
+              <div className="max-w-2xl mx-auto">
+                <h2 className="text-3xl font-bold text-white mb-6">Welcome to AI Search</h2>
+                <p className="text-xl text-helix-text-light mb-8">
+                  Ask me anything about competitions, projects, or finding teammates. I&apos;ll help you discover opportunities and connect with the right people.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                  <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+                    <h3 className="font-semibold text-white mb-2">Find Competitions</h3>
+                    <p className="text-helix-text-light text-sm">Discover hackathons, science fairs, and coding competitions</p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+                    <h3 className="font-semibold text-white mb-2">Connect with Teammates</h3>
+                    <p className="text-helix-text-light text-sm">Find students with complementary skills for your projects</p>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-          {/* Chat Input */}
-            <form onSubmit={handleSend} className={`fixed bottom-0 flex items-center glass border-t border-white/10 px-8 py-6 z-20 transition-all duration-300 ${sidebarOpen ? 'left-64' : 'left-0'} right-0`} style={{ boxShadow: '0 -2px 16px 0 rgba(80,80,120,0.04)' }}>
-              <Search className="h-6 w-6 text-helix-text-light mr-4" />
+            </div>
+          )}
+
+          {messages.map((message, idx) => (
+            <div key={idx} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-3xl rounded-2xl p-4 ${
+                message.type === 'user' 
+                  ? 'bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white' 
+                  : 'bg-white/10 text-white border border-white/20'
+              }`}>
+                <div className="whitespace-pre-wrap">{message.content}</div>
+                <div className="text-xs opacity-60 mt-2">
+                  {message.timestamp.toLocaleTimeString()}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {loading && (
+            <div className="flex justify-start">
+              <div className="max-w-3xl rounded-2xl p-4 bg-white/10 text-white border border-white/20">
+                <div className="flex items-center space-x-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-helix-gradient-start"></div>
+                  <span>Thinking...</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Input Area */}
+        <div className="glass border-t border-white/10 p-4">
+          <form onSubmit={handleSend} className="flex space-x-4">
             <input
               type="text"
-                className="flex-1 border-none outline-none bg-transparent text-lg placeholder-helix-text-light text-white"
-              placeholder="Ask me anything about competitions, projects, or opportunities..."
               value={query}
-              onChange={e => setQuery(e.target.value)}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Ask me anything about competitions, projects, or finding teammates..."
+              className="flex-1 bg-white/10 border border-white/20 rounded-full px-6 py-3 text-white placeholder-helix-text-light focus:outline-none focus:border-helix-gradient-start transition-colors"
               disabled={loading}
-              autoFocus
             />
             <button
               type="submit"
-                className="ml-4 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end hover:shadow-xl glow text-white rounded-full p-3 transition disabled:opacity-50"
               disabled={loading || !query.trim()}
+              className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-                <Send className="h-6 w-6" />
+              Send
             </button>
           </form>
         </div>

@@ -5,10 +5,10 @@ import { createServerClient } from "@/lib/supabase/server"
 import { OnboardingForm } from "@/components/onboarding/onboarding-form"
 import OnboardingToastClient from "@/components/onboarding/OnboardingToastClient"
 import React from "react"
+import Link from "next/link"
 
 export default async function OnboardingPage() {
   let userId: string | null = null
-  let profile: any = null
   let error: string | null = null
   
   try {
@@ -30,8 +30,8 @@ export default async function OnboardingPage() {
     if (supabaseError && supabaseError.code !== "PGRST116") { // PGRST116 = No rows found
       error = supabaseError.message
     }
-  } catch (e: any) {
-    error = e?.message || "Unknown error occurred. Please try again later."
+  } catch (e: unknown) {
+    error = (e as Error)?.message || "Unknown error occurred. Please try again later."
   }
 
   if (error) {
@@ -40,7 +40,7 @@ export default async function OnboardingPage() {
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center border border-red-200">
           <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
           <p className="text-gray-700 mb-4">{error}</p>
-          <a href="/" className="text-blue-600 hover:underline">Go back to Home</a>
+          <Link href="/" className="text-blue-600 hover:underline">Go back to Home</Link>
         </div>
       </div>
     )

@@ -7,7 +7,6 @@ type AnimatedWrapperProps = {
   children: ReactNode;
   delay?: number;
   className?: string;
-  direction?: 'up' | 'down' | 'left' | 'right';
   type?: 'fade' | 'slide' | 'scale' | 'typewriter';
   duration?: number;
   once?: boolean;
@@ -17,32 +16,10 @@ export function AnimatedWrapper({
   children,
   delay = 0,
   className = '',
-  direction = 'up',
   type = 'fade',
   duration = 0.6,
   once = true,
 }: AnimatedWrapperProps) {
-  const distance = 20;
-  let initialX = 0;
-  let initialY = 0;
-  let animateX = 0;
-  let animateY = 0;
-
-  switch (direction) {
-    case 'up':
-      initialY = distance;
-      break;
-    case 'down':
-      initialY = -distance;
-      break;
-    case 'left':
-      initialX = distance;
-      break;
-    case 'right':
-      initialX = -distance;
-      break;
-  }
-
   const variants: Record<string, Variants> = {
     fade: {
       hidden: { opacity: 0 },
@@ -56,7 +33,7 @@ export function AnimatedWrapper({
       },
     },
     slide: {
-      hidden: { opacity: 0, x: initialX, y: initialY },
+      hidden: { opacity: 0, x: 0, y: 0 },
       visible: {
         opacity: 1,
         x: 0,

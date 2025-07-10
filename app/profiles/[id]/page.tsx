@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { School, Star, Trophy, Users, ArrowLeft, MapPin } from "lucide-react"
+import { ArrowLeft, MapPin } from "lucide-react"
 import Link from "next/link"
 
 export default async function ProfileDetailPage({ params }: { params: { id: string } }) {

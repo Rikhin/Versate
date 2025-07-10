@@ -86,7 +86,7 @@ export default function CompetitionSelectionContent() {
             Find Your <span className="text-indigo-600">Competitions</span>
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Search for competitions and let us know what you're interested in
+            Search for competitions and let us know what you&apos;re interested in
           </p>
         </div>
 

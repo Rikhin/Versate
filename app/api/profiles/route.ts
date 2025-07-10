@@ -91,10 +91,8 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const supabase = createServerClient();
-
     // For now, just return a success response to test the flow
     return NextResponse.json({ message: "API working" });
   } catch (error) {

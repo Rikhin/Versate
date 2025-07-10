@@ -1,14 +1,10 @@
 import { notFound } from "next/navigation";
-import { competitions, Competition } from "@/lib/competitions-data";
+import { competitions } from "@/lib/competitions-data";
 import { createClient } from "@/lib/supabase";
 import ProjectsTable from "@/components/competitions/ProjectsTable";
 
-interface CompetitionPageProps {
-  params: { competitionId: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-}
-
-export default async function CompetitionPage({ params, searchParams }: CompetitionPageProps) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function CompetitionPage({ params, searchParams }: { params: { competitionId: string }, searchParams?: { [key: string]: string | string[] | undefined } }) {
   const competition = competitions.find(c => c.id === params.competitionId);
   if (!competition) return notFound();
 

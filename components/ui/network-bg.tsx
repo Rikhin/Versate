@@ -61,9 +61,9 @@ function rotate3D(
 ): { x: number; y: number; z: number } {
   // Rotate around X axis
   let y = dot.y * Math.cos(rotX) - dot.z * Math.sin(rotX);
-  let z = dot.y * Math.sin(rotX) + dot.z * Math.cos(rotX);
+  const z = dot.y * Math.sin(rotX) + dot.z * Math.cos(rotX);
   // Rotate around Z axis
-  let x = dot.x * Math.cos(rotZ) - y * Math.sin(rotZ);
+  const x = dot.x * Math.cos(rotZ) - y * Math.sin(rotZ);
   y = dot.x * Math.sin(rotZ) + y * Math.cos(rotZ);
   return { x, y, z };
 }

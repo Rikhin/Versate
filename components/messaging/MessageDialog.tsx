@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Send, X } from "lucide-react"
+import { Send } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
 import { createClient } from "@/lib/supabase"
 

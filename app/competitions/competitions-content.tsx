@@ -7,23 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
-  Trophy, 
-  Users, 
-  Target, 
-  Star, 
-  ArrowRight, 
-  Code, 
-  Award, 
-  Zap,
   Search,
   Calendar,
   MapPin,
-  Clock,
   DollarSign,
-  BookOpen,
-  Lightbulb,
-  TrendingUp,
-  Filter,
   ExternalLink
 } from "lucide-react";
 import Link from "next/link";
@@ -31,27 +18,8 @@ import { BackgroundGradient } from "@/components/scroll-animations/background-gr
 import { FloatingShapes } from "@/components/scroll-animations/floating-shapes";
 import { TextFade } from "@/components/scroll-animations/text-fade";
 import { competitions } from "@/lib/competitions-data";
-import { SignInButton, SignUpButton, useUser, SignIn, SignUp } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-
-interface Competition {
-  id: string;
-  name: string;
-  category: string;
-  status: "active" | "upcoming" | "past";
-  description: string;
-  deadline: string;
-  prize: string;
-  participants: number;
-  maxParticipants: number;
-  location: string;
-  website: string;
-  requirements: string[];
-  tags: string[];
-  icon: string;
-  teamRequired: boolean;
-}
 
 const categories = [
   { id: "all", name: "All Categories", icon: "🏆" },
@@ -73,18 +41,6 @@ export default function CompetitionsContent() {
     if (isLoaded && !isSignedIn) setShowAuthModal(true);
   }, [isLoaded, isSignedIn]);
 
-  // Prevent hydration mismatch by not rendering until loaded
-  if (!isLoaded) {
-    return (
-      <div className="min-h-screen bg-helix-dark flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-helix-gradient-start mx-auto mb-4"></div>
-          <p className="text-helix-text-light">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
   const filteredCompetitions = useMemo(() => {
     return competitions.filter(competition => {
       const matchesSearch = competition.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -103,6 +59,18 @@ export default function CompetitionsContent() {
   const activeCompetitions = filteredCompetitions.filter(c => c.status === "active");
   const upcomingCompetitions = filteredCompetitions.filter(c => c.status === "upcoming");
   const pastCompetitions = filteredCompetitions.filter(c => c.status === "past");
+
+  // Prevent hydration mismatch by not rendering until loaded
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-helix-dark flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-helix-gradient-start mx-auto mb-4"></div>
+          <p className="text-helix-text-light">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   const formatDeadline = (deadline: string) => {
     const date = new Date(deadline);
@@ -230,7 +198,7 @@ export default function CompetitionsContent() {
               <div className="mb-16 md:mb-20">
                 <div className="text-center mb-12 md:mb-16">
                   <div className="text-3xl md:text-5xl font-black text-white mb-4 md:mb-6">Active Competitions</div>
-                  <p className="text-lg md:text-xl text-helix-text-light">Don't miss these ongoing opportunities</p>
+                  <p className="text-lg md:text-xl text-helix-text-light">Don&apos;t miss these ongoing opportunities</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                   {activeCompetitions.map((competition) => (
@@ -312,7 +280,6 @@ export default function CompetitionsContent() {
                         </div>
                         <div className="flex items-center justify-between text-lg text-helix-text-light">
                           <div className="flex items-center space-x-3">
-                            <Users className="h-5 w-5" />
                             <span>{competition.participants}/{competition.maxParticipants} participants</span>
                           </div>
                         </div>
@@ -338,7 +305,6 @@ export default function CompetitionsContent() {
                             Learn More
                           </Button>
                           <Button variant="outline" className="border-2 border-white/20 text-white hover:bg-white/10 py-4 text-lg font-bold rounded-full">
-                            <Users className="h-5 w-5" />
                           </Button>
                         </div>
                       </CardContent>
@@ -382,7 +348,6 @@ export default function CompetitionsContent() {
                         </div>
                         <div className="flex items-center justify-between text-lg text-helix-text-light">
                           <div className="flex items-center space-x-3">
-                            <Users className="h-5 w-5" />
                             <span>{competition.participants}/{competition.maxParticipants} participants</span>
                           </div>
                         </div>
@@ -408,7 +373,6 @@ export default function CompetitionsContent() {
                             View Results
                           </Button>
                           <Button variant="outline" className="border-2 border-white/20 text-helix-text-light hover:bg-white/10 py-4 text-lg font-bold rounded-full">
-                            <Users className="h-5 w-5" />
                           </Button>
                         </div>
                       </CardContent>

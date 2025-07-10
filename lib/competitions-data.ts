@@ -150,7 +150,7 @@ const competitions: Competition[] = [
 import competitionsFromCSV from './competitions-csv.json';
 
 // Ensure CSV competitions are typed correctly
-const normalizedCSV = (competitionsFromCSV as any[]).map((c) => ({
+const normalizedCSV = (competitionsFromCSV as unknown as Competition[]).map((c) => ({
   ...c,
   status: c.status === 'upcoming' || c.status === 'past' ? c.status : 'active',
   requirements: Array.isArray(c.requirements) ? c.requirements : [],

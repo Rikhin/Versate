@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { createServerClient } from "@/lib/supabase/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     const partnerIdList = Array.from(partnerIds);
 
     // Fetch partner profiles
-    let profilesMap: Record<string, any> = {};
+    let profilesMap: Record<string, unknown> = {};
     if (partnerIdList.length > 0) {
       const { data: profiles } = await supabase
         .from("profiles")
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Recipient not found" }, { status: 404 });
     }
     // Check if any messages exist between sender and recipient
-    const { data: messages } = await supabase
+    await supabase
       .from("messages")
       .select("id")
       .or(`and(sender_id.eq.${senderId},recipient_id.eq.${recipientId}),and(sender_id.eq.${recipientId},recipient_id.eq.${senderId})`);

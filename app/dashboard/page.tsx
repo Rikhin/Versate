@@ -2,8 +2,6 @@
 
 import { useMemo, Suspense } from "react"
 import { ErrorBoundary } from "react-error-boundary"
-import { useUser } from "@clerk/nextjs"
-import { useRouter } from "next/navigation"
 import { useRequireProfile } from "@/hooks/use-require-profile"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { DashboardCard } from "@/components/dashboard/dashboard-card"
@@ -21,17 +19,15 @@ import {
   Calendar,
   Code,
   MessageSquare,
-  TrendingUp,
-  Plus,
   MapPin
 } from "lucide-react"
 import Link from "next/link"
 
-function ErrorFallback({ error, resetErrorBoundary }: any) {
+function ErrorFallback({ error, resetErrorBoundary }: { error: unknown; resetErrorBoundary: () => void }) {
   return (
     <div role="alert" className="p-6 bg-red-50 rounded-lg">
       <h2 className="text-lg font-semibold text-red-800">Something went wrong</h2>
-      <pre className="text-red-700">{error.message}</pre>
+      <pre className="text-red-700">{error instanceof Error ? error.message : String(error)}</pre>
       <Button 
         onClick={resetErrorBoundary}
         className="mt-4 bg-red-600 hover:bg-red-700"
@@ -44,17 +40,6 @@ function ErrorFallback({ error, resetErrorBoundary }: any) {
 
 export default function DashboardPage() {
   const { loading, profile } = useRequireProfile()
-
-  if (loading || !profile) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-pulse flex flex-col items-center space-y-4">
-          <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-          <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
-        </div>
-      </div>
-    )
-  }
 
   const stats = [
     {
@@ -87,7 +72,7 @@ export default function DashboardPage() {
     {
       title: "New Project",
       description: "Start a new project",
-      icon: Plus,
+      icon: FolderOpen,
       href: "/projects/new"
     },
     {
@@ -110,10 +95,6 @@ export default function DashboardPage() {
     }
   ]
 
-  // Extract first name from full_name or fallback
-  const firstName = profile.full_name?.split(' ')[0] || 'User'
-
-  // Calculate profile completion percentage
   const profileCompletion = useMemo(() => {
     if (!profile) return 0;
     
@@ -136,6 +117,17 @@ export default function DashboardPage() {
     return Math.min(100, Math.round((filledFields / profileFields.length) * 100));
   }, [profile]);
 
+  if (loading || !profile) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-pulse flex flex-col items-center space-y-4">
+          <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <ErrorBoundary
       FallbackComponent={ErrorFallback}
@@ -153,9 +145,9 @@ export default function DashboardPage() {
           {/* Welcome Section */}
           <div className="mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-              Welcome back, <span className="text-helix-gradient-start">{firstName}</span>!
+              Welcome back, <span className="text-helix-gradient-start">{profile.full_name?.split(' ')[0] || 'User'}</span>!
             </h1>
-            <p className="text-gray-500 dark:text-gray-400">Here's what's happening with your account today.</p>
+            <p className="text-gray-500 dark:text-gray-400">Here&apos;s what&apos;s happening with your account today.</p>
           </div>
 
           {/* Stats Grid */}
@@ -217,7 +209,7 @@ export default function DashboardPage() {
                           New message from Team Alpha
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                          "Let's discuss the project requirements tomorrow at 2 PM"
+                          &quot;Let&apos;s discuss the project requirements tomorrow at 2 PM&quot;
                         </p>
                         <p className="text-xs text-gray-400 mt-2">2 hours ago</p>
                       </div>

@@ -22,18 +22,30 @@ async function getEmbedding(text: string): Promise<number[]> {
   return data.embedding.values;
 }
 
-function profileToText(profile: any): string {
+function profileToText(profile: unknown): string {
+  const p = profile as {
+    first_name: string;
+    last_name: string;
+    bio: string;
+    skills: string[];
+    roles: string[];
+    experience_level: string;
+    time_commitment: string;
+    collaboration_style: string[];
+    location: string;
+    competitions: { competitionId: string; interest: string }[];
+  };
   return [
-    profile.first_name,
-    profile.last_name,
-    profile.bio,
-    (profile.skills || []).join(", "),
-    (profile.roles || []).join(", "),
-    profile.experience_level,
-    profile.time_commitment,
-    (profile.collaboration_style || []).join(", "),
-    profile.location,
-    (profile.competitions || []).map((c: any) => c.competitionId + ':' + c.interest).join(", ")
+    p.first_name,
+    p.last_name,
+    p.bio,
+    (p.skills || []).join(", "),
+    (p.roles || []).join(", "),
+    p.experience_level,
+    p.time_commitment,
+    (p.collaboration_style || []).join(", "),
+    p.location,
+    (p.competitions || []).map((c: { competitionId: string; interest: string }) => c.competitionId + ':' + c.interest).join(", ")
   ].filter(Boolean).join(" | ");
 }
 
@@ -47,7 +59,7 @@ export async function POST(req: NextRequest) {
     // Fetch all profiles
     const { data: profiles, error } = await supabase.from("profiles").select("*");
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    const current = profiles.find((p: any) => p.user_id === userId);
+    const current = profiles.find((p: unknown) => (p as { user_id: string }).user_id === userId);
     if (!current) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
 
     // Get/generate embedding for current user
@@ -59,32 +71,32 @@ export async function POST(req: NextRequest) {
     }
 
     // Get/generate embeddings for all others
-    const others = profiles.filter((p: any) => p.user_id !== userId);
+    const others = profiles.filter((p: unknown) => (p as { user_id: string }).user_id !== userId);
     for (const p of others) {
       if (!p.profile_embedding) {
         const text = profileToText(p);
         const emb = await getEmbedding(text);
         p.profile_embedding = emb;
-        await supabase.from("profiles").update({ profile_embedding: emb }).eq("user_id", p.user_id);
+        await supabase.from("profiles").update({ profile_embedding: emb }).eq("user_id", (p as { user_id: string }).user_id);
       }
     }
 
     // Compute similarity
-    const matches = others.map((p: any) => ({
-      user_id: p.user_id,
-      first_name: p.first_name,
-      last_name: p.last_name,
-      bio: p.bio,
-      skills: p.skills,
-      roles: p.roles,
-      experience_level: p.experience_level,
-      location: p.location,
-      avatar_url: p.avatar_url,
-      similarity: cosineSimilarity(currentEmbedding, p.profile_embedding)
+    const matches = others.map((p: unknown) => ({
+      user_id: (p as { user_id: string }).user_id,
+      first_name: (p as { first_name: string }).first_name,
+      last_name: (p as { last_name: string }).last_name,
+      bio: (p as { bio: string }).bio,
+      skills: (p as { skills: string[] }).skills,
+      roles: (p as { roles: string[] }).roles,
+      experience_level: (p as { experience_level: string }).experience_level,
+      location: (p as { location: string }).location,
+      avatar_url: (p as { avatar_url: string }).avatar_url,
+      similarity: cosineSimilarity(currentEmbedding, (p as { profile_embedding: number[] }).profile_embedding)
     }));
     matches.sort((a, b) => b.similarity - a.similarity);
     return NextResponse.json({ matches: matches.slice(0, 3) });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message || "Unknown error" }, { status: 500 });
+  } catch (e: unknown) {
+    return NextResponse.json({ error: (e as Error).message || "Unknown error" }, { status: 500 });
   }
 } 

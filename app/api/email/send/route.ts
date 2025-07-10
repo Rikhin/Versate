@@ -31,11 +31,11 @@ export async function POST(req: NextRequest) {
   try {
     const user = await Clerk.users.getUser(userId);
     userEmail = user.emailAddresses[0]?.emailAddress || null;
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch user email from Clerk' }, { status: 500 });
   }
 
-  const payload: any = {
+  const payload: unknown = {
     from: 'Versate <info@versate.pro>', // Use your verified sender
     to,
     subject,
@@ -65,9 +65,9 @@ export async function POST(req: NextRequest) {
       resendError = resendData.error || 'Failed to send email';
       console.error('Resend API error:', resendData);
     }
-  } catch (e) {
+  } catch {
     resendError = 'Network error when sending email';
-    console.error('Resend network error:', e);
+    console.error('Resend network error');
   }
 
   // Always log to Supabase regardless of Resend success/failure
@@ -100,9 +100,9 @@ export async function POST(req: NextRequest) {
       logData = data;
       console.log('Email send API - Successfully logged email to database');
     }
-  } catch (e) {
-    logError = e;
-    console.error('Supabase logging exception:', e);
+  } catch {
+    logError = true;
+    console.error('Supabase logging exception');
   }
 
   // Return appropriate response based on what happened

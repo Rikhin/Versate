@@ -2,49 +2,26 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { loadAllMentors, MentorProfile } from "@/lib/csv-loader";
 import { BackgroundGradient } from "@/components/scroll-animations/background-gradient";
 import { FloatingShapes } from "@/components/scroll-animations/floating-shapes";
 import { useAuth } from "@clerk/nextjs";
-import { Badge } from "@/components/ui/badge";
-import { Users, ExternalLink, Search, Mail } from "lucide-react";
+import { Users, Mail } from "lucide-react";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 import { ProfileModal } from "@/components/connect/ProfileModal";
-import { CustomDropdown } from "@/components/connect/CustomDropdown";
 
 type ActiveTab = "mentor" | "student" | "emails";
 
-interface Email {
-  id: string;
-  to: string;
-  subject: string;
-  body: string;
-  sentAt: string;
-}
-
 export default function NewConnectPage() {
   const { isSignedIn } = useAuth();
-  const router = useRouter();
   
   // State
   const [activeTab, setActiveTab] = useState<ActiveTab>("mentor");
   const [mentors, setMentors] = useState<MentorProfile[]>([]);
-  const [students, setStudents] = useState<any[]>([]);
-  const [emails, setEmails] = useState<Email[]>([]);
-  const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedProfile, setSelectedProfile] = useState<any>(null);
+  const [selectedProfile, setSelectedProfile] = useState<MentorProfile | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
-  // Filter states
-  const [filterCompany, setFilterCompany] = useState("");
-  const [filterJob, setFilterJob] = useState("");
-  const [filterState, setFilterState] = useState("");
-  const [filterYears, setFilterYears] = useState("");
-  const [filterEmail, setFilterEmail] = useState("");
   
   // Load data on mount
   useEffect(() => {
@@ -61,8 +38,6 @@ export default function NewConnectPage() {
       setMentors(mentorsData);
       
       // TODO: Load students and emails from API
-      setStudents([]);
-      setEmails([]);
     } catch (error) {
       console.error("Failed to load data:", error);
     } finally {
@@ -70,18 +45,9 @@ export default function NewConnectPage() {
     }
   };
   
-  const handleProfileClick = (profile: any) => {
+  const handleProfileClick = (profile: MentorProfile) => {
     setSelectedProfile(profile);
     setIsModalOpen(true);
-  };
-  
-  const clearFilters = () => {
-    setSearch("");
-    setFilterCompany("");
-    setFilterJob("");
-    setFilterState("");
-    setFilterYears("");
-    setFilterEmail("");
   };
   
   // Render sign-in prompt if not signed in

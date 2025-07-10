@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trophy, Users, Zap, Code, MessageSquare, BookOpen, Award } from "lucide-react";
+import { Trophy, Users, Zap, Code, MessageSquare, BookOpen } from "lucide-react";
 import { AnimatedWrapper } from "../ui/animated-wrapper";
 
 const features = [
@@ -51,7 +51,7 @@ export function WhyChooseUs() {
               Why Choose Versate?
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto">
-              We're redefining how students connect, collaborate, and compete in the world of technology and innovation.
+              We&apos;re redefining how students connect, collaborate, and compete in the world of technology and innovation.
             </p>
           </div>
         </AnimatedWrapper>

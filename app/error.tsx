@@ -3,7 +3,6 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import * as Sentry from "@sentry/nextjs"
 import { Button } from "@/components/ui/button"
 import { AlertCircle, Home, RefreshCw, ExternalLink, Mail } from "lucide-react"
@@ -23,10 +22,9 @@ export default function Error({
   reset: () => void;
 }) {
   const [isResetting, setIsResetting] = useState(false);
-  const router = useRouter();
   
   // Extract status code if available
-  const statusCode = 'statusCode' in error ? (error as any).statusCode : 500;
+  const statusCode = 'statusCode' in error ? (error as unknown as number) : 500;
   const errorMessage = error.message || 'An unexpected error occurred';
   
   // Log error to Sentry

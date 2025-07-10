@@ -75,7 +75,7 @@ const ChartStyle = ({
   config: ChartConfig
 }) => {
   const colorConfig = Object.entries(config).filter(
-    ([_, itemConfig]) => itemConfig.theme || itemConfig.color
+    ([, itemConfig]) => itemConfig.theme || itemConfig.color
   )
 
   if (!colorConfig.length) {

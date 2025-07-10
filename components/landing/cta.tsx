@@ -32,7 +32,7 @@ export function CTA() {
                   Ready to Accelerate Your Journey?
                 </h2>
                 <p className="text-xl text-white/80 mb-10">
-                  Join thousands of students who are building the future, one project at a time. It's free to get started!
+                  Join thousands of students who are building the future, one project at a time. It&apos;s free to get started!
                 </p>
                 
                 <div className="flex flex-col sm:flex-row justify-center gap-6">

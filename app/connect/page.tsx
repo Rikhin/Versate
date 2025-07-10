@@ -5,53 +5,52 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { loadAllMentors, MentorProfile } from "@/lib/csv-loader"
-import Link from "next/link"
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations"
-import { useUser } from "@clerk/nextjs"
-import { Badge } from "@/components/ui/badge"
-import { Users, ExternalLink, Search, Mail } from "lucide-react"
-import { ProfileModal } from "@/components/connect/ProfileModal"
 import { useAuth } from "@clerk/nextjs"
+import { Badge } from "@/components/ui/badge"
+import { Users, Mail } from "lucide-react"
+import { ProfileModal } from "@/components/connect/ProfileModal"
 import { useEffect as useEffectEmails, useState as useStateEmails } from "react"
 import Papa from 'papaparse';
-import { useRouter } from "next/navigation"
-import { competitions } from '@/lib/competitions-data'
 import { CustomDropdown } from '@/components/connect/CustomDropdown'
-import { MessageButton } from '@/components/messaging/MessageButton'
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer";
+import type { ProfileData } from '@/components/connect/ProfileModal';
+
+// Add Student type at the top of the file
+
+type Student = {
+  first_name: string;
+  last_name: string;
+  email?: string;
+  school?: string;
+  grade_level?: string;
+  skills?: string[];
+  competitions?: string[];
+  location?: string;
+};
 
 // Custom styles for filter boxes
-const filterBoxClass = "h-12 sm:h-14 md:h-16 text-lg md:text-xl font-normal border-2 border-white/20 focus:border-helix-gradient-start focus:bg-white/10 hover:bg-white/10 rounded-full px-6 transition-colors duration-150 min-w-[140px] sm:min-w-[160px] md:min-w-[200px] bg-white/10 text-white backdrop-blur-sm appearance-none"
 
 export default function ConnectPage() {
   const [mentors, setMentors] = useState<MentorProfile[]>([])
   const [shuffledMentors, setShuffledMentors] = useState<MentorProfile[]>([])
-  const [students, setStudents] = useState<any[]>([])
+  const [students, setStudents] = useState<Student[]>([])
   const [search, setSearch] = useState("")
   const [filterCompany, setFilterCompany] = useState("")
   const [filterJob, setFilterJob] = useState("")
   const [filterYears, setFilterYears] = useState("")
   const [filterState, setFilterState] = useState("")
-  const [selectedProfile, setSelectedProfile] = useState<any>(null)
+  const [selectedProfile, setSelectedProfile] = useState<ProfileData | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("mentor") // 'mentor', 'student', 'emails'
   const [sentEmails, setSentEmails] = useStateEmails([])
   const [loadingEmails, setLoadingEmails] = useStateEmails(false)
-  const { isSignedIn, isLoaded } = useAuth()
+  const { isSignedIn } = useAuth()
   const [allStates, setAllStates] = useState<string[]>([])
-  const [stateSearch, setStateSearch] = useState('')
   const [filterSkill, setFilterSkill] = useState("");
   const [filterCompetition, setFilterCompetition] = useState("");
   const [filterEmail, setFilterEmail] = useState("");
-  const [skillSearch, setSkillSearch] = useState("");
-  const [competitionSearch, setCompetitionSearch] = useState("");
-  const [emailModalStudent, setEmailModalStudent] = useState<any>(null)
-  const router = useRouter()
-  const [page, setPage] = useState(0);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  
-  // New pagination and loading states
   const [loadingMentors, setLoadingMentors] = useState(false);
   const [pagination, setPagination] = useState({
     page: 1,
@@ -93,7 +92,7 @@ export default function ConnectPage() {
         hasNext: shuffled.length > p.limit,
         hasPrev: false
       }));
-    } catch (error) {
+    } catch {
       setShuffledMentors([]);
       setMentors([]);
     } finally {
@@ -164,7 +163,7 @@ export default function ConnectPage() {
         hasNext: endIndex < filteredMentors.length,
         hasPrev: pageNum > 1
       });
-    } catch (error) {
+    } catch {
       setMentors([]);
     } finally {
       setLoadingMentors(false);
@@ -224,7 +223,7 @@ export default function ConnectPage() {
         Papa.parse(csv, {
           header: true,
           complete: (results) => {
-            const states = results.data.map((row: any) => row.State).filter(Boolean);
+            const states = results.data.map((row: unknown) => (row as { State: string }).State).filter(Boolean);
             setAllStates(states);
           }
         });
@@ -236,18 +235,17 @@ export default function ConnectPage() {
   const companyGroups = Array.from(new Set(shuffledMentors.map(m => m.company).filter(Boolean))).sort();
   const jobGroups = Array.from(new Set(shuffledMentors.map(m => m.jobTitle).filter(Boolean))).sort();
   const yearGroups = Array.from(new Set(shuffledMentors.map(m => m.yearsExperience).filter(Boolean))).sort();
-  const allSkills = Array.from(new Set(students.flatMap(s => s.skills || []).filter(Boolean))).sort();
 
   // Filter students
   const filteredStudents = students.filter(s => {
     const sTerm = search.toLowerCase();
     const matchesSearch = !sTerm || 
       `${s.first_name} ${s.last_name}`.toLowerCase().includes(sTerm) ||
-      s.skills?.some((skill: string) => skill.toLowerCase().includes(sTerm)) ||
-      s.competitions?.some((comp: string) => comp.toLowerCase().includes(sTerm));
+      (s.skills || []).some((skill: string) => skill.toLowerCase().includes(sTerm)) ||
+      (s.competitions || []).some((comp: string) => comp.toLowerCase().includes(sTerm));
     
-    const matchesSkill = !filterSkill || s.skills?.includes(filterSkill);
-    const matchesCompetition = !filterCompetition || s.competitions?.includes(filterCompetition);
+    const matchesSkill = !filterSkill || (s.skills || []).includes(filterSkill);
+    const matchesCompetition = !filterCompetition || (s.competitions || []).includes(filterCompetition);
     
     return matchesSearch && matchesSkill && matchesCompetition;
   });
@@ -265,8 +263,8 @@ export default function ConnectPage() {
     }
   };
 
-  const handleProfileClick = (profile: any, type: "mentor" | "student") => {
-    setSelectedProfile({ ...profile, type });
+  const handleProfileClick = (profile: ProfileData) => {
+    setSelectedProfile(profile);
     setIsModalOpen(true);
   };
 
@@ -279,7 +277,7 @@ export default function ConnectPage() {
     setFilterEmail("");
     setFilterSkill("");
     setFilterCompetition("");
-    setPage(0);
+    setPagination({...pagination, page: 1});
     // Reload mentors with cleared filters
     loadAndShuffleMentors();
   }
@@ -331,16 +329,16 @@ export default function ConnectPage() {
                         <CustomDropdown placeholder="State" options={allStates} value={filterState} onChange={setFilterState} />
                       </div>
             <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
-                            <CustomDropdown label="Company" placeholder="Company" options={companyGroups} value={filterCompany} onChange={(v: string) => { setFilterCompany(v); setPage(0); }} />
+                            <CustomDropdown label="Company" placeholder="Company" options={companyGroups} value={filterCompany} onChange={(v: string) => { setFilterCompany(v); setPagination({...pagination, page: 1}); }} />
                           </div>
             <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
-                            <CustomDropdown label="Job Title" placeholder="Job Title" options={jobGroups} value={filterJob} onChange={(v: string) => { setFilterJob(v); setPage(0); }} />
+                            <CustomDropdown label="Job Title" placeholder="Job Title" options={jobGroups} value={filterJob} onChange={(v: string) => { setFilterJob(v); setPagination({...pagination, page: 1}); }} />
                           </div>
             <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
-                            <CustomDropdown label="Experience" placeholder="Experience" options={yearGroups} value={filterYears} onChange={(v: string) => { setFilterYears(v); setPage(0); }} />
+                            <CustomDropdown label="Experience" placeholder="Experience" options={yearGroups} value={filterYears} onChange={(v: string) => { setFilterYears(v); setPagination({...pagination, page: 1}); }} />
                           </div>
             <div className="relative min-w-[140px] h-12 sm:h-14 md:h-16 flex items-center">
-                            <CustomDropdown label="Email" placeholder="Email Provided" options={["Yes", "No"]} value={filterEmail} onChange={(v: string) => { setFilterEmail(v); setPage(0); }} />
+                            <CustomDropdown label="Email" placeholder="Email Provided" options={["Yes", "No"]} value={filterEmail} onChange={(v: string) => { setFilterEmail(v); setPagination({...pagination, page: 1}); }} />
                           </div>
             <Button variant="outline" className="h-12 sm:h-14 md:h-16 border-2 border-white/20 text-white hover:bg-white/10 rounded-full font-bold text-lg" onClick={clearFilters}>Clear</Button>
                           </div>
@@ -372,7 +370,7 @@ export default function ConnectPage() {
                             <CardContent className="flex flex-col gap-4">
                               <div className="flex items-center justify-between mt-4">
                                 <div className="text-sm text-helix-text-light">{m.state}</div>
-                                <Button size="sm" className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold" onClick={() => handleProfileClick(m, 'mentor')}>Connect</Button>
+                                <Button size="sm" className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold" onClick={() => handleProfileClick({ ...m, type: 'mentor' })}>Connect</Button>
                                     </div>
                                   </CardContent>
                                 </Card>
@@ -438,7 +436,7 @@ export default function ConnectPage() {
                             </CardHeader>
                       <CardContent className="space-y-6">
                         <div className="flex flex-wrap gap-2 mt-4">
-                                {s.skills && s.skills.slice(0, 3).map((skill: string) => (
+                                {(s.skills?.slice(0, 3) || []).map((skill: string) => (
                             <span key={skill} className="bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm text-helix-text-light">{skill}</span>
                                 ))}
                                 {s.skills && s.skills.length > 3 && (
@@ -451,7 +449,15 @@ export default function ConnectPage() {
                               )}
                         <div className="flex items-center justify-between mt-4">
                                 <div></div>
-                          <Button size="sm" className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold" onClick={() => handleProfileClick(s, 'student')}>Connect</Button>
+                          <Button size="sm" className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow rounded-full font-bold" onClick={() => handleProfileClick({
+  name: `${s.first_name} ${s.last_name}`,
+  email: s.email || '',
+  type: 'student',
+  school: s.school,
+  grade: s.grade_level,
+  interests: s.skills || [],
+  state: s.location,
+})}>Connect</Button>
                               </div>
                             </CardContent>
                           </Card>
@@ -467,20 +473,23 @@ export default function ConnectPage() {
                   <div className="text-center text-helix-text-light py-16">No sent emails yet.</div>
                       ) : (
                   <div className="space-y-6">
-                          {sentEmails.map((email: any) => (
-                      <div key={email.id} className="glass border border-white/10 rounded-[16px] p-6 shadow-xl">
-                        <div className="flex items-center gap-3 mb-4">
-                          <Mail className="h-5 w-5 text-helix-gradient-start" />
-                          <span className="font-bold text-white">To:</span>
-                          <span className="text-helix-text-light">{email.email_to}</span>
-                          <span className="ml-auto text-sm text-helix-text-light">{new Date(email.sent_at).toLocaleString()}</span>
-                              </div>
-                        <div className="font-bold text-white mb-2">{email.subject}</div>
-                        <div className="text-helix-text-light text-base italic">
-                                {email.body && email.body.length > 50 ? email.body.substring(0, 50) + "..." : email.body}
-                              </div>
-                            </div>
-                          ))}
+                          {sentEmails.map((email) => {
+  const e = email as { id: string; email_to: string; sent_at: string; subject: string; body: string };
+  return (
+    <div key={e.id} className="glass border border-white/10 rounded-[16px] p-6 shadow-xl">
+      <div className="flex items-center gap-3 mb-4">
+        <Mail className="h-5 w-5 text-helix-gradient-start" />
+        <span className="font-bold text-white">To:</span>
+        <span className="text-helix-text-light">{e.email_to}</span>
+        <span className="ml-auto text-sm text-helix-text-light">{new Date(e.sent_at).toLocaleString()}</span>
+      </div>
+      <div className="font-bold text-white mb-2">{e.subject}</div>
+      <div className="text-helix-text-light text-base italic">
+        {e.body && e.body.length > 50 ? e.body.substring(0, 50) + "..." : e.body}
+      </div>
+    </div>
+  );
+})}
                         </div>
                       )}
                     </div>
@@ -489,7 +498,7 @@ export default function ConnectPage() {
                 </TextFade>
         </div>
         <ProfileModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} profile={selectedProfile} />
-        {showAuthModal && (
+        {isSignedIn && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
             <div className="glass border border-white/10 rounded-[24px] shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
               <h2 className="text-2xl font-bold text-white mb-2">Sign in or Sign up</h2>
