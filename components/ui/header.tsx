@@ -10,20 +10,20 @@ const Header = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-blue-600 text-white shadow-lg">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold text-foreground">
+        <Link href="/" className="text-xl font-bold text-white">
           Versate
         </Link>
 
         <nav className="flex items-center gap-6">
-          <Link href="/about" className="text-foreground/80 hover:text-foreground transition-colors">
+          <Link href="/about" className="text-white/90 hover:text-white transition-colors font-medium">
             About
           </Link>
-          <Link href="/features" className="text-foreground/80 hover:text-foreground transition-colors">
+          <Link href="/features" className="text-white/90 hover:text-white transition-colors font-medium">
             Features
           </Link>
-          <Link href="/pricing" className="text-foreground/80 hover:text-foreground transition-colors">
+          <Link href="/pricing" className="text-white/90 hover:text-white transition-colors font-medium">
             Pricing
           </Link>
         </nav>
@@ -31,7 +31,7 @@ const Header = () => {
         <div className="flex items-center gap-4">
           {isSignedIn ? (
             <div className="flex items-center gap-4">
-              <Link href="/dashboard" className="text-foreground/80 hover:text-foreground transition-colors">
+              <Link href="/dashboard" className="text-white/90 hover:text-white transition-colors font-medium">
                 Dashboard
               </Link>
               <UserButton afterSignOutUrl="/" />
