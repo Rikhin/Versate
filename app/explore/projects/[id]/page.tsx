@@ -6,12 +6,18 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Calendar, Users, TrendingUp, MapPin, ArrowLeft } from "lucide-react";
 
-export default async function ProjectDetailPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default async function ProjectDetailPage({ params }: PageProps) {
+  const { id } = await params;
   const supabase = createClient();
   const { data: project, error } = await supabase
     .from("projects")
     .select("id, title, authors, category, description, awards, created_at, country, state, city, school")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (!project || error) return notFound();

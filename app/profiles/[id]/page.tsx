@@ -6,12 +6,18 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, MapPin } from "lucide-react"
 import Link from "next/link"
 
-export default async function ProfileDetailPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default async function ProfileDetailPage({ params }: PageProps) {
+  const { id } = await params;
   const supabase = createClient()
   const { data: profile, error } = await supabase
     .from("profiles")
     .select("*")
-    .eq("user_id", params.id)
+    .eq("user_id", id)
     .single()
 
   if (!profile || error) return notFound()
