@@ -2,12 +2,11 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { competitions } from '@/lib/competitions-data';
 
-interface PageProps {
-  params: Promise<{ competitionId: string }>;
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: Promise<{ competitionId: string }> 
+}): Promise<Metadata> {
   const { competitionId } = await params;
   const competition = competitions.find(c => c.id === competitionId);
   
@@ -24,7 +23,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function CompetitionPage({ params }: PageProps) {
+export default async function CompetitionPage({ 
+  params 
+}: { 
+  params: Promise<{ competitionId: string }> 
+}) {
   const { competitionId } = await params;
   const competition = competitions.find(c => c.id === competitionId);
 

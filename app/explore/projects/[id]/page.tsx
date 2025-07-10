@@ -1,17 +1,30 @@
 import { createClient } from "@/lib/supabase";
-import { notFound } from "next/navigation";
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Calendar, Users, TrendingUp, MapPin, ArrowLeft } from "lucide-react";
 
-interface PageProps {
-  params: Promise<{ id: string }>;
-  searchParams?: { [key: string]: string | string[] | undefined };
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}): Promise<Metadata> {
+  const { id } = await params;
+  
+  return {
+    title: `Project ${id} - Versate`,
+    description: 'Project details and information.',
+  };
 }
 
-export default async function ProjectDetailPage({ params }: PageProps) {
+export default async function ProjectDetailPage({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}) {
   const { id } = await params;
   const supabase = createClient();
   const { data: project, error } = await supabase
