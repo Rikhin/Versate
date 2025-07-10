@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Users, TrendingUp, MapPin, ArrowLeft } from "lucide-react";
+import { Calendar, Users, TrendingUp, ArrowLeft } from "lucide-react";
 
 export async function generateMetadata({ 
   params 

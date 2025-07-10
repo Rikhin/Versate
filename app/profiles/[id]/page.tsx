@@ -1,11 +1,10 @@
-import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, Mail, MapPin, Calendar, Users, Award } from 'lucide-react';
+import { MessageCircle, Mail, MapPin, Award } from 'lucide-react';
 
 export default async function ProfileDetailPage({ 
   params 
