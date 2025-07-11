@@ -168,7 +168,9 @@ export default function LandingPage() {
         </section>
         {/* Competitions Preview Section */}
         {/* Removed Featured Competitions section for minimal hero-only landing */}
-        <WhyChooseUs />
+        <div className="mt-32 md:mt-48">
+          <WhyChooseUs />
+        </div>
         <HowItWorks />
         <Testimonials />
         <CTA />

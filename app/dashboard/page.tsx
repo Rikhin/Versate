@@ -119,12 +119,24 @@ export default function DashboardPage() {
     return Math.min(100, Math.round((filledFields / profileFields.length) * 100));
   }, [profile]);
 
-  if (loading || !profile) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-pulse flex flex-col items-center space-y-4">
           <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
           <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+        </div>
+      </div>
+    )
+  }
+  // Fallback for missing profile
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-white mb-4">Welcome to your Dashboard</h1>
+          <p className="text-lg text-helix-text-light mb-8">We couldn't load your profile. Please try refreshing or updating your profile information.</p>
+          <Button onClick={() => window.location.reload()} className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white px-6 py-3 rounded-full font-bold">Reload</Button>
         </div>
       </div>
     )

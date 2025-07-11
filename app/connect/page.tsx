@@ -500,7 +500,7 @@ export default function ConnectPage() {
                 </TextFade>
         </div>
         <ProfileModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} profile={selectedProfile} />
-        {isSignedIn && (
+        {(!isSignedIn) && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
             <div className="glass border border-white/10 rounded-[24px] shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
               <h2 className="text-2xl font-bold text-white mb-2">Sign in or Sign up</h2>
