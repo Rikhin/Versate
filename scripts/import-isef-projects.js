@@ -1,5 +1,5 @@
-const { createClient } = require('@supabase/supabase-js');
-const fs = require('fs');
+import { createClient } from 'supabase-js';
+import fs from 'fs';
 
 const projects = JSON.parse(fs.readFileSync('isef-projects.json', 'utf8'));
 

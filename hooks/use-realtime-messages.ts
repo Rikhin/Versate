@@ -4,11 +4,11 @@ import { useUser } from '@clerk/nextjs';
 interface RealtimeMessage {
   type: 'connected' | 'heartbeat' | 'new_message' | 'conversation_update';
   userId?: string;
-  message?: any;
+  message?: unknown;
 }
 
 export function useRealtimeMessages(
-  onNewMessage?: (message: any) => void,
+  onNewMessage?: (message: unknown) => void,
   onConversationUpdate?: () => void
 ) {
   const { user } = useUser();

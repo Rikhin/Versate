@@ -1,8 +1,8 @@
 // Deep clean all CSVs in public/ and write cleaned versions to public/cleaned/
-const fs = require('fs/promises');
-const path = require('path');
-const { parse } = require('csv-parse');
-const stringify = require('csv-stringify');
+import fs from 'fs';
+import path from 'path';
+import Papa from 'papaparse';
+import stringify from 'csv-stringify';
 
 const PUBLIC_DIR = path.join(__dirname, '../public');
 const CLEANED_DIR = path.join(PUBLIC_DIR, 'cleaned');
@@ -10,7 +10,7 @@ const CLEANED_DIR = path.join(PUBLIC_DIR, 'cleaned');
 async function ensureCleanedDir() {
   try {
     await fs.mkdir(CLEANED_DIR);
-  } catch (e) {
+  } catch {
     // Ignore if already exists
   }
 }
@@ -19,20 +19,20 @@ async function cleanCsvFile(file) {
   const filePath = path.join(PUBLIC_DIR, file);
   const content = await fs.readFile(filePath, 'utf8');
   return new Promise((resolve) => {
-    parse(content, { skip_empty_lines: true }, (err, records) => {
+    Papa.parse(content, { skip_empty_lines: true }, (err, records) => {
       if (err) {
         console.error(`Error parsing ${file}:`, err.message);
         return resolve();
       }
-      if (records.length === 0) {
+      if (records.data.length === 0) {
         console.log(`${file}: empty file`);
         return resolve();
       }
-      const colCount = records[0].length;
-      const cleaned = [records[0]]; // header
+      const colCount = records.data[0].length;
+      const cleaned = [records.data[0]]; // header
       let removed = 0;
-      for (let i = 1; i < records.length; i++) {
-        const row = records[i];
+      for (let i = 1; i < records.data.length; i++) {
+        const row = records.data[i];
         if (row.length !== colCount || row.every(cell => !cell.trim())) {
           removed++;
           continue;

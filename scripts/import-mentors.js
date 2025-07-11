@@ -1,7 +1,7 @@
-const { createClient } = require('@supabase/supabase-js');
-const fs = require('fs');
-const path = require('path');
-const Papa = require('papaparse');
+import { createClient } from 'supabase-js';
+import fs from 'fs';
+import path from 'path';
+import Papa from 'papaparse';
 
 // Initialize Supabase client
 const supabase = createClient(
