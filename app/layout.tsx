@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 import ClientLayout from "@/components/ClientLayout";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -19,18 +20,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ClientLayout>
-            <main className="relative z-10 min-h-screen bg-transparent">{children}</main>
-            <Toaster />
-            <Analytics />
-          </ClientLayout>
-        </ThemeProvider>
+        <ClerkProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ClientLayout>
+              <main className="relative z-10 min-h-screen bg-transparent">{children}</main>
+              <Toaster />
+              <Analytics />
+            </ClientLayout>
+          </ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   )
