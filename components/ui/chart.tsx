@@ -154,7 +154,7 @@ const ChartTooltipContent = React.forwardRef<
 
       const [item] = payload;
       // Use type assertion to access properties
-      const key = `${labelKey || (item as any).dataKey || (item as any).name || "value"}`;
+      const key = `${labelKey || (item as Record<string, unknown>)?.dataKey || (item as Record<string, unknown>)?.name || "value"}`;
       const itemConfig = getPayloadConfigFromPayload(config, item, key);
       const value =
         !labelKey && typeof label === "string"
@@ -200,22 +200,23 @@ const ChartTooltipContent = React.forwardRef<
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
-          {payload.map((item, index) => {
+          {payload.map((item: unknown, index: number) => {
+            const rec = item as Record<string, unknown>;
             // Use type assertion to access properties
-            const key = `${nameKey || (item as any).name || (item as any).dataKey || "value"}`;
+            const key = `${nameKey || rec.name || rec.dataKey || "value"}`;
             const itemConfig = getPayloadConfigFromPayload(config, item, key);
-            const indicatorColor = color || (item as any).payload?.fill || (item as any).color;
+            const indicatorColor = color || (rec.payload as Record<string, unknown> | undefined)?.fill || rec.color;
 
             return (
               <div
-                key={(item as any).dataKey || index}
+                key={rec.dataKey as string || index}
                 className={cn(
                   "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
                   indicator === "dot" && "items-center"
                 )}
               >
-                {formatter && (item as any)?.value !== undefined && (item as any).name ? (
-                  formatter((item as any).value, (item as any).name, item, index, (item as any).payload)
+                {formatter && rec.value !== undefined && rec.name ? (
+                  formatter(rec.value, rec.name as string, item, index, rec.payload)
                 ) : (
                   <>
                     {itemConfig?.icon ? (
@@ -249,14 +250,16 @@ const ChartTooltipContent = React.forwardRef<
                       <div className="grid gap-1.5">
                         {nestLabel ? tooltipLabel : null}
                         <span className="text-muted-foreground">
-                          {itemConfig?.label || (item as any).name}
+                          {typeof itemConfig?.label === 'string' || typeof itemConfig?.label === 'number' ? itemConfig.label :
+                            typeof rec.value === 'string' || typeof rec.value === 'number' ? rec.value :
+                            typeof rec.name === 'string' || typeof rec.name === 'number' ? rec.name : ''}
                         </span>
                       </div>
-                      {(item as any).value && (
+                      {rec.value && (
                         <span className="font-mono font-medium tabular-nums text-foreground">
-                          {typeof (item as any).value === 'number' 
-                            ? (item as any).value.toLocaleString() 
-                            : String((item as any).value)}
+                          {typeof rec.value === 'number' 
+                            ? (rec.value as number).toLocaleString() 
+                            : String(rec.value)}
                         </span>
                       )}
                     </div>
@@ -284,7 +287,7 @@ interface ChartLegendContentProps
 
 const ChartLegendContent = React.forwardRef<HTMLDivElement, ChartLegendContentProps>(
   (
-    { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },
+    { hideIcon = false, payload, verticalAlign = "bottom", nameKey },
     ref
   ) => {
     const { config } = useChart()
@@ -301,15 +304,15 @@ const ChartLegendContent = React.forwardRef<HTMLDivElement, ChartLegendContentPr
           verticalAlign === "top" ? "pb-3" : "pt-3",
         )}
       >
-        {payload.map((item, index) => {
-          // Use type assertion to access properties
-          const key = `${nameKey || (item as any).dataKey || "value"}`
-          const itemConfig = getPayloadConfigFromPayload(config, item, key)
+        {payload.map((item: unknown, index: number) => {
+          const rec = item as Record<string, unknown>;
+          const key = `${nameKey || rec.dataKey || "value"}`;
+          const itemConfig = getPayloadConfigFromPayload(config, item, key);
           return (
-            <div key={(item as any).dataKey || index} className="flex items-center gap-2">
+            <div key={rec.dataKey as string || index} className="flex items-center gap-2">
               {!hideIcon && itemConfig?.icon && <itemConfig.icon className="h-2.5 w-2.5" />}
               <span className="text-muted-foreground">
-                {itemConfig?.label || (item as any).value || (item as any).name}
+                {itemConfig?.label || String(rec.value) || String(rec.name)}
               </span>
             </div>
           )
