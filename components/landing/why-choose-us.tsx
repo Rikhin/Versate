@@ -5,33 +5,33 @@ import { AnimatedWrapper } from "../ui/animated-wrapper";
 const features = [
   {
     icon: <Trophy className="w-8 h-8 text-primary" />,
-    title: "Proven Success",
-    description: "Join a platform where students have won top competitions and built impressive portfolios.",
-  },
-  {
-    icon: <Users className="w-8 h-8 text-primary" />,
-    title: "Vibrant Community",
-    description: "Connect with like-minded students who share your passion for innovation and technology.",
+    title: "Curated Opportunity Database",
+    description: "Thousands of scholarships, competitions, summer programs, and mentors—curated for every student.",
   },
   {
     icon: <Zap className="w-8 h-8 text-primary" />,
-    title: "Lightning Fast",
-    description: "Our optimized platform ensures you spend less time searching and more time building.",
-  },
-  {
-    icon: <Code className="w-8 h-8 text-primary" />,
-    title: "Developer Friendly",
-    description: "Built with modern technologies and designed for seamless integration with your workflow.",
+    title: "AI-Powered Matching",
+    description: "Our RAG pipeline instantly matches you with the best-fit opportunities based on your unique profile.",
   },
   {
     icon: <MessageSquare className="w-8 h-8 text-primary" />,
-    title: "Real-time Collaboration",
-    description: "Chat, share code, and work together in real-time with your team members.",
+    title: "Comprehensive Communication Suite",
+    description: "In-app messaging, external email integration, and AI-generated email templates for seamless outreach.",
+  },
+  {
+    icon: <Users className="w-8 h-8 text-primary" />,
+    title: "Expert & Mentor Network",
+    description: "Connect with experienced college counselors, industry professionals, and academic mentors.",
   },
   {
     icon: <BookOpen className="w-8 h-8 text-primary" />,
-    title: "Learning Resources",
-    description: "Access exclusive tutorials, templates, and resources to accelerate your learning.",
+    title: "Personalized Onboarding",
+    description: "A comprehensive questionnaire ensures every recommendation and email is tailored to you.",
+  },
+  {
+    icon: <Code className="w-8 h-8 text-primary" />,
+    title: "Student Community Hub",
+    description: "Peer-to-peer connections, study groups, and collaborative learning built right in.",
   },
 ];
 

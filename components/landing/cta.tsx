@@ -13,10 +13,10 @@ export default function CTA() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <AnimatedWrapper delay={0.1} type="fade">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">
-            Ready to Transform Your Collaboration Experience?
+            Ready to Unlock Your Academic Future?
           </h2>
           <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
-            Join thousands of students already building, learning, and growing with Versate. Discover your next opportunity today.
+            Join Versate—the all-in-one platform for scholarships, competitions, summer programs, and mentorship. Get matched instantly and connect with a thriving student community.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-6 mt-8">
             <Link href="/sign-up">

@@ -102,7 +102,7 @@ export default function LandingPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.3 }}
                     >
-                      Enhance Your High
+                      Your Gateway to
                     </motion.span>
                     <br />
                     <motion.span 
@@ -111,7 +111,7 @@ export default function LandingPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.4 }}
                     >
-                      School Experience
+                      Academic Excellence
                     </motion.span>
                     <br />
                     <motion.span 
@@ -129,7 +129,7 @@ export default function LandingPage() {
                     className="text-lg md:text-xl text-white/90 mb-8 max-w-xl text-left tracking-wide font-sans" 
                     style={{ lineHeight: '2.0' }}
                   >
-                    Discover, connect, and build with the best students for competitions and projects.
+                    Versate streamlines your college preparation journey with AI-powered matching to scholarships, competitions, summer programs, and mentors. Connect, communicate, and collaborate—all in one platform designed for ambitious high school students.
                   </p>
                 </AnimatedWrapper>
                 <AnimatedWrapper delay={1} type="scale">

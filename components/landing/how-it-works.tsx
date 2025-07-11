@@ -5,27 +5,27 @@ import { cn } from "@/lib/utils";
 const steps = [
   {
     number: "01",
-    title: "Create Your Profile",
-    description: "Set up your profile with your skills, interests, and experience to help us match you with the right opportunities.",
-    icon: "👤"
+    title: "Personalized Onboarding",
+    description: "Complete a comprehensive questionnaire capturing your achievements, interests, and goals.",
+    icon: "📝"
   },
   {
     number: "02",
-    title: "Find Opportunities",
-    description: "Browse competitions, projects, and teams that match your interests and skill level.",
-    icon: "🔍"
+    title: "AI-Powered Matching",
+    description: "Get instant, tailored matches to scholarships, competitions, programs, and mentors.",
+    icon: "🤖"
   },
   {
     number: "03",
-    title: "Connect & Collaborate",
-    description: "Join teams, connect with mentors, and start working on exciting projects together.",
-    icon: "🤝"
+    title: "Connect & Communicate",
+    description: "Message in-app, email mentors, and use AI-generated templates for professional outreach.",
+    icon: "💬"
   },
   {
     number: "04",
-    title: "Showcase & Succeed",
-    description: "Build your portfolio, participate in competitions, and celebrate your achievements with the community.",
-    icon: "🏆"
+    title: "Achieve & Grow",
+    description: "Win scholarships, join programs, compete, and collaborate with a thriving student community.",
+    icon: "🎓"
   },
 ];
 
