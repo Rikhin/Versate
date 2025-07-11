@@ -62,7 +62,7 @@ export function Testimonials() {
       </div>
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimatedWrapper delay={0.1} type="fade" direction="up">
+        <AnimatedWrapper delay={0.1} type="fade">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">
               What Our Community Says
@@ -82,8 +82,7 @@ export function Testimonials() {
             <AnimatedWrapper 
               key={index} 
               delay={0.1 + (index * 0.1)} 
-              type="fade" 
-              direction="up"
+              type="fade"
             >
               <motion.article 
                 className="group relative h-full p-8 rounded-2xl bg-gradient-to-br from-[#0f0c29]/80 to-[#302b63]/80 backdrop-blur-sm border border-white/5 overflow-hidden"
