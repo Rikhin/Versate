@@ -34,11 +34,11 @@ export default function Header() {
         <Link href="/" className="text-xl font-medium tracking-tight text-helix-gradient-start" style={{letterSpacing: '0.01em'}}>
           Versate
         </Link>
-        <nav className="hidden md:flex items-center gap-10 ml-12">
+        <nav className="hidden md:flex items-center gap-16 ml-16">
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-helix-gradient-start hover:text-helix-gradient-start transition-colors font-medium text-base px-2 py-1 rounded-md hover:bg-helix-gradient-start/5 bg-transparent">Find</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-helix-gradient-start font-medium text-base px-2 py-1 bg-transparent shadow-none border-none hover:bg-transparent focus:bg-transparent">Find</NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-white border border-helix-gradient-start/10 rounded-xl shadow p-3 min-w-[200px]">
                   <ul className="flex flex-col gap-1">
                     <li>
@@ -61,7 +61,7 @@ export default function Header() {
               </NavigationMenuItem>
               {navLinks.map((link) => (
                 <NavigationMenuItem key={link.href}>
-                  <Link href={link.href} className="text-helix-gradient-start hover:text-helix-gradient-start transition-colors font-medium text-base px-2 py-1 rounded-md hover:bg-helix-gradient-start/5">
+                  <Link href={link.href} className="text-helix-gradient-start font-medium text-base px-2 py-1 bg-transparent shadow-none border-none hover:bg-transparent focus:bg-transparent">
                     {link.label}
                   </Link>
                 </NavigationMenuItem>

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { loadAllSummerPrograms, SummerProgram } from "@/lib/csv-loader";
+import { SummerProgram } from "@/lib/csv-loader";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,7 +44,8 @@ export default function SummerProgramsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadAllSummerPrograms()
+    fetch('/api/test-csv/summer-programs')
+      .then(res => res.json())
       .then(setPrograms)
       .catch(() => setError("Failed to load summer programs. Please try again later."));
   }, []);
