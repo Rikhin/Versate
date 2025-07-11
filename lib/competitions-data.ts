@@ -152,7 +152,7 @@ import competitionsFromCSV from './competitions-csv.json';
 // Ensure CSV competitions are typed correctly
 const normalizedCSV = (competitionsFromCSV as unknown as Competition[]).map((c) => ({
   ...c,
-  status: c.status === 'upcoming' || c.status === 'past' ? c.status : 'active',
+  status: c.status === 'active' || c.status === 'upcoming' || c.status === 'past' ? c.status : 'active',
   requirements: Array.isArray(c.requirements) ? c.requirements : [],
   tags: Array.isArray(c.tags) ? c.tags : [],
 }));
