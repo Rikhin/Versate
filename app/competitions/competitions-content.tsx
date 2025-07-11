@@ -140,8 +140,7 @@ export default function CompetitionsContent() {
                   Find Your <span className="gradient-text-helix">Competition</span>
                 </div>
                 <p className="text-xl md:text-2xl text-helix-text-light max-w-4xl mx-auto leading-relaxed">
-                  Discover exciting competitions, hackathons, and challenges. Connect with teammates, 
-                  showcase your skills, and win amazing prizes.
+                  Discover curated, AI-matched competitions and challenges. Use our communication suite to connect with teammates, mentors, and the community. Personalized onboarding ensures every opportunity is tailored to you.
                 </p>
               </TextFade>
             </div>

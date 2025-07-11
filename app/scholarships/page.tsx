@@ -71,7 +71,7 @@ export default function ScholarshipsPage() {
               Find Your <span className="gradient-text-helix">Scholarship</span>
             </div>
             <p className="text-xl md:text-2xl text-helix-text-light max-w-4xl mx-auto leading-relaxed">
-              Discover scholarships for students around the world. Use the filters to find the right fit for your goals, interests, and background.
+              Discover curated, AI-matched scholarships for students around the world. Use our communication suite to connect with mentors and providers. Personalized onboarding ensures every opportunity is tailored to you.
             </p>
           </div>
           <div className="mb-12 md:mb-16 space-y-6">

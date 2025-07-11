@@ -291,9 +291,11 @@ export default function ConnectPage() {
         <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
         <div className="container mx-auto px-6 py-16">
           <div className="mb-16 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end bg-clip-text text-transparent mb-4 drop-shadow-lg">Connect</h1>
-            <h2 className="text-3xl md:text-4xl font-bold text-helix-gradient-start mb-4">Mentors & Students</h2>
-            <p className="text-lg text-helix-text-light mb-8 max-w-2xl mx-auto">Browse and connect with real mentors and students from across the country. Use the filters to find the right expertise, background, or collaborators for your needs.</p>
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end bg-clip-text text-transparent mb-4 drop-shadow-lg">Mentor & Peer Network</h1>
+            <h2 className="text-3xl md:text-4xl font-bold text-helix-gradient-start mb-4">Guidance, Collaboration, and Support</h2>
+            <p className="text-lg text-helix-text-light mb-8 max-w-2xl mx-auto">
+              Connect with experienced college counselors, industry professionals, and ambitious peers. Use AI-powered matching and our communication suite (in-app, external, AI email) to build your support network and achieve your goals.
+            </p>
                       </div>
           <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
             <Button 

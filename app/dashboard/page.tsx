@@ -21,7 +21,8 @@ import {
   Calendar,
   Code,
   MessageSquare,
-  MapPin
+  MapPin,
+  Zap
 } from "lucide-react"
 import Link from "next/link"
 
@@ -156,6 +157,12 @@ export default function DashboardPage() {
         </div>
       }>
         <DashboardLayout>
+          {/* Versate Mission/Value Prop */}
+          <div className="mb-8 text-center">
+            <p className="text-lg text-helix-text-light max-w-2xl mx-auto">
+              Versate empowers ambitious students to discover, connect, and achieve through AI-powered matching, a curated opportunity database, and a comprehensive communication suite.
+            </p>
+          </div>
           {/* Welcome Section */}
           <div className="mb-8">
             <h1 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white">
@@ -186,17 +193,43 @@ export default function DashboardPage() {
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {quickActions.map((action, index) => (
-                <Link key={index} href={action.href} className="group">
-                  <div className="h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow bg-white/80 dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-md mb-3 bg-helix-gradient-start/10 dark:bg-helix-gradient-start/20">
-                      <action.icon className="h-5 w-5 text-helix-gradient-start" />
-                    </div>
-                    <h3 className="font-medium text-gray-900 dark:text-white mb-0.5 text-base">{action.title}</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{action.description}</p>
+              {/* Updated Quick Actions for new Versate features */}
+              <Link href="/ai-search" className="group">
+                <div className="h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow bg-white/80 dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-md mb-3 bg-helix-gradient-start/10 dark:bg-helix-gradient-start/20">
+                    <Zap className="h-5 w-5 text-helix-gradient-start" />
                   </div>
-                </Link>
-              ))}
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-0.5 text-base">AI Match</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Get instant, personalized opportunity matches</p>
+                </div>
+              </Link>
+              <Link href="/scholarships" className="group">
+                <div className="h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow bg-white/80 dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-md mb-3 bg-helix-gradient-start/10 dark:bg-helix-gradient-start/20">
+                    <Trophy className="h-5 w-5 text-helix-gradient-start" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-0.5 text-base">Find Scholarships</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Browse curated scholarships and awards</p>
+                </div>
+              </Link>
+              <Link href="/connect" className="group">
+                <div className="h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow bg-white/80 dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-md mb-3 bg-helix-gradient-start/10 dark:bg-helix-gradient-start/20">
+                    <Users className="h-5 w-5 text-helix-gradient-start" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-0.5 text-base">Mentor Network</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Connect with mentors, counselors, and peers</p>
+                </div>
+              </Link>
+              <Link href="/messages" className="group">
+                <div className="h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow bg-white/80 dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-md mb-3 bg-helix-gradient-start/10 dark:bg-helix-gradient-start/20">
+                    <MessageSquare className="h-5 w-5 text-helix-gradient-start" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-0.5 text-base">Messages</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Check your inbox and communicate</p>
+                </div>
+              </Link>
             </div>
           </div>
 

@@ -87,7 +87,7 @@ export default function SummerProgramsPage() {
               Find Your <span className="gradient-text-helix">Summer Program</span>
             </div>
             <p className="text-xl md:text-2xl text-helix-text-light max-w-4xl mx-auto leading-relaxed">
-              Browse and discover top summer programs for high school students. Use the filters to find the right fit for your goals, interests, and background.
+              Explore curated, AI-matched summer programs for high school students. Use our communication suite to connect with mentors and program providers. Personalized onboarding ensures every opportunity is tailored to you.
             </p>
           </div>
           <div className="mb-12 md:mb-16 space-y-6">
