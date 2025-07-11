@@ -1,5 +1,6 @@
+import React from 'react';
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
 import { SignUpButton } from "@clerk/nextjs";
 import { AnimatedWrapper } from "../ui/animated-wrapper";
@@ -15,7 +16,7 @@ export function CTA() {
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
-          <AnimatedWrapper delay={0.1} type="fade" direction="up">
+          <AnimatedWrapper delay={0.1} type="fade">
             <motion.div 
               className="relative overflow-hidden px-8 py-16 rounded-3xl bg-gradient-to-br from-[#0f0c29]/80 to-[#302b63]/80 backdrop-blur-sm border border-white/10 shadow-2xl"
               initial={{ opacity: 0, y: 20 }}
