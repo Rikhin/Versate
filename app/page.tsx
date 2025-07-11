@@ -167,13 +167,7 @@ export default function LandingPage() {
           </div>
         </section>
         {/* Competitions Preview Section */}
-        <section className="py-20 bg-gradient-to-br from-[#181c2a]/60 to-[#232946]/60 backdrop-blur-xl border-t border-white/10">
-          <div className="container mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">Featured Competitions</h2>
-            <p className="text-xl text-white/80 mb-10">Explore top competitions happening now. <Link href="/competitions" className="underline text-primary">See all</Link></p>
-            {/* Optionally, render a few featured competitions here by importing and mapping over a subset of competitions */}
-          </div>
-        </section>
+        {/* Removed Featured Competitions section for minimal hero-only landing */}
         <WhyChooseUs />
         <HowItWorks />
         <Testimonials />

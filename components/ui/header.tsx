@@ -20,6 +20,7 @@ const navLinks = [
   { href: "/connect", label: "Connect" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/plans", label: "Plans" },
+  { href: "/messages", label: "Messages" }, // Add Messages as a top-level nav item
 ];
 
 export default function Header() {
@@ -54,11 +55,7 @@ export default function Header() {
                         <NavigationMenuLink className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white/90 font-medium">Summer Programs</NavigationMenuLink>
                       </Link>
                     </li>
-                    <li>
-                      <Link href="/messages" legacyBehavior passHref>
-                        <NavigationMenuLink className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white/90 font-medium">Messages</NavigationMenuLink>
-                      </Link>
-                    </li>
+                    {/* Removed Messages from dropdown */}
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
