@@ -95,3 +95,5 @@ export function HowItWorks() {
     </section>
   );
 }
+
+export default HowItWorks;

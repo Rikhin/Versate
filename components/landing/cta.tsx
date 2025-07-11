@@ -99,3 +99,5 @@ export function CTA() {
     </section>
   );
 }
+
+export default CTA;

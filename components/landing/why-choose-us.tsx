@@ -94,3 +94,5 @@ export function WhyChooseUs() {
     </section>
   );
 }
+
+export default WhyChooseUs;
