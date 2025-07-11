@@ -33,7 +33,7 @@ export function HowItWorks() {
   return (
     <section className="py-16 relative">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimatedWrapper delay={0.1} type="fade" direction="up">
+        <AnimatedWrapper delay={0.1} type="fade">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">
               How It Works
@@ -53,8 +53,7 @@ export function HowItWorks() {
               <AnimatedWrapper 
                 key={index}
                 delay={0.1 * index} 
-                type="fade" 
-                direction="up"
+                type="fade"
               >
                 <motion.div 
                   className="group relative"
