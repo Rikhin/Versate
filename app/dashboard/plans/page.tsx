@@ -2,7 +2,7 @@
 import React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Rocket, ArrowRight } from "lucide-react";
+import { CheckCircle, ArrowRight } from "lucide-react";
 import { BackgroundGradient, FloatingShapes } from "@/components/scroll-animations";
 
 interface Plan {

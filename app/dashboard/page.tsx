@@ -135,7 +135,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-white mb-4">Welcome to your Dashboard</h1>
-          <p className="text-lg text-helix-text-light mb-8">We couldn't load your profile. Please try refreshing or updating your profile information.</p>
+          <p className="text-lg text-helix-text-light mb-8">We couldn&apos;t load your profile. Please try refreshing or updating your profile information.</p>
           <Button onClick={() => window.location.reload()} className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white px-6 py-3 rounded-full font-bold">Reload</Button>
         </div>
       </div>
