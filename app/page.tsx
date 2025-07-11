@@ -1,4 +1,6 @@
-"use client"
+"use client";
+export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 import { Button } from "@/components/ui/button"
 import Link from "next/link"

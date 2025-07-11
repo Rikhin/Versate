@@ -1,4 +1,6 @@
-"use client"
+"use client";
+export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 import { useMemo, Suspense } from "react"
 import { ErrorBoundary } from "react-error-boundary"

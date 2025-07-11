@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/next"
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
-import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer"
 import ClientLayout from "@/components/ClientLayout";
 
 const inter = Inter({ subsets: ["latin"] })
@@ -26,13 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           enableSystem
           disableTransitionOnChange
         >
-        <OnboardingScrollEnforcer>
           <ClientLayout>
             <main className="relative z-10 min-h-screen bg-transparent">{children}</main>
             <Toaster />
             <Analytics />
           </ClientLayout>
-        </OnboardingScrollEnforcer>
         </ThemeProvider>
       </body>
     </html>

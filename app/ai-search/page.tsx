@@ -1,9 +1,10 @@
 "use client";
+export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
-import OnboardingScrollEnforcer from "@/components/onboarding/OnboardingScrollEnforcer";
 import { BackgroundGradient, FloatingShapes } from "@/components/scroll-animations";
 
 interface Message {
@@ -101,40 +102,37 @@ export default function AISearchPage() {
 
   if (!userId) {
     return (
-      <OnboardingScrollEnforcer>
-        <div className="min-h-screen bg-helix-dark relative overflow-hidden flex items-center justify-center">
-          <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
-          <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
-          <div className="relative z-10 text-center">
-            <h1 className="text-3xl md:text-5xl font-black text-white mb-6">Please sign in to use AI Search</h1>
-            <p className="text-xl text-helix-text-light">You need to be authenticated to access this feature.</p>
-          </div>
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
-            <div className="glass border border-white/10 rounded-[24px] shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
-              <h2 className="text-2xl font-bold text-white mb-2">Sign in or Sign up</h2>
-              <p className="text-helix-text-light text-center mb-4">Sign in or create an account to access AI Search and start exploring.</p>
-              <div className="flex w-full gap-3">
-                <SignInButton mode="modal">
-                  <button className="flex-1 py-3 rounded-full border border-white/20 text-white font-bold bg-white/10 hover:bg-white/20 transition">Sign In</button>
-                </SignInButton>
-                <SignUpButton mode="modal">
-                  <button className="flex-1 py-3 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white font-bold hover:shadow-xl glow transition">Sign Up</button>
-                </SignUpButton>
-              </div>
+      <div className="min-h-screen bg-helix-dark relative overflow-hidden flex items-center justify-center">
+        <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
+        <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
+        <div className="relative z-10 text-center">
+          <h1 className="text-3xl md:text-5xl font-black text-white mb-6">Please sign in to use AI Search</h1>
+          <p className="text-xl text-helix-text-light">You need to be authenticated to access this feature.</p>
+        </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
+          <div className="glass border border-white/10 rounded-[24px] shadow-2xl p-8 max-w-sm w-full flex flex-col items-center gap-6 animate-fadeInUp">
+            <h2 className="text-2xl font-bold text-white mb-2">Sign in or Sign up</h2>
+            <p className="text-helix-text-light text-center mb-4">Sign in or create an account to access AI Search and start exploring.</p>
+            <div className="flex w-full gap-3">
+              <SignInButton mode="modal">
+                <button className="flex-1 py-3 rounded-full border border-white/20 text-white font-bold bg-white/10 hover:bg-white/20 transition">Sign In</button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="flex-1 py-3 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white font-bold hover:shadow-xl glow transition">Sign Up</button>
+              </SignUpButton>
             </div>
           </div>
         </div>
-      </OnboardingScrollEnforcer>
+      </div>
     );
   }
 
   return (
-    <OnboardingScrollEnforcer>
-      <div className="flex h-screen bg-helix-dark relative overflow-hidden">
-        <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
-        <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
+    <div className="flex h-screen bg-helix-dark relative overflow-hidden">
+      <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
+      <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
       {/* Sidebar - Fixed to viewport, fits under header */}
-        <aside className={`${sidebarOpen ? 'w-64' : 'w-16'} glass border-r border-white/10 flex flex-col fixed left-0 top-16 h-[calc(100vh-4rem)] transition-all duration-300 overflow-hidden z-10 pb-8`}>
+      <aside className={`${sidebarOpen ? 'w-64' : 'w-16'} glass border-r border-white/10 flex flex-col fixed left-0 top-16 h-[calc(100vh-4rem)] transition-all duration-300 overflow-hidden z-10 pb-8`}>
         {/* Top Section */}
         <div className="flex flex-col flex-1 pt-6">
           {/* Collapsed: V icon, divider, toggle button */}
@@ -300,6 +298,5 @@ export default function AISearchPage() {
         </div>
       </main>
     </div>
-    </OnboardingScrollEnforcer>
   );
-} 
+}

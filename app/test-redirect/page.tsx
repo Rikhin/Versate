@@ -1,6 +1,6 @@
 "use client";
-
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
