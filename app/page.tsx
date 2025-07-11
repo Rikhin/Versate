@@ -12,7 +12,7 @@ import { AnimatedWrapper } from "@/components/ui/animated-wrapper"
 import { motion } from "framer-motion"
 import { WhyChooseUs } from "@/components/landing/why-choose-us";
 import { HowItWorks } from "@/components/landing/how-it-works";
-import { CTA } from "@/components/landing/cta";
+import CTA from "@/components/landing/cta";
 
 
 export default function LandingPage() {

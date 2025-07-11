@@ -3,13 +3,20 @@
 import React from "react";
 import Link from "next/link";
 import { useUser, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
-import { User } from "lucide-react";
+import { User, Twitter, Instagram } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
+} from "@/components/ui/navigation-menu";
 
 const navLinks = [
-  { href: "/find", label: "Find" },
   { href: "/connect", label: "Connect" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/plans", label: "Plans" },
@@ -26,17 +33,52 @@ export default function Header() {
           Versate
         </Link>
         <nav className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-white/90 hover:text-white transition-colors font-medium text-lg px-2 py-1 rounded-lg hover:bg-white/10"
-            >
-              {link.label}
-            </Link>
-          ))}
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-white/90 hover:text-white transition-colors font-medium text-lg px-2 py-1 rounded-lg hover:bg-white/10 bg-transparent">Find</NavigationMenuTrigger>
+                <NavigationMenuContent className="bg-helix-dark-blue border border-white/10 rounded-xl shadow-xl p-4 min-w-[220px]">
+                  <ul className="flex flex-col gap-2">
+                    <li>
+                      <Link href="/competitions" legacyBehavior passHref>
+                        <NavigationMenuLink className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white/90 font-medium">Competitions</NavigationMenuLink>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/scholarships" legacyBehavior passHref>
+                        <NavigationMenuLink className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white/90 font-medium">Scholarships</NavigationMenuLink>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/summer-programs" legacyBehavior passHref>
+                        <NavigationMenuLink className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white/90 font-medium">Summer Programs</NavigationMenuLink>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/messages" legacyBehavior passHref>
+                        <NavigationMenuLink className="block px-3 py-2 rounded-lg hover:bg-white/10 text-white/90 font-medium">Messages</NavigationMenuLink>
+                      </Link>
+                    </li>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              {navLinks.map((link) => (
+                <NavigationMenuItem key={link.href}>
+                  <Link href={link.href} className="text-white/90 hover:text-white transition-colors font-medium text-lg px-2 py-1 rounded-lg hover:bg-white/10">
+                    {link.label}
+                  </Link>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
         </nav>
         <div className="flex items-center gap-3">
+          <a href="https://x.com/versatehq" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="text-white/80 hover:text-white">
+            <Twitter className="h-5 w-5" />
+          </a>
+          <a href="https://instagram.com/versatehq" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/80 hover:text-white">
+            <Instagram className="h-5 w-5" />
+          </a>
           <Button
             variant="ghost"
             size="icon"
