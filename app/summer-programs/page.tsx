@@ -41,9 +41,12 @@ export default function SummerProgramsPage() {
   const [cost, setCost] = useState("");
   const [acceptance, setAcceptance] = useState("");
   const [lowIncome, setLowIncome] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadAllSummerPrograms().then(setPrograms);
+    loadAllSummerPrograms()
+      .then(setPrograms)
+      .catch((e) => setError("Failed to load summer programs. Please try again later."));
   }, []);
 
   // Smart filter options
@@ -63,6 +66,15 @@ export default function SummerProgramsPage() {
     );
   });
 
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-helix-dark">
+        <div className="text-center text-white/80 text-xl p-8 bg-white/10 rounded-xl shadow-lg">
+          {error}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-helix-dark relative overflow-hidden">
       <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />

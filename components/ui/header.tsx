@@ -17,10 +17,11 @@ import {
 } from "@/components/ui/navigation-menu";
 
 const navLinks = [
+  { href: "/ai-search", label: "AI Search" },
   { href: "/connect", label: "Connect" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/plans", label: "Plans" },
-  { href: "/messages", label: "Messages" }, // Add Messages as a top-level nav item
+  { href: "/messages", label: "Messages" },
 ];
 
 export default function Header() {
@@ -30,29 +31,29 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-br from-[#0f0c29]/90 to-[#302b63]/90 backdrop-blur-xl shadow-lg border-b border-white/10">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent drop-shadow-lg">
+        <Link href="/" className="text-xl font-medium tracking-tight text-helix-gradient-start" style={{letterSpacing: '0.01em'}}>
           Versate
         </Link>
         <nav className="hidden md:flex items-center gap-10 ml-12">
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-white/90 hover:text-white transition-colors font-semibold text-xl px-4 py-2 rounded-lg hover:bg-white/10 bg-transparent">Find</NavigationMenuTrigger>
-                <NavigationMenuContent className="bg-helix-dark-blue border border-white/10 rounded-xl shadow-xl p-4 min-w-[220px]">
-                  <ul className="flex flex-col gap-2">
+                <NavigationMenuTrigger className="text-helix-gradient-start hover:text-helix-gradient-start transition-colors font-medium text-base px-2 py-1 rounded-md hover:bg-helix-gradient-start/5 bg-transparent">Find</NavigationMenuTrigger>
+                <NavigationMenuContent className="bg-white border border-helix-gradient-start/10 rounded-xl shadow p-3 min-w-[200px]">
+                  <ul className="flex flex-col gap-1">
                     <li>
                       <Link href="/competitions" legacyBehavior passHref>
-                        <NavigationMenuLink className="block px-4 py-2 rounded-lg hover:bg-white/10 text-white/90 font-semibold text-lg">Competitions</NavigationMenuLink>
+                        <NavigationMenuLink className="block px-2 py-1 rounded-md hover:bg-helix-gradient-start/5 text-helix-gradient-start font-medium text-base">Competitions</NavigationMenuLink>
                       </Link>
                     </li>
                     <li>
                       <Link href="/scholarships" legacyBehavior passHref>
-                        <NavigationMenuLink className="block px-4 py-2 rounded-lg hover:bg-white/10 text-white/90 font-semibold text-lg">Scholarships</NavigationMenuLink>
+                        <NavigationMenuLink className="block px-2 py-1 rounded-md hover:bg-helix-gradient-start/5 text-helix-gradient-start font-medium text-base">Scholarships</NavigationMenuLink>
                       </Link>
                     </li>
                     <li>
                       <Link href="/summer-programs" legacyBehavior passHref>
-                        <NavigationMenuLink className="block px-4 py-2 rounded-lg hover:bg-white/10 text-white/90 font-semibold text-lg">Summer Programs</NavigationMenuLink>
+                        <NavigationMenuLink className="block px-2 py-1 rounded-md hover:bg-helix-gradient-start/5 text-helix-gradient-start font-medium text-base">Summer Programs</NavigationMenuLink>
                       </Link>
                     </li>
                   </ul>
@@ -60,7 +61,7 @@ export default function Header() {
               </NavigationMenuItem>
               {navLinks.map((link) => (
                 <NavigationMenuItem key={link.href}>
-                  <Link href={link.href} className="text-white/90 hover:text-white transition-colors font-semibold text-xl px-4 py-2 rounded-lg hover:bg-white/10">
+                  <Link href={link.href} className="text-helix-gradient-start hover:text-helix-gradient-start transition-colors font-medium text-base px-2 py-1 rounded-md hover:bg-helix-gradient-start/5">
                     {link.label}
                   </Link>
                 </NavigationMenuItem>
@@ -82,7 +83,7 @@ export default function Header() {
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="text-white hover:bg-white/10"
           >
-            {theme === "dark" ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
           {isSignedIn ? (
             <div className="flex items-center gap-2">
@@ -91,13 +92,13 @@ export default function Header() {
           ) : (
             <div className="flex items-center gap-2">
               <SignInButton mode="modal">
-                <Button variant="outline" className="text-white border-white/20 bg-gradient-to-r from-helix-gradient-start/90 to-helix-gradient-end/90 hover:from-helix-gradient-start hover:to-helix-gradient-end hover:shadow-lg hover:shadow-helix-gradient-start/20 transition-all duration-200 text-lg font-semibold flex items-center gap-2 px-6 py-2 rounded-full">
+                <Button variant="outline" className="text-white border-white/20 bg-transparent hover:bg-white/10 transition-all duration-200 text-base font-medium flex items-center gap-2 px-5 py-1.5 rounded-md">
                   <User className="h-5 w-5" />
                   Sign In
                 </Button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <Button variant="secondary" className="bg-white text-helix-gradient-start font-bold hover:bg-white/90 transition-all duration-200 text-lg shadow-md hover:shadow-lg px-6 py-2 rounded-full">
+                <Button variant="secondary" className="bg-white text-helix-gradient-start font-medium hover:bg-white/90 transition-all duration-200 text-base shadow-md hover:shadow-lg px-5 py-1.5 rounded-md">
                   Get Started
                 </Button>
               </SignUpButton>

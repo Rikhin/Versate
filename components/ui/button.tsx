@@ -5,25 +5,22 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-normal ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-helix-border bg-white/80 text-helix-gradient-start hover:bg-helix-gradient-start/10 hover:text-helix-gradient-start shadow-none",
   {
     variants: {
       variant: {
-        default: "bg-helix-blue text-helix-text-light hover:bg-helix-light-blue",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-helix-border bg-transparent text-helix-text-light hover:bg-helix-light-blue hover:border-helix-purple",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        default: "bg-white/80 text-helix-gradient-start hover:bg-helix-gradient-start/10 hover:text-helix-gradient-start border border-helix-border shadow-none",
+        destructive: "bg-red-100 text-red-700 hover:bg-red-200 border border-red-200 shadow-none",
+        outline: "border border-helix-border bg-transparent text-helix-gradient-start hover:bg-helix-gradient-start/10 shadow-none",
+        secondary: "bg-helix-gradient-start/5 text-helix-gradient-start hover:bg-helix-gradient-start/10 border border-helix-border shadow-none",
+        ghost: "bg-transparent text-helix-gradient-start hover:bg-helix-gradient-start/10 border-none shadow-none",
+        link: "text-helix-gradient-start underline-offset-4 hover:underline border-none bg-transparent shadow-none",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        default: "h-8 px-3 py-1.5 text-sm",
+        sm: "h-7 rounded px-2 text-xs",
+        lg: "h-9 rounded px-4 text-base",
+        icon: "h-8 w-8",
       },
     },
     defaultVariants: {

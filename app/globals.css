@@ -237,3 +237,133 @@ label {
 hr {
   border-color: #444 !important;
 }
+
+:root {
+  --font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --line-height-base: 1.7;
+  --line-height-lg: 1.8;
+  --color-bg: #f8fafc;
+  --color-bg-alt: #f3f4f6;
+  --color-text: #22292f;
+  --color-text-muted: #6b7280;
+  --color-primary: #5a6d8a;
+  --color-accent: #b6c2d9;
+  --color-border: #e5e7eb;
+  --color-card-bg: #fff;
+  --color-card-border: #e5e7eb;
+  --color-btn-bg: #f3f4f6;
+  --color-btn-hover: #e5e7eb;
+  --color-btn-text: #22292f;
+  --color-btn-border: #e5e7eb;
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.03);
+  --shadow-none: none;
+}
+
+body {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: var(--line-height-base);
+  letter-spacing: 0.01em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  margin-bottom: 0.5em;
+  line-height: var(--line-height-lg);
+}
+
+h1 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+h2 {
+  font-size: var(--font-size-lg);
+}
+
+p, ul, ol {
+  color: var(--color-text-muted);
+  line-height: var(--line-height-lg);
+  margin-bottom: 1.2em;
+}
+
+section, .section {
+  padding: 2.5rem 0;
+}
+
+.container, .max-w-7xl, .mx-auto {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.card, .glass {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+}
+
+button, .btn, .Button {
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
+  border: 1px solid var(--color-btn-border);
+  border-radius: 0.5rem;
+  font-weight: var(--font-weight-medium);
+  font-size: 1rem;
+  padding: 0.5rem 1.25rem;
+  box-shadow: var(--shadow-none);
+  transition: background 0.15s, color 0.15s, border 0.15s;
+}
+button:hover, .btn:hover, .Button:hover {
+  background: var(--color-btn-hover);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+input, select, textarea {
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: var(--color-text);
+  box-shadow: var(--shadow-none);
+  transition: border 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: var(--color-bg-alt);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+/* Remove gaudy glows, gradients, and heavy shadows globally */
+.glow, .drop-shadow-lg, .shadow-xl, .hover\:glow, .hover\:shadow-2xl {
+  box-shadow: var(--shadow-none) !important;
+  filter: none !important;
+}
+
+.gradient-text-helix {
+  background: none !important;
+  color: var(--color-primary) !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+}

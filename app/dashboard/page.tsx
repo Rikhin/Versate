@@ -158,10 +158,10 @@ export default function DashboardPage() {
         <DashboardLayout>
           {/* Welcome Section */}
           <div className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white">
               Welcome back, <span className="text-helix-gradient-start">{profile.full_name?.split(' ')[0] || 'User'}</span>!
             </h1>
-            <p className="text-gray-500 dark:text-gray-400">Here&apos;s what&apos;s happening with your account today.</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Here&apos;s what&apos;s happening with your account today.</p>
           </div>
 
           {/* Stats Grid */}
@@ -180,20 +180,20 @@ export default function DashboardPage() {
           {/* Quick Actions */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Actions</h2>
-              <Link href="/explore" className="text-sm font-medium text-helix-gradient-start hover:underline">
+              <h2 className="text-base font-medium text-gray-900 dark:text-white">Quick Actions</h2>
+              <Link href="/explore" className="text-xs font-medium text-helix-gradient-start hover:underline">
                 View all
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {quickActions.map((action, index) => (
                 <Link key={index} href={action.href} className="group">
-                  <div className="h-full p-6 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow-md bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-lg mb-4 bg-helix-gradient-start/10 dark:bg-helix-gradient-start/20">
-                      <action.icon className="h-6 w-6 text-helix-gradient-start" />
+                  <div className="h-full p-4 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:shadow bg-white/80 dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-md mb-3 bg-helix-gradient-start/10 dark:bg-helix-gradient-start/20">
+                      <action.icon className="h-5 w-5 text-helix-gradient-start" />
                     </div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{action.title}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{action.description}</p>
+                    <h3 className="font-medium text-gray-900 dark:text-white mb-0.5 text-base">{action.title}</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{action.description}</p>
                   </div>
                 </Link>
               ))}
@@ -250,7 +250,7 @@ export default function DashboardPage() {
                     </AvatarFallback>
                   </Avatar>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{profile.full_name || 'User'}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
                     <MapPin className="h-4 w-4 mr-1" />
                     {profile.location || 'Location not set'}
                   </p>

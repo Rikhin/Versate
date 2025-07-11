@@ -92,11 +92,11 @@ export default function PlansPage() {
       <BackgroundGradient startColor="from-helix-blue/20" endColor="to-helix-dark-blue/20" triggerStart="top center" triggerEnd="center center" />
       <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
       <div className="relative z-10 w-full max-w-7xl">
-        <h1 className="text-5xl md:text-7xl font-black text-white text-center mb-8 leading-none">
+        <h1 className="text-3xl md:text-5xl font-semibold text-white text-center mb-6 leading-tight">
           <span className="gradient-text-helix">Accelerate</span> Search.<br />Boost <span className="gradient-text-helix">Success.</span>
         </h1>
-        <p className="text-xl md:text-2xl text-helix-text-light text-center mb-16 max-w-4xl mx-auto leading-relaxed">
-          Versate empowers students and teams to discover, connect, and win. Enjoy smart matching, curated opportunities, and a supportive community—built to help you reach your goals faster.
+        <p className="text-base md:text-lg text-helix-text-light text-center mb-10 max-w-3xl mx-auto leading-relaxed">
+          Versate empowers students and teams to discover, connect, and win. Enjoy smart matching, curated opportunities, and a supportive community built to help you reach your goals faster.
         </p>
         {plans.length === 0 ? (
           <div className="text-center text-white/70 py-12">No plans available at this time. Please check back later.</div>
@@ -110,14 +110,14 @@ export default function PlansPage() {
                 {i === 1 && (
                   <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-sm font-bold px-6 py-2 rounded-full bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white shadow-xl glow">Most Popular</span>
                 )}
-                <h2 className="text-2xl font-bold text-white mb-4">{plan.name}</h2>
-                <p className="text-helix-text-light text-base mb-6 text-center leading-relaxed">{plan.description}</p>
-                <div className="mb-6 flex items-center gap-3">
-                  {plan.oldPrice && <span className="text-helix-text-light line-through text-xl">${plan.oldPrice}</span>}
-                  <span className="text-4xl font-black text-white">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
-                  {plan.price !== 0 && <span className="text-sm text-helix-text-light font-bold">USD</span>}
+                <h2 className="text-xl font-medium text-white mb-3">{plan.name}</h2>
+                <p className="text-helix-text-light text-sm mb-5 text-center leading-relaxed">{plan.description}</p>
+                <div className="mb-5 flex items-center gap-2">
+                  {plan.oldPrice && <span className="text-helix-text-light line-through text-base">${plan.oldPrice}</span>}
+                  <span className="text-2xl font-semibold text-white">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
+                  {plan.price !== 0 && <span className="text-xs text-helix-text-light font-medium">USD</span>}
                 </div>
-                <ul className="text-left text-helix-text-light text-base space-y-3 mt-6 mb-8 w-full max-w-xs">
+                <ul className="text-left text-helix-text-light text-sm space-y-2 mt-4 mb-6 w-full max-w-xs">
                   {plan.features.map((f, idx) => (
                     <li key={idx} className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-helix-gradient-start mt-0.5 flex-shrink-0" />
@@ -126,7 +126,7 @@ export default function PlansPage() {
                   ))}
                 </ul>
                 <button
-                  className={`mt-auto w-full py-4 rounded-full font-bold text-lg transition-all duration-300 ${selected === i ? 'bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white shadow-xl glow' : 'bg-white/10 border-2 border-white/20 text-white hover:bg-white/20'}`}
+                  className={`mt-auto w-full py-3 rounded-md font-medium text-base transition-all duration-300 ${selected === i ? 'bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white shadow-xl glow' : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'}`}
                   onClick={() => setSelected(i)}
                 >
                   {selected === i ? "Selected" : plan.cta}
@@ -137,15 +137,15 @@ export default function PlansPage() {
         )}
         <div className="w-full flex justify-center">
           <Button
-            className="w-full max-w-5xl py-6 rounded-full font-bold text-xl bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow flex items-center justify-center gap-3"
+            className="w-full max-w-5xl py-4 rounded-md font-semibold text-lg bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:shadow-xl glow flex items-center justify-center gap-2"
             onClick={handleContinue}
           >
             Continue
-            <ArrowRight className="h-6 w-6" />
+            <ArrowRight className="h-5 w-5" />
           </Button>
         </div>
         {showSuccess && (
-          <div className="mt-8 text-green-400 font-bold text-center text-lg">You have successfully selected the free Starter plan!</div>
+          <div className="mt-6 text-green-400 font-medium text-center text-base">You have successfully selected the free Starter plan!</div>
         )}
       </div>
     </div>
