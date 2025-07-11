@@ -71,33 +71,6 @@ export default function DashboardPage() {
     }
   ]
 
-  const quickActions = [
-    {
-      title: "New Project",
-      description: "Start a new project",
-      icon: FolderOpen,
-      href: "/projects/new"
-    },
-    {
-      title: "Find Team",
-      description: "Connect with others",
-      icon: Users,
-      href: "/connect"
-    },
-    {
-      title: "Competitions",
-      description: "Browse opportunities",
-      icon: Trophy,
-      href: "/competitions"
-    },
-    {
-      title: "Messages",
-      description: "Check your inbox",
-      icon: MessageSquare,
-      href: "/messages"
-    }
-  ]
-
   const profileCompletion = useMemo(() => {
     if (!profile) return 0;
     

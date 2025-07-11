@@ -14,6 +14,7 @@ import { useUser } from "@clerk/nextjs";
 import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations";
 import Papa from 'papaparse';
 import { RecommendedTeammatesModal } from "@/components/recommended-teammates-modal";
+import Image from 'next/image';
 
 interface CompetitionInterest {
   competitionId: string;
@@ -278,9 +279,11 @@ export function OnboardingForm() {
                       <div className="flex flex-col items-center mb-6">
                         <Label className="text-base font-normal text-black mb-2">Profile Picture (optional)</Label>
                         <div className="mb-2">
-                          <img
+                          <Image
                             src={imagePreview || "/placeholder-user.jpg"}
                             alt="Profile Preview"
+                            width={80}
+                            height={80}
                             className="h-20 w-20 rounded-full object-cover border-2 border-gray-200"
                           />
                     </div>

@@ -37,6 +37,26 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
   // Limit to last 50 messages to prevent performance issues
   const MAX_MESSAGES = 50
 
+  // Move fetchMessages above useEffect hooks
+  const fetchMessages = async () => {
+    if (!user) return
+    
+    setIsLoading(true)
+    try {
+      const response = await fetch(`/api/messages?with=${recipientId}`)
+      if (response.ok) {
+        const data = await response.json()
+        // Only keep the last MAX_MESSAGES messages
+        const limitedMessages = data.slice(-MAX_MESSAGES)
+        setMessages(limitedMessages)
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
@@ -48,7 +68,7 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
         setTimeout(scrollToBottom, 100);
       });
     }
-  }, [isOpen, recipientId, user])
+  }, [isOpen, recipientId, user, fetchMessages])
 
   useEffect(() => {
     scrollToBottom()
@@ -74,26 +94,7 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
     return () => {
       channel.unsubscribe()
     }
-  }, [isOpen, user, recipientId])
-
-  const fetchMessages = async () => {
-    if (!user) return
-    
-    setIsLoading(true)
-    try {
-      const response = await fetch(`/api/messages?with=${recipientId}`)
-      if (response.ok) {
-        const data = await response.json()
-        // Only keep the last MAX_MESSAGES messages
-        const limitedMessages = data.slice(-MAX_MESSAGES)
-        setMessages(limitedMessages)
-      }
-    } catch (error) {
-      console.error("Error fetching messages:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  }, [isOpen, user, recipientId, fetchMessages])
 
   const sendMessage = async () => {
     if (!newMessage.trim() || !user || isSending) return
