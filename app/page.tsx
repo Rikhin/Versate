@@ -13,6 +13,7 @@ import { motion } from "framer-motion"
 import { WhyChooseUs } from "@/components/landing/why-choose-us";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import CTA from "@/components/landing/cta";
+import { Testimonials } from "@/components/landing/testimonials";
 
 
 export default function LandingPage() {
@@ -175,6 +176,7 @@ export default function LandingPage() {
         </section>
         <WhyChooseUs />
         <HowItWorks />
+        <Testimonials />
         <CTA />
       </main>
     </div>
