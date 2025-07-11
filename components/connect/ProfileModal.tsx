@@ -34,6 +34,9 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
   const [emailSubject, setEmailSubject] = useState("")
   const [emailBody, setEmailBody] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isSending, setIsSending] = useState(false)
+  const [emailError, setEmailError] = useState<string | null>(null)
+  const [emailSuccess, setEmailSuccess] = useState(false)
   const [userProfile, setUserProfile] = useState<{
     id: string;
     firstName: string;
@@ -66,6 +69,7 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
     if (!profile || !userProfile) return
     
     setIsGenerating(true)
+    setEmailError(null)
     try {
       const res = await fetch("/api/ai/generate-email", {
         method: "POST",
@@ -78,22 +82,67 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
       if (res.ok && data.subject && data.body) {
         setEmailSubject(data.subject)
         setEmailBody(data.body)
+        setEmailSuccess(false)
       } else {
-        alert(data.error || "Failed to generate email. Please try again.")
+        setEmailError(data.error || "Failed to generate email. Please try again.")
       }
     } catch (error) {
       console.error("Error generating email:", error)
-      alert("Failed to generate email. Please try again.")
+      setEmailError("Failed to generate email. Please try again.")
     } finally {
       setIsGenerating(false)
     }
   }
 
+  const sendEmail = async () => {
+    if (!profile || !emailSubject || !emailBody) return
+    
+    setIsSending(true)
+    setEmailError(null)
+    try {
+      const res = await fetch("/api/email/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: profile.email,
+          subject: emailSubject,
+          body: emailBody,
+          recipientName: profile.name
+        })
+      })
+      
+      const data = await res.json()
+      if (res.ok && data.success) {
+        setEmailSuccess(true)
+        setEmailError(null)
+      } else {
+        setEmailError(data.error || "Failed to send email. Please try again.")
+      }
+    } catch (error) {
+      console.error("Error sending email:", error)
+      setEmailError("Failed to send email. Please try again.")
+    } finally {
+      setIsSending(false)
+    }
+  }
+
+  const resetEmailState = () => {
+    setEmailError(null)
+    setEmailSuccess(false)
+  }
+
   if (!profile) return null
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-2xl">
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      if (!open) {
+        resetEmailState()
+      }
+      onClose()
+    }}>
+      <DialogContent className="max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <User className="h-5 w-5" />
@@ -246,34 +295,108 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
                   </Button>
                 </div>
                 {/* In-app email form */}
-                <div id="in-app-email-section" className="space-y-2 mt-6">
-                  <label htmlFor="email-subject" className="text-sm font-medium">
-                    Subject
-                  </label>
-                  <Input 
-                    id="email-subject" 
-                    value={emailSubject} 
-                    onChange={(e) => setEmailSubject(e.target.value)}
-                    placeholder="Subject"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="email-body" className="text-sm font-medium">
-                    Message
-                  </label>
-                  <Textarea 
-                    id="email-body" 
-                    value={emailBody} 
-                    onChange={(e) => setEmailBody(e.target.value)}
-                    placeholder={`Hi ${profile.name.split(' ')[0]},`}
-                    className="min-h-[200px]"
-                  />
-                </div>
-                <div className="flex justify-end">
-                  <Button disabled={!emailBody || !emailSubject || isGenerating}>
-                    <Send className="mr-2 h-4 w-4" />
-                    Send In-App Email
-                  </Button>
+                <div id="in-app-email-section" className="space-y-4 mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <h4 className="font-medium text-gray-900 dark:text-gray-100">Send an Email</h4>
+                  
+                  {emailSuccess && (
+                    <div className="p-3 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-sm rounded-md">
+                      Your email has been sent successfully!
+                    </div>
+                  )}
+                  
+                  {emailError && (
+                    <div className="p-3 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-md">
+                      {emailError}
+                    </div>
+                  )}
+                  
+                  <div className="space-y-2">
+                    <label htmlFor="email-subject" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Subject
+                    </label>
+                    <Input 
+                      id="email-subject" 
+                      value={emailSubject} 
+                      onChange={(e) => {
+                        resetEmailState()
+                        setEmailSubject(e.target.value)
+                      }}
+                      placeholder="Subject"
+                      className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <label htmlFor="email-body" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Message
+                      </label>
+                      <button 
+                        type="button"
+                        onClick={generateEmail}
+                        disabled={isGenerating}
+                        className="text-xs flex items-center text-helix-gradient-end hover:text-helix-gradient-start transition-colors"
+                      >
+                        {isGenerating ? (
+                          <>
+                            <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                            Generating...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="mr-1 h-3 w-3" />
+                            Generate with AI
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <Textarea 
+                      id="email-body" 
+                      value={emailBody} 
+                      onChange={(e) => {
+                        resetEmailState()
+                        setEmailBody(e.target.value)
+                      }}
+                      placeholder={`Hi ${profile.name.split(' ')[0]},`}
+                      className="min-h-[200px] bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                    />
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row justify-between gap-3 pt-2">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      Your email will be sent through Versate's secure email service.
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          const mailtoLink = `mailto:${profile.email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
+                          window.open(mailtoLink, '_blank')
+                        }}
+                        disabled={!emailBody || !emailSubject}
+                        className="border-gray-300 dark:border-gray-600"
+                      >
+                        Open in Email App
+                      </Button>
+                      <Button 
+                        onClick={sendEmail}
+                        disabled={!emailBody || !emailSubject || isSending}
+                        className="bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white hover:opacity-90 transition-opacity"
+                      >
+                        {isSending ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="mr-2 h-4 w-4" />
+                            Send In-App Email
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
