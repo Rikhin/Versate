@@ -9,6 +9,7 @@
     "lint": "next lint",
     "start": "next start"
   },
+  "description": "Versate is a comprehensive academic opportunity platform for high school students, offering AI-powered matching to scholarships, competitions, summer programs, and mentors, with in-app messaging, external email integration, and personalized onboarding.",
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.23",
     "@clerk/nextjs": "^6.23.1",
