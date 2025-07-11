@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import dynamic from "next/dynamic";
 import Header from "@/components/ui/header"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/next"
@@ -21,6 +22,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const Header = dynamic(() => import("@/components/ui/header"), { ssr: false });
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
