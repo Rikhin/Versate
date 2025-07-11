@@ -46,7 +46,7 @@ export default function SummerProgramsPage() {
   useEffect(() => {
     loadAllSummerPrograms()
       .then(setPrograms)
-      .catch((e) => setError("Failed to load summer programs. Please try again later."));
+      .catch(() => setError("Failed to load summer programs. Please try again later."));
   }, []);
 
   // Smart filter options

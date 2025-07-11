@@ -32,7 +32,7 @@ export default function ScholarshipsPage() {
   useEffect(() => {
     loadAllScholarships()
       .then(setScholarships)
-      .catch((e) => setError("Failed to load scholarships. Please try again later."));
+      .catch(() => setError("Failed to load scholarships. Please try again later."));
   }, []);
 
   // Smart filter options
