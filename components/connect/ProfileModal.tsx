@@ -93,7 +93,7 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <User className="h-5 w-5" />
@@ -193,36 +193,63 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
             </CardContent>
           </Card>
 
-          {/* Email Form */}
+          {/* Communication Options */}
           {profile.type === "mentor" && userProfile && (
             <Card>
               <CardContent className="pt-6 space-y-4">
-                <h3 className="font-medium">Connect with {profile.name.split(' ')[0]}</h3>
-                
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <label htmlFor="email-subject" className="text-sm font-medium">
-                      Subject
-                    </label>
+                <h3 className="font-medium mb-2">Connect with {profile.name.split(' ')[0]}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                  Choose how you want to reach out:
+                </p>
+                <div className="flex flex-col md:flex-row gap-4 mb-4">
+                  {/* In-app email (Resend) */}
+                  <Button 
+                    className="flex-1 bg-gradient-to-r from-helix-gradient-start to-helix-gradient-end text-white font-semibold py-3 px-4 rounded-md shadow hover:scale-105 transition"
+                    onClick={() => document.getElementById('in-app-email-section')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    <Send className="mr-2 h-5 w-5" />
+                    Send In-App Email
+                  </Button>
+                  {/* External email */}
+                  <a
+                    href={`mailto:${profile.email}?subject=Hello from Versate`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1"
+                  >
                     <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={generateEmail}
-                      disabled={isGenerating}
+                      variant="outline"
+                      className="w-full py-3 px-4 rounded-md border border-helix-gradient-start text-helix-gradient-start font-semibold hover:bg-helix-gradient-start/10"
                     >
-                      {isGenerating ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Generating...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="mr-2 h-4 w-4" />
-                          Generate with AI
-                        </>
-                      )}
+                      <Mail className="mr-2 h-5 w-5" />
+                      Open in Email App
                     </Button>
-                  </div>
+                  </a>
+                  {/* AI-generated template */}
+                  <Button 
+                    variant="outline"
+                    className="flex-1 py-3 px-4 rounded-md border border-helix-gradient-start text-helix-gradient-start font-semibold hover:bg-helix-gradient-start/10"
+                    onClick={generateEmail}
+                    disabled={isGenerating}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="mr-2 h-5 w-5" />
+                        Generate Email with AI
+                      </>
+                    )}
+                  </Button>
+                </div>
+                {/* In-app email form */}
+                <div id="in-app-email-section" className="space-y-2 mt-6">
+                  <label htmlFor="email-subject" className="text-sm font-medium">
+                    Subject
+                  </label>
                   <Input 
                     id="email-subject" 
                     value={emailSubject} 
@@ -230,7 +257,6 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
                     placeholder="Subject"
                   />
                 </div>
-
                 <div className="space-y-2">
                   <label htmlFor="email-body" className="text-sm font-medium">
                     Message
@@ -243,11 +269,10 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
                     className="min-h-[200px]"
                   />
                 </div>
-
                 <div className="flex justify-end">
                   <Button disabled={!emailBody || !emailSubject || isGenerating}>
                     <Send className="mr-2 h-4 w-4" />
-                    Send Message
+                    Send In-App Email
                   </Button>
                 </div>
               </CardContent>
