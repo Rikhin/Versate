@@ -9,7 +9,7 @@ import { FloatingShapes } from "@/components/scroll-animations/floating-shapes";
 import { useAuth } from "@clerk/nextjs";
 import { Users, Mail } from "lucide-react";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
-import { ProfileModal } from "@/components/connect/ProfileModal";
+import { ProfileModal, ProfileData } from "@/components/connect/ProfileModal";
 
 type ActiveTab = "mentor" | "student" | "emails";
 
@@ -20,7 +20,7 @@ export default function NewConnectPage() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("mentor");
   const [mentors, setMentors] = useState<MentorProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedProfile, setSelectedProfile] = useState<MentorProfile | null>(null);
+  const [selectedProfile, setSelectedProfile] = useState<ProfileData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   // Load data on mount
@@ -45,8 +45,19 @@ export default function NewConnectPage() {
     }
   };
   
-  const handleProfileClick = (profile: MentorProfile) => {
-    setSelectedProfile(profile);
+  const handleProfileClick = (mentor: MentorProfile) => {
+    // Convert MentorProfile to ProfileData
+    const profileData: ProfileData = {
+      name: mentor.name,
+      email: mentor.email,
+      company: mentor.company,
+      jobTitle: mentor.jobTitle,
+      yearsExperience: mentor.yearsExperience,
+      state: mentor.state,
+      linkedin: mentor.linkedin,
+      type: "mentor"
+    };
+    setSelectedProfile(profileData);
     setIsModalOpen(true);
   };
   
