@@ -35,20 +35,29 @@ export function HowItWorks() {
             Get started with Versate in just a few simple steps and unlock a world of opportunities.
           </p>
         </div>
-        <div className="relative max-w-4xl mx-auto">
-          <div className="space-y-12">
-            {steps.map((step, index) => (
-              <div key={index} className="relative p-8 rounded-xl bg-gray-50 border border-gray-200 shadow-sm flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
-                <div className="w-16 h-16 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-3xl mb-4 md:mb-0 md:mr-6 text-black">
+        {/* Stepper: horizontal on desktop, vertical on mobile */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-center gap-8 md:gap-0 relative">
+          {steps.map((step, index) => (
+            <div key={index} className="relative flex-1 flex flex-col items-center md:items-start text-center md:text-left px-0 md:px-6">
+              {/* Connector line */}
+              {index !== 0 && (
+                <div className="hidden md:block absolute left-0 top-8 h-1 w-full bg-gray-200 z-0" style={{ zIndex: 0, left: '-50%', width: '100%' }} />
+              )}
+              <div className="relative z-10 flex flex-col items-center md:items-start">
+                <div className="w-14 h-14 rounded-full bg-black text-white flex items-center justify-center text-2xl font-bold mb-4">
                   {step.icon}
                 </div>
-                <div className="flex-1">
+                <div>
                   <h3 className="text-xl font-bold mb-2 text-black">{step.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{step.description}</p>
                 </div>
               </div>
-            ))}
-          </div>
+              {/* Vertical connector for mobile */}
+              {index !== steps.length - 1 && (
+                <div className="block md:hidden w-1 h-8 bg-gray-200 mx-auto mt-2 mb-2" />
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </section>

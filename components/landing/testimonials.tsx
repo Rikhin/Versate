@@ -1,11 +1,7 @@
 "use client";
 
-import { AnimatedWrapper } from "../ui/animated-wrapper";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Star } from "lucide-react";
-import { Button } from "../ui/button";
-import Link from 'next/link';
-import { motion, AnimatePresence } from "../ui/motion";
 
 const testimonials = [
   {
@@ -52,141 +48,43 @@ const testimonials = [
   }
 ];
 
-export function Testimonials() {
+export function Testimonials({ showAllButton = true }: { showAllButton?: boolean }) {
   return (
-    <section className="py-24 relative overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0f0c29]/20 to-[#302b63]/20" />
-        <div className="absolute -right-1/4 -bottom-1/4 w-[150%] h-[150%] bg-radial-gradient(ellipse_at_center,rgba(123,97,255,0.05),transparent 70%) opacity-70" />
-      </div>
-      
+    <section className="py-24 relative overflow-hidden bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimatedWrapper delay={0.1} type="fade">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">
-              What Our Community Says
-            </h2>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto">
-              Join thousands of students who have accelerated their learning and career through Versate.
-            </p>
-          </div>
-        </AnimatedWrapper>
-
+        <div className="text-center mb-20">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black">
+            What Our Community Says
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Join thousands of students who have accelerated their learning and career through Versate.
+          </p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
-          {/* Decorative elements */}
-          <div className="absolute -top-20 -left-20 w-64 h-64 bg-primary/5 rounded-full mix-blend-screen blur-3xl"></div>
-          <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-secondary/5 rounded-full mix-blend-screen blur-3xl"></div>
-          
-          {testimonials.map((testimonial, index) => (
-            <AnimatedWrapper 
-              key={index} 
-              delay={0.1 + (index * 0.1)} 
-              type="fade"
-            >
-              <motion.article 
-                className="group relative h-full p-8 rounded-2xl bg-gradient-to-br from-[#0f0c29]/80 to-[#302b63]/80 backdrop-blur-sm border border-white/5 overflow-hidden"
-                whileHover={{ y: -8 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-              >
-                {/* Card glow effect */}
-                <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/30 to-secondary/30 rounded-2xl blur opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
-                
-                {/* Top accent bar */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-secondary"></div>
-                
-                <div className="relative z-10 h-full flex flex-col">
-                  {/* Testimonial content */}
-                  <div className="flex-1">
-                    <div className="flex items-start mb-6">
-                      <Avatar className="h-16 w-16 mr-4 border-2 border-white/10 group-hover:border-primary/50 transition-colors duration-300">
-                        <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                        <AvatarFallback className="bg-white/10 text-white group-hover:bg-primary/20 transition-colors duration-300">
-                          {testimonial.name.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <AnimatePresence mode="wait">
-                              <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
-                                transition={{ duration: 0.5 }}
-                                className="w-full"
-                              >
-                                <h4 className="text-lg font-bold text-white group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-secondary transition-all duration-300">
-                                  {testimonial.name}
-                                </h4>
-                                <p className="text-sm text-white/60 group-hover:text-white/80 transition-colors duration-300">
-                                  {testimonial.role}
-                                </p>
-                              </motion.div>
-                            </AnimatePresence>
-                            <div className="flex mt-2">
-                              {[...Array(5)].map((_, i) => (
-                                <Star 
-                                  key={i} 
-                                  className={`w-4 h-4 ${i < testimonial.rating ? 'text-yellow-400 fill-current' : 'text-white/20'} group-hover:scale-110 transition-transform duration-300`} 
-                                  style={{ transitionDelay: `${i * 50}ms` }}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          
-                          {/* Rating */}
-                          <div className="flex items-center space-x-1 bg-white/5 px-2 py-1 rounded-full border border-white/5 group-hover:border-primary/30 transition-colors duration-300">
-                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                            <span className="text-sm font-medium text-white/90">{testimonial.rating}.0</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Testimonial text */}
-                    <blockquote className="relative pl-6 before:absolute before:left-0 before:top-0 before:text-5xl before:leading-none before:opacity-10 before:font-serif before:content-['\201C'] before:text-white group-hover:before:bg-gradient-to-r group-hover:before:from-primary group-hover:before:to-secondary group-hover:before:bg-clip-text group-hover:before:text-transparent transition-all duration-500">
-                      <p className="text-white/80 group-hover:text-white/90 leading-relaxed transition-colors duration-300">
-                        {testimonial.content}
-                      </p>
-                    </blockquote>
-                  </div>
-                  
-                  {/* Company logo or verification badge */}
-                  <div className="mt-6 pt-6 border-t border-white/5 group-hover:border-primary/20 transition-colors duration-300">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 border border-white/5 flex items-center justify-center text-white/80 group-hover:text-primary transition-colors duration-300">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24Z" fill="currentColor"/>
-                            <path d="M7 12L11 16L18 8" stroke="#0f0c29" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </div>
-                        <span className="text-sm text-white/60 group-hover:text-white/80 transition-colors duration-300">Verified Student</span>
-                      </div>
-                      
-                      <div className="text-xs text-white/40 group-hover:text-primary/80 transition-colors duration-300">
-                        {index + 1}/{testimonials.length}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.article>
-            </AnimatedWrapper>
+          {testimonials.slice(0, 3).map((t, i) => (
+            <div key={i} className="bg-white border border-gray-200 rounded-2xl shadow p-8 flex flex-col items-center text-center">
+              <div className="mb-4">
+                <Avatar>
+                  <AvatarImage src={t.avatar} alt={t.name} />
+                  <AvatarFallback>{t.name[0]}</AvatarFallback>
+                </Avatar>
+              </div>
+              <div className="flex items-center justify-center gap-1 mb-2">
+                {[...Array(5)].map((_, j) => (
+                  <Star key={j} className="w-4 h-4 text-black" />
+                ))}
+              </div>
+              <p className="text-lg text-gray-800 mb-4">{t.content}</p>
+              <div className="font-semibold text-black">{t.name}</div>
+              <div className="text-gray-500 text-sm">{t.role}</div>
+            </div>
           ))}
         </div>
-        
-        <div className="mt-16 text-center">
-          <Link href="/testimonials">
-            <Button 
-              className="px-8 py-6 text-lg bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 transition-colors duration-300"
-            >
-              View More Reviews
-            </Button>
-          </Link>
-        </div>
+        {showAllButton && (
+          <div className="flex justify-center mt-10">
+            <a href="/testimonials" className="px-6 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-900 transition">View All</a>
+          </div>
+        )}
       </div>
     </section>
   );
