@@ -101,9 +101,6 @@ export default async function CompetitionPage({
                   >
                     Official Website
                   </a>
-                  <button className="bg-white/10 text-white px-6 py-3 rounded-full font-semibold border border-white/20 hover:bg-white/20 transition">
-                    Find Teammates
-                  </button>
                 </div>
               </div>
             </div>

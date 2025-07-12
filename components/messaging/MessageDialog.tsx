@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -37,25 +37,24 @@ export function MessageDialog({ isOpen, onClose, recipientId, recipientName }: M
   // Limit to last 50 messages to prevent performance issues
   const MAX_MESSAGES = 50
 
-  // Move fetchMessages above useEffect hooks
-  const fetchMessages = async () => {
-    if (!user) return
-    
-    setIsLoading(true)
+  // Memoize fetchMessages to avoid recreating on every render
+  const fetchMessages = useCallback(async () => {
+    if (!user) return;
+    setIsLoading(true);
     try {
-      const response = await fetch(`/api/messages?with=${recipientId}`)
+      const response = await fetch(`/api/messages?with=${recipientId}`);
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json();
         // Only keep the last MAX_MESSAGES messages
-        const limitedMessages = data.slice(-MAX_MESSAGES)
-        setMessages(limitedMessages)
+        const limitedMessages = data.slice(-MAX_MESSAGES);
+        setMessages(limitedMessages);
       }
     } catch (error) {
-      console.error("Error fetching messages:", error)
+      console.error("Error fetching messages:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  }, [recipientId, user, MAX_MESSAGES]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })

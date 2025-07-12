@@ -1,49 +1,21 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, AlertCircle, ArrowRight, ArrowLeft, User, Code, Target, Star } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
-import { BackgroundGradient, FloatingShapes, TextFade } from "@/components/scroll-animations";
 import Papa from 'papaparse';
-import { RecommendedTeammatesModal } from "@/components/recommended-teammates-modal";
-import Image from 'next/image';
 
-interface CompetitionInterest {
-  competitionId: string;
-  interest: 'competing' | 'looking_for_partner' | 'looking_for_mentor';
-}
-
+// 1. Update OnboardingFormData to include new fields
 interface OnboardingFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
+  fullName: string;
+  age: number | '';
   city: string;
-  gradeLevel: string;
-  bio: string;
-  skills: string;
-  timeCommitment: string;
-  collaborationStyle: string[];
-  location: string;
-  competitions: CompetitionInterest[];
-  profileImageUrl?: string;
-}
-
-// Add RecommendedTeammate interface for type safety
-interface RecommendedTeammate {
-  user_id: string;
-  first_name: string;
-  last_name: string;
-  avatar_url?: string;
-  bio?: string;
-  similarity: number;
+  educationLevel: string;
+  interests: string[];
 }
 
 function CityDropdown({ value, onChange }: { value: string, onChange: (val: string) => void }) {
@@ -99,360 +71,189 @@ function CityDropdown({ value, onChange }: { value: string, onChange: (val: stri
   );
 }
 
+const educationOptions = [
+  'Middle School (Grades 6-8)',
+  'High School (Grades 9-12)',
+  'Undergraduate',
+  'Graduate',
+  'Post-Graduate',
+  'Other',
+];
+
 export function OnboardingForm() {
   const router = useRouter();
   const { user, isLoaded } = useUser();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const topRef = useRef<HTMLDivElement>(null);
-  const [imagePreview, setImagePreview] = useState<string>(user?.imageUrl || "");
-  const [recommended, setRecommended] = useState<RecommendedTeammate[]>([]);
-  const [showRecommended, setShowRecommended] = useState(false);
-  const [selectedCompetitions] = useState<{ [key: string]: CompetitionInterest[] }>({}); // Remove setSelectedCompetitions
   const [formData, setFormData] = useState<OnboardingFormData>({
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
-    email: user?.emailAddresses?.[0]?.emailAddress || "",
-    city: "",
-    gradeLevel: "",
-    bio: "",
-    skills: "",
-    timeCommitment: "",
-    collaborationStyle: [],
-    location: "",
-    competitions: [],
+    fullName: '',
+    age: '',
+    city: '',
+    educationLevel: '',
+    interests: [],
   });
-  // Move useEffect(() => { ... }, [currentStep]) above the early return
+  const [interestInput, setInterestInput] = useState('');
+  const totalSteps = 5;
+
+  // Auto-save to localStorage
   useEffect(() => {
-    if (topRef.current) {
-      topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    localStorage.setItem('onboarding-progress', JSON.stringify({ formData, currentStep }));
+  }, [formData, currentStep]);
+  useEffect(() => {
+    const saved = localStorage.getItem('onboarding-progress');
+    if (saved) {
+      const { formData: savedData, currentStep: savedStep } = JSON.parse(saved);
+      setFormData(savedData);
+      setCurrentStep(savedStep);
     }
-  }, [currentStep]);
-  // Wait for user to load or if user is null
+  }, []);
+
   if (!isLoaded || !user) return <div>Loading...</div>;
 
-  const totalSteps = 4;
-  const progress = (currentStep / totalSteps) * 100;
-
-  const collaborationStyleOptions = [
-    "Leadership", "Collaborative", "Independent", "Mentoring", "Learning-focused",
-    "Results-driven", "Creative", "Analytical", "Communication-focused"
-  ];
-
-  const toggleArrayItem = (array: string[], item: string, setter: (value: string[]) => void) => {
-    if (array.includes(item)) {
-      setter(array.filter((i) => i !== item));
-    } else {
-      setter([...array, item]);
-    }
-  };
-
+  // Slide validation
   const isStepValid = () => {
     switch (currentStep) {
       case 1:
-        return formData.firstName && formData.lastName && formData.email && formData.city;
+        return true;
       case 2:
-        return formData.skills.trim().length > 0;
+        return formData.fullName.trim().length > 0 && Number(formData.age) >= 13 && Number(formData.age) <= 100;
       case 3:
-        return formData.timeCommitment && formData.collaborationStyle.length > 0;
+        return formData.city.trim().length > 0;
       case 4:
-        return formData.bio.trim().length > 0;
+        return formData.educationLevel.trim().length > 0;
+      case 5:
+        return formData.interests.length > 0;
       default:
         return false;
     }
   };
 
+  // Slide content
+  const slides = [
+    // Slide 1: Welcome
+    <div key="slide1" className="flex flex-col items-center justify-center min-h-[300px] animate-fade-in">
+      <h1 className="text-3xl font-bold mb-4">Welcome to Versate!</h1>
+      <p className="text-gray-500 mb-8 text-center max-w-xs">Let&apos;s get to know you. This quick questionnaire will personalize your experience.</p>
+      <Button className="w-40 h-12 text-lg shadow-md" onClick={() => setCurrentStep(2)}>Let&apos;s Begin</Button>
+    </div>,
+    // Slide 2: Basic Info
+    <div key="slide2" className="flex flex-col gap-6 min-h-[300px] animate-fade-in">
+      <div>
+        <Label htmlFor="fullName" className="block mb-2">Full Name</Label>
+        <Input id="fullName" type="text" value={formData.fullName} onChange={e => setFormData(f => ({ ...f, fullName: e.target.value }))} required className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
+      </div>
+      <div>
+        <Label htmlFor="age" className="block mb-2">Age</Label>
+        <Input id="age" type="number" min={13} max={100} value={formData.age} onChange={e => setFormData(f => ({ ...f, age: e.target.value === '' ? '' : Math.max(13, Math.min(100, Number(e.target.value))) }))} required className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
+      </div>
+    </div>,
+    // Slide 3: Location
+    <div key="slide3" className="flex flex-col gap-6 min-h-[300px] animate-fade-in">
+      <Label htmlFor="city" className="block mb-2">City</Label>
+      <CityDropdown value={formData.city} onChange={val => setFormData(f => ({ ...f, city: val }))} />
+    </div>,
+    // Slide 4: Education
+    <div key="slide4" className="flex flex-col gap-6 min-h-[300px] animate-fade-in">
+      <Label htmlFor="educationLevel" className="block mb-2">Education Level</Label>
+      <Select value={formData.educationLevel} onValueChange={val => setFormData(f => ({ ...f, educationLevel: val }))}>
+        <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
+          <SelectValue placeholder="Select education level" />
+        </SelectTrigger>
+        <SelectContent>
+          {educationOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </div>,
+    // Slide 5: Interests
+    <div key="slide5" className="flex flex-col gap-6 min-h-[300px] animate-fade-in">
+      <Label htmlFor="interests" className="block mb-2">Interests</Label>
+      <Input
+        id="interests"
+        type="text"
+        value={interestInput}
+        onChange={e => setInterestInput(e.target.value)}
+        onKeyDown={e => {
+          if ((e.key === 'Enter' || e.key === ',') && interestInput.trim()) {
+            e.preventDefault();
+            const tags = interestInput.split(',').map(t => t.trim()).filter(Boolean);
+            setFormData(f => ({ ...f, interests: Array.from(new Set([...f.interests, ...tags])) }));
+            setInterestInput('');
+          }
+        }}
+        placeholder="Photography, Reading, Travel..."
+        className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4"
+      />
+      <div className="flex flex-wrap gap-2">
+        {formData.interests.map(tag => (
+          <span key={tag} className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full shadow-sm text-sm flex items-center gap-1">
+            {tag}
+            <button type="button" className="ml-1 text-gray-400 hover:text-red-500" onClick={() => setFormData(f => ({ ...f, interests: f.interests.filter(t => t !== tag) }))}>&times;</button>
+          </span>
+        ))}
+      </div>
+      <p className="text-xs text-gray-400 mt-2">Separate interests with commas</p>
+    </div>,
+  ];
+
+  // Navigation
   const handleNext = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      handleSubmit();
-    }
+    if (currentStep < totalSteps && isStepValid()) setCurrentStep(s => s + 1);
+    if (currentStep === totalSteps && isStepValid()) handleSubmit();
   };
+  const handleBack = () => { if (currentStep > 1) setCurrentStep(s => s - 1); };
 
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
+  // Submit handler
   const handleSubmit = async () => {
-    if (!isStepValid()) return;
-
     setIsSubmitting(true);
     setError(null);
-
     try {
-      // Convert selected competitions to the format expected by the API
-      const competitionsArray = Object.values(selectedCompetitions).flat();
-
       const response = await fetch("/api/profiles", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user_id: user.id,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
+          full_name: formData.fullName,
+          age: formData.age,
           city: formData.city,
-          grade_level: formData.gradeLevel,
-          bio: formData.bio,
-          skills: formData.skills.split(',').map(s => s.trim()).filter(s => s.length > 0),
-          time_commitment: formData.timeCommitment,
-          collaboration_style: formData.collaborationStyle,
-          location: formData.city, // Save city to location column as requested
-          competitions: competitionsArray,
-          profile_image_url: formData.profileImageUrl || user.imageUrl || "",
+          education_level: formData.educationLevel,
+          interests: formData.interests,
+          email: user.emailAddresses?.[0]?.emailAddress || '',
         }),
       });
-
-      if (response.ok) {
-        // After successful onboarding, fetch recommended teammates
-        const res = await fetch("/api/ai-match", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: user.id })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setRecommended(data.matches);
-          setShowRecommended(true);
-        }
-        router.push("/dashboard");
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to create profile");
+      if (response.ok) router.push("/dashboard");
+      else {
+        const err = await response.json();
+        setError(err.error || "Failed to save profile");
       }
-    } catch (error) {
-      console.error("Error creating profile:", error);
-      setError(error instanceof Error ? error.message : "Failed to create profile. Please try again.");
+    } catch {
+      setError("Failed to save profile");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Progress bar
+  const progress = (currentStep / totalSteps) * 100;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50/60 to-indigo-100/60 dark:from-zinc-900 dark:to-zinc-950 flex items-center justify-center px-2 py-8">
-      <BackgroundGradient startColor="from-gray-50/50" endColor="to-gray-100/50" triggerStart="top center" triggerEnd="center center" />
-      <FloatingShapes count={3} triggerStart="top center" triggerEnd="bottom center" />
-      <div className="relative z-10 flex items-center justify-center w-full mx-auto" style={{ maxWidth: '80vw' }}>
-        <Card className="w-full rounded-3xl shadow-2xl border-0 bg-white/90 dark:bg-zinc-900/90 transition-all duration-500">
-          <CardContent className="p-0">
-            <div className="p-8 md:p-12">
-          <TextFade triggerStart="top 80%" triggerEnd="center center" stagger={0.1}>
-            {/* Header */}
-                <div ref={topRef} className="text-center mb-10">
-                  <div className="text-5xl md:text-6xl font-extrabold text-black mb-6 leading-tight tracking-tight">
-                    Welcome to <span className="text-indigo-400">Versate</span>
-              </div>
-                  <p className="text-lg md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                Let&apos;s get to know you better so we can match you with the perfect teammates
-              </p>
-            </div>
-
-            {/* Progress Bar */}
-                <div className="mb-10">
-                  <div className="flex justify-between text-xs md:text-sm text-gray-600 mb-2">
-                    <span className="font-semibold uppercase tracking-widest">Step {currentStep} of {totalSteps}</span>
-                    <span className="font-semibold uppercase tracking-widest">{Math.round(progress)}% Complete</span>
-              </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div className="bg-indigo-500 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${progress}%` }}></div>
-              </div>
-            </div>
-
-                {/* Form Steps with fade-in transition */}
-                <div className="transition-opacity duration-500" style={{ opacity: 1 }}>
-                {/* Step 1: Personal Information */}
-                {currentStep === 1 && (
-                    <div className="space-y-10 animate-fadeIn">
-                    <div className="text-center mb-8">
-                      <div className="flex items-center justify-center space-x-3 mb-4">
-                          <User className="h-8 w-8 text-indigo-500" />
-                          <h2 className="text-2xl md:text-3xl font-semibold text-black">Personal Information</h2>
-                        </div>
-                        <p className="text-lg text-gray-500">Tell us about yourself to help us find the perfect teammates</p>
-                      </div>
-                      <div className="flex flex-col items-center mb-6">
-                        <Label className="text-base font-normal text-black mb-2">Profile Picture (optional)</Label>
-                        <div className="mb-2">
-                          <Image
-                            src={imagePreview || "/placeholder-user.jpg"}
-                            alt="Profile Preview"
-                            width={80}
-                            height={80}
-                            className="h-20 w-20 rounded-full object-cover border-2 border-gray-200"
-                          />
-                    </div>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const formDataObj = new FormData();
-                              formDataObj.append("file", file);
-                              // Upload to /api/upload, get URL
-                              const res = await fetch("/api/upload", { method: "POST", body: formDataObj });
-                              const data = await res.json();
-                              setFormData((prev) => ({ ...prev, profileImageUrl: data.url }));
-                              setImagePreview(data.url);
-                            }
-                          }}
-                        />
-                      </div>
-                      <div className="space-y-3">
-                        <Label htmlFor="city" className="text-base font-normal text-black">City *</Label>
-                        <CityDropdown value={formData.city || ''} onChange={val => setFormData(prev => ({ ...prev, city: val }))} />
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-3">
-                          <Label htmlFor="firstName" className="text-base font-normal text-black">First Name *</Label>
-                          <Input id="firstName" value={formData.firstName} onChange={(e) => setFormData((prev) => ({ ...prev, firstName: e.target.value }))} placeholder="Enter your first name" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
-                        </div>
-                        <div className="space-y-3">
-                          <Label htmlFor="lastName" className="text-base font-normal text-black">Last Name *</Label>
-                          <Input id="lastName" value={formData.lastName} onChange={(e) => setFormData((prev) => ({ ...prev, lastName: e.target.value }))} placeholder="Enter your last name" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
-                        </div>
-                      </div>
-                      <div className="space-y-3">
-                        <Label htmlFor="email" className="text-base font-normal text-black">Email *</Label>
-                        <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))} placeholder="Enter your email" className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4" />
-                      </div>
-                      <div className="space-y-3">
-                        <Label htmlFor="gradeLevel" className="text-base font-normal text-black">Grade Level</Label>
-                        <Select value={formData.gradeLevel} onValueChange={(value) => setFormData((prev) => ({ ...prev, gradeLevel: value }))}>
-                          <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
-                            <SelectValue placeholder="Select your grade level" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="9th Grade">9th Grade</SelectItem>
-                            <SelectItem value="10th Grade">10th Grade</SelectItem>
-                            <SelectItem value="11th Grade">11th Grade</SelectItem>
-                            <SelectItem value="12th Grade">12th Grade</SelectItem>
-                            <SelectItem value="College Freshman">College Freshman</SelectItem>
-                            <SelectItem value="College Sophomore">College Sophomore</SelectItem>
-                            <SelectItem value="College Junior">College Junior</SelectItem>
-                            <SelectItem value="College Senior">College Senior</SelectItem>
-                            <SelectItem value="Graduate Student">Graduate Student</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  )}
-                {/* Step 2: Skills */}
-                {currentStep === 2 && (
-                    <div className="space-y-10 animate-fadeIn">
-                    <div className="text-center mb-8">
-                      <div className="flex items-center justify-center space-x-3 mb-4">
-                          <Code className="h-8 w-8 text-indigo-500" />
-                          <h2 className="text-2xl md:text-3xl font-semibold text-black">Skills & Expertise</h2>
-                        </div>
-                        <p className="text-lg text-gray-500">What are you good at? Separate each skill with a comma</p>
-                      </div>
-                    <div className="space-y-8">
-                      <div className="space-y-3">
-                          <Label className="text-base font-normal text-black">Your Skills *</Label>
-                        <Textarea 
-                          value={formData.skills} 
-                          onChange={(e) => setFormData((prev) => ({ ...prev, skills: e.target.value }))} 
-                          placeholder="e.g., JavaScript, Python, UI/UX Design, Project Management, Data Analysis..."
-                          className="min-h-32 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4 resize-none"
-                        />
-                        <p className="text-sm text-gray-500">Examples: JavaScript, Python, UI/UX Design, Project Management, Data Analysis, Machine Learning, Graphic Design, etc.</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {/* Step 3: Preferences */}
-                {currentStep === 3 && (
-                    <div className="space-y-10 animate-fadeIn">
-                    <div className="text-center mb-8">
-                      <div className="flex items-center justify-center space-x-3 mb-4">
-                          <Target className="h-8 w-8 text-indigo-500" />
-                          <h2 className="text-2xl md:text-3xl font-semibold text-black">Work Preferences</h2>
-                        </div>
-                        <p className="text-lg text-gray-500">How do you like to work and collaborate?</p>
-                      </div>
-                    <div className="space-y-8">
-                        <div className="space-y-3">
-                          <Label className="text-base font-normal text-black">Time Commitment *</Label>
-                        <Select value={formData.timeCommitment} onValueChange={(value) => setFormData((prev) => ({ ...prev, timeCommitment: value }))}>
-                            <SelectTrigger className="h-12 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4">
-                            <SelectValue placeholder="Select your time commitment" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1-5 hours/week">1-5 hours/week</SelectItem>
-                            <SelectItem value="5-10 hours/week">5-10 hours/week</SelectItem>
-                            <SelectItem value="10-20 hours/week">10-20 hours/week</SelectItem>
-                            <SelectItem value="20+ hours/week">20+ hours/week</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                          <Label className="text-base font-normal text-black">Collaboration Style *</Label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                          {collaborationStyleOptions.map((style) => (
-                            <div key={style} className="flex items-center space-x-3">
-                                <Checkbox id={style} checked={formData.collaborationStyle.includes(style)} onCheckedChange={() => toggleArrayItem(formData.collaborationStyle, style, (collaborationStyle) => setFormData((prev) => ({ ...prev, collaborationStyle })))} className="border-2 border-gray-200 data-[state=checked]:border-indigo-500" />
-                                <Label htmlFor={style} className="text-sm font-normal text-black cursor-pointer">
-                                {style}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                  {/* Step 4: Bio */}
-                  {currentStep === 4 && (
-                    <div className="space-y-10 animate-fadeIn">
-                      <div className="text-center mb-8">
-                        <div className="flex items-center justify-center space-x-3 mb-4">
-                          <Star className="h-8 w-8 text-indigo-500" />
-                          <h2 className="text-2xl md:text-3xl font-semibold text-black">Tell Your Story</h2>
-                        </div>
-                        <p className="text-lg text-gray-500">Share a bit about yourself and what you&apos;re passionate about</p>
-                      </div>
-                      <div className="space-y-3">
-                        <Label className="text-base font-normal text-black">Bio *</Label>
-                        <Textarea id="bio" value={formData.bio} onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))} placeholder="Tell us about yourself, your interests, goals, and what you're looking for in a team..." className="min-h-32 text-base border-2 border-gray-200 focus:border-indigo-400 rounded-xl px-4 resize-none" />
-                        <p className="text-sm text-gray-500">This will help other students understand who you are and what you bring to a team.</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Error Message */}
-                {error && (
-                    <div className="flex items-center space-x-2 p-4 bg-red-50 border border-red-200 rounded-lg mt-6 animate-fadeIn">
-                      <AlertCircle className="h-5 w-5 text-red-400" />
-                      <p className="text-red-500 font-normal">{error}</p>
-                  </div>
-                )}
-
-                {/* Navigation Buttons */}
-                  <div className="flex flex-col md:flex-row justify-between items-center pt-10 gap-4 animate-fadeIn">
-                    <Button variant="outline" size="lg" className="rounded-xl px-8 py-3 text-base font-normal border-gray-300 hover:bg-gray-100 transition-all" onClick={handleBack} disabled={currentStep === 1 || isSubmitting}>
-                      <ArrowLeft className="mr-2 h-5 w-5" /> Back
-                  </Button>
-                    <Button size="lg" className="rounded-xl px-8 py-3 text-base font-normal bg-indigo-500 hover:bg-indigo-600 text-white shadow-md transition-all" onClick={handleNext} disabled={!isStepValid() || isSubmitting}>
-                      {isSubmitting ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : currentStep === totalSteps ? "Finish" : "Next"}
-                      {currentStep !== totalSteps && <ArrowRight className="ml-2 h-5 w-5" />}
-                  </Button>
-                  </div>
-                </div>
-              </TextFade>
-                </div>
-              </CardContent>
-            </Card>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white px-2">
+      <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 relative animate-fade-in">
+        <div className="absolute top-4 right-4 text-xs text-gray-400">{currentStep}/{totalSteps}</div>
+        <div className="mb-6">
+          <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-2 bg-indigo-300 transition-all duration-300" style={{ width: `${progress}%` }} />
+          </div>
+        </div>
+        {slides[currentStep - 1]}
+        <div className="flex justify-between mt-8">
+          <Button variant="ghost" onClick={handleBack} disabled={currentStep === 1}>Back</Button>
+          <Button onClick={handleNext} disabled={!isStepValid() || isSubmitting} className="ml-2">
+            {currentStep === totalSteps ? (isSubmitting ? 'Saving...' : 'Finish') : 'Next'}
+          </Button>
+        </div>
+        {error && <div className="mt-4 text-red-500 text-sm">{error}</div>}
       </div>
-      {showRecommended && (
-        <RecommendedTeammatesModal matches={recommended} onClose={() => setShowRecommended(false)} />
-      )}
     </div>
   );
 } 
