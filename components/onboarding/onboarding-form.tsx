@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import Papa from "papaparse";
-import Image from "next/image";
 
 // 1. Update OnboardingFormData to include new fields
 interface OnboardingFormData {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   age: number | '';
   city: string;
   educationLevel: string;
@@ -21,7 +21,8 @@ export function OnboardingForm() {
   const { user, isLoaded } = useUser();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<OnboardingFormData>({
-    fullName: '',
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
     age: '',
     city: '',
     educationLevel: '',
@@ -68,7 +69,7 @@ export function OnboardingForm() {
       case 1:
         return true;
       case 2:
-        return formData.fullName.trim().length > 0 && Number(formData.age) >= 13 && Number(formData.age) <= 100;
+        return formData.firstName.trim().length > 0 && formData.lastName.trim().length > 0 && Number(formData.age) >= 13 && Number(formData.age) <= 100;
       case 3:
         return formData.city.trim().length > 0;
       case 4:
@@ -97,7 +98,8 @@ export function OnboardingForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user_id: user.id,
-          full_name: formData.fullName,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
           age: formData.age,
           city: formData.city,
           education_level: formData.educationLevel,
@@ -122,9 +124,10 @@ export function OnboardingForm() {
       <div className="w-full max-w-lg flex flex-col gap-12">
         {/* Versate logo and name above progress bar for steps 2-5 */}
         {currentStep > 1 && (
-          <div className="flex items-center gap-2 mb-2">
-            <Image src="/placeholder-logo.svg" alt="Versate Logo" width={32} height={32} />
-            <span className="text-2xl font-bold tracking-tight text-black">Versate</span>
+          <div className="flex justify-center mb-2 w-full">
+            <span className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              Versate
+            </span>
           </div>
         )}
         {/* Progress bar */}
@@ -146,16 +149,28 @@ export function OnboardingForm() {
           {currentStep === 2 && (
             <div className="flex flex-col gap-10">
               <div className="flex flex-col gap-8">
-                <label className="text-black font-semibold text-lg">Full Name
-                  <input
-                    type="text"
-                    className="mt-3 w-full px-5 py-4 border border-black rounded-xl bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black transition text-lg"
-                    placeholder="Your full name"
-                    value={formData.fullName}
-                    onChange={e => setFormData({ ...formData, fullName: e.target.value })}
-                    required
-                  />
-                </label>
+                <div className="flex gap-4">
+                  <label className="flex-1 text-black font-semibold text-lg">First Name
+                    <input
+                      type="text"
+                      className="mt-3 w-full px-5 py-4 border border-black rounded-xl bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black transition text-lg"
+                      placeholder="First name"
+                      value={formData.firstName}
+                      onChange={e => setFormData({ ...formData, firstName: e.target.value })}
+                      required
+                    />
+                  </label>
+                  <label className="flex-1 text-black font-semibold text-lg">Last Name
+                    <input
+                      type="text"
+                      className="mt-3 w-full px-5 py-4 border border-black rounded-xl bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black transition text-lg"
+                      placeholder="Last name"
+                      value={formData.lastName}
+                      onChange={e => setFormData({ ...formData, lastName: e.target.value })}
+                      required
+                    />
+                  </label>
+                </div>
                 <label className="text-black font-semibold text-lg">Age
                   <input
                     type="number"
@@ -175,7 +190,7 @@ export function OnboardingForm() {
               </div>
               <div className="flex justify-between items-center mt-2">
                 <button className="text-black border border-black rounded-lg px-8 py-3 bg-white hover:bg-gray-100 transition text-lg" onClick={() => setCurrentStep(1)}>Back</button>
-                <button className="text-black border border-black rounded-lg px-8 py-3 bg-white hover:bg-gray-100 transition text-lg disabled:opacity-40" onClick={handleNext} disabled={!formData.fullName || !formData.age}>Next</button>
+                <button className="text-black border border-black rounded-lg px-8 py-3 bg-white hover:bg-gray-100 transition text-lg disabled:opacity-40" onClick={handleNext} disabled={!formData.firstName || !formData.lastName || !formData.age}>Next</button>
               </div>
             </div>
           )}
