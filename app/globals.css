@@ -48,11 +48,12 @@
     background-color: transparent !important;
   }
   
-  /* Remove background from all sections */
+  /* Removed the following rule to allow backgrounds to work:
   section, div, main, header, footer, article, aside, nav {
     background-color: transparent !important;
     background: none !important;
   }
+  */
 }
 
 @keyframes gradientMove {
