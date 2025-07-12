@@ -1,40 +1,26 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import { Toaster } from "@/components/ui/toaster"
-import { Analytics } from "@vercel/analytics/next"
-import { ThemeProvider } from "@/components/theme-provider"
-import "./globals.css"
-import ClientLayout from "@/components/ClientLayout";
-import { ClerkProvider } from "@clerk/nextjs";
+import { Inter } from 'next/font/google'
+import { ClerkProvider } from '@clerk/nextjs'
+import './globals.css'
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  title: "Versate - Competition Team Formation Platform",
-  description: "Find teammates for academic competitions and collaborative projects",
-  generator: 'v0.dev'
+export const metadata = {
+  title: 'Versate',
+  description: 'Competition Team Formation Platform',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ClerkProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <ClientLayout>
-              <main className="relative z-10 min-h-screen bg-transparent">{children}</main>
-              <Toaster />
-              <Analytics />
-            </ClientLayout>
-          </ThemeProvider>
-        </ClerkProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

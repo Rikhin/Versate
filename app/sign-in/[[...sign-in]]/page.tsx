@@ -1,21 +1,11 @@
 export const dynamic = "force-dynamic";
 
-import { SignIn } from "@clerk/nextjs"
+import { SignIn } from '@clerk/nextjs';
 
 export default function SignInPage() {
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="w-full max-w-md">
-        <SignIn 
-          redirectUrl="/dashboard"
-          appearance={{
-            elements: {
-              rootBox: "mx-auto",
-              card: "shadow-lg border-0",
-            }
-          }}
-        />
-      </div>
+    <div className="flex min-h-screen items-center justify-center bg-[#fff7f0]">
+      <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
     </div>
-  )
+  );
 } 
