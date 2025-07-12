@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useUser, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
-import { User, Twitter, Instagram, Sparkles } from "lucide-react";
+import { Twitter, Instagram, Sparkles } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";

@@ -364,7 +364,7 @@ export function ProfileModal({ isOpen, onClose, profile }: ProfileModalProps) {
                   
                   <div className="flex flex-col sm:flex-row justify-between gap-3 pt-2">
                     <div className="text-xs text-gray-500 dark:text-gray-400">
-                      Your email will be sent through Versate's secure email service.
+                      Your email will be sent through Versate&apos;s secure email service.
                     </div>
                     <div className="flex gap-2">
                       <Button 
