@@ -110,8 +110,17 @@ export function OnboardingForm() {
       });
       if (response.ok) router.push("/dashboard");
       else {
-        const err = await response.json();
-        alert(err.error || "Failed to save profile");
+        let errMsg = "Failed to save profile";
+        try {
+          const err = await response.json();
+          errMsg = err.error || errMsg;
+        } catch {
+          try {
+            errMsg = await response.text();
+          } catch {}
+        }
+        console.error("Profile save error:", errMsg);
+        alert(errMsg);
       }
     } catch {
       alert("Failed to save profile");
@@ -136,7 +145,7 @@ export function OnboardingForm() {
             <div className="h-1 bg-black rounded-full transition-all duration-300" style={{ width: `${(currentStep-1)/4*100}%` }} />
           </div>
           <span className="text-sm text-gray-400 font-medium">{currentStep}/5</span>
-        </div>
+              </div>
         {/* Slide content */}
         <div className="w-full flex flex-col gap-10 animate-fadein">
           {currentStep === 1 && (
@@ -228,22 +237,22 @@ export function OnboardingForm() {
                             }}
                           >
                             {opt}
-                          </div>
+                      </div>
                         ))}
                         {cityOptions.filter(opt => opt.toLowerCase().includes(cityInput.toLowerCase())).length === 0 && (
                           <div className="px-4 py-2 text-gray-400">No matches found</div>
                         )}
                       </div>
                     )}
-                  </div>
+                        </div>
                 </label>
-              </div>
+                        </div>
               <div className="flex justify-between items-center mt-2">
                 <button className="text-black border border-black rounded-lg px-8 py-3 bg-white hover:bg-gray-100 transition text-lg" onClick={() => setCurrentStep(2)}>Back</button>
                 <button className="text-black border border-black rounded-lg px-8 py-3 bg-white hover:bg-gray-100 transition text-lg disabled:opacity-40" onClick={handleNext} disabled={!formData.city}>Next</button>
-              </div>
-            </div>
-          )}
+                      </div>
+                    </div>
+                  )}
           {currentStep === 4 && (
             <div className="flex flex-col gap-10">
               <div className="flex flex-col gap-8">
@@ -326,13 +335,13 @@ export function OnboardingForm() {
                     </select>
                   </label>
                 )}
-              </div>
+                        </div>
               <div className="flex justify-between items-center mt-2">
                 <button className="text-black border border-black rounded-lg px-8 py-3 bg-white hover:bg-gray-100 transition text-lg" onClick={() => setCurrentStep(3)}>Back</button>
                 <button className="text-black border border-black rounded-lg px-8 py-3 bg-white hover:bg-gray-100 transition text-lg disabled:opacity-40" onClick={handleNext} disabled={!formData.educationLevel || ((formData.educationLevel === 'Middle School' || formData.educationLevel === 'High School' || formData.educationLevel === 'Undergraduate' || formData.educationLevel === 'Graduate') && !formData.educationDetail)}>Next</button>
-              </div>
-            </div>
-          )}
+                    </div>
+                  </div>
+                )}
           {currentStep === 5 && (
             <div className="flex flex-col gap-10">
               <div className="flex flex-col gap-8">
@@ -365,10 +374,10 @@ export function OnboardingForm() {
               <div className="flex justify-between items-center mt-2">
                 <button className="text-black border border-black rounded-lg px-8 py-3 bg-white hover:bg-gray-100 transition text-lg" onClick={() => setCurrentStep(4)}>Back</button>
                 <button className="text-black border border-black rounded-lg px-8 py-3 bg-white hover:bg-gray-100 transition text-lg disabled:opacity-40" onClick={handleNext} disabled={formData.interests.length === 0}>Finish</button>
-              </div>
-            </div>
+                  </div>
+                </div>
           )}
-        </div>
+                </div>
       </div>
     </div>
   );
