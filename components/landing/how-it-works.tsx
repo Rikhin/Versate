@@ -1,7 +1,3 @@
-import { motion } from "framer-motion";
-import { AnimatedWrapper } from "../ui/animated-wrapper";
-import { cn } from "@/lib/utils";
-
 const steps = [
   {
     number: "01",
