@@ -167,6 +167,9 @@ export default function Header() {
               </SignUpButton>
             </div>
           )}
+          {process.env.NODE_ENV !== 'production' && (
+            <a href="/onboarding-preview" className="ml-4 text-sm font-medium text-gray-500 hover:text-black transition">Onboarding Preview</a>
+          )}
         </div>
       </div>
     </header>
