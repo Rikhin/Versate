@@ -8,20 +8,20 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#e0e7ef] flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       {/* Header with Clerk sign in/up */}
       <Header />
       {/* Hero Section */}
-      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 pt-32 pb-12">
-        <h1 className="text-4xl md:text-6xl font-extrabold mb-4 leading-tight bg-gradient-to-r from-[#7b61ff] to-[#5ad1ff] bg-clip-text text-transparent">
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 pt-32 pb-12 bg-white">
+        <h1 className="text-4xl md:text-6xl font-extrabold mb-4 leading-tight text-black">
           Unlock Academic Opportunities.<br/>Build Your Future with Versate.
         </h1>
         <p className="text-lg md:text-2xl text-gray-700 mb-8 max-w-2xl mx-auto">
           Discover scholarships, competitions, summer programs, and mentors tailored to you. AI-powered matching, in-app messaging, and more—all in one place.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center">
-          <Link href="/sign-up" className="px-8 py-3 rounded-full bg-black text-white font-bold text-lg shadow-lg hover:bg-gray-800 transition">Get Started</Link>
-          <Link href="#how-it-works" className="px-8 py-3 rounded-full bg-white border border-black text-black font-bold text-lg shadow-lg hover:bg-gray-100 transition">See How It Works</Link>
+          <Link href="/sign-up" className="px-8 py-3 rounded-full bg-black text-white font-bold text-lg shadow hover:bg-gray-900 transition">Get Started</Link>
+          <Link href="#how-it-works" className="px-8 py-3 rounded-full border border-black text-black font-bold text-lg shadow hover:bg-gray-100 transition">See How It Works</Link>
         </div>
         {/* Social Proof */}
         <div className="flex flex-col items-center gap-2">
@@ -36,11 +36,17 @@ export default function Home() {
         </div>
       </main>
       {/* Why Choose Us Section */}
-      <WhyChooseUs />
+      <section className="bg-gray-50 w-full py-20 border-t border-gray-200">
+        <WhyChooseUs />
+      </section>
       {/* How It Works Section */}
-      <HowItWorks />
+      <section className="bg-white w-full py-20 border-t border-gray-100">
+        <HowItWorks />
+      </section>
       {/* CTA Section */}
-      <CTA />
+      <section className="bg-gray-50 w-full py-20 border-t border-gray-200">
+        <CTA />
+      </section>
     </div>
   );
 }

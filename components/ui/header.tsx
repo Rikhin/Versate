@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useUser, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
-import { Twitter, Instagram, Sparkles } from "lucide-react";
+import { Twitter, Instagram } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";
@@ -19,14 +19,7 @@ import {
 
 // Custom logo component
 const Logo = () => (
-  <div className="flex items-center gap-2">
-    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500">
-      <Sparkles className="w-5 h-5 text-white" />
-    </div>
-    <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
-      Versate
-    </span>
-  </div>
+  <span className="text-2xl font-bold text-black tracking-tight">Versate</span>
 );
 
 const navLinks = [
@@ -58,7 +51,7 @@ export default function Header() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-br from-[#0f0c29] to-[#2a0a5e] backdrop-blur-xl shadow-lg border-b border-white/10">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white backdrop-blur-xl shadow-lg border-b border-gray-200">
       <div className="container mx-auto px-6 py-3 flex items-center justify-between">
         <Link href="/" className="transition-transform hover:scale-105 active:scale-95">
           <Logo />
@@ -68,28 +61,28 @@ export default function Header() {
           <NavigationMenu>
             <NavigationMenuList className="gap-2">
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-white/90 font-medium text-base px-3 py-2 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                <NavigationMenuTrigger className="text-gray-700 font-medium text-base px-3 py-2 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
                   Find
                 </NavigationMenuTrigger>
-                <NavigationMenuContent className="bg-[#120b2e] border border-white/10 rounded-xl shadow-xl p-2 min-w-[220px]">
+                <NavigationMenuContent className="bg-white border border-gray-200 rounded-xl shadow-xl p-2 min-w-[220px]">
                   <ul className="flex flex-col gap-1">
                     <li>
                       <Link href="/competitions" legacyBehavior passHref>
-                        <NavigationMenuLink className="block px-4 py-2 rounded-lg hover:bg-white/5 text-white/90 hover:text-white transition-colors">
+                        <NavigationMenuLink className="block px-4 py-2 rounded-lg hover:bg-gray-100 text-gray-700 hover:text-gray-900 transition-colors">
                           Competitions
                         </NavigationMenuLink>
                       </Link>
                     </li>
                     <li>
                       <Link href="/scholarships" legacyBehavior passHref>
-                        <NavigationMenuLink className="block px-4 py-2 rounded-lg hover:bg-white/5 text-white/90 hover:text-white transition-colors">
+                        <NavigationMenuLink className="block px-4 py-2 rounded-lg hover:bg-gray-100 text-gray-700 hover:text-gray-900 transition-colors">
                           Scholarships
                         </NavigationMenuLink>
                       </Link>
                     </li>
                     <li>
                       <Link href="/summer-programs" legacyBehavior passHref>
-                        <NavigationMenuLink className="block px-4 py-2 rounded-lg hover:bg-white/5 text-white/90 hover:text-white transition-colors">
+                        <NavigationMenuLink className="block px-4 py-2 rounded-lg hover:bg-gray-100 text-gray-700 hover:text-gray-900 transition-colors">
                           Summer Programs
                         </NavigationMenuLink>
                       </Link>
@@ -105,8 +98,8 @@ export default function Header() {
                     className={cn(
                       "px-4 py-2 rounded-lg font-medium text-base transition-colors",
                       link.featured 
-                        ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:opacity-90 shadow-lg hover:shadow-purple-500/20"
-                        : "text-white/90 hover:text-white hover:bg-white/5"
+                        ? "bg-gray-200 text-gray-900 hover:opacity-90 shadow-lg hover:shadow-gray-500/20"
+                        : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
                     )}
                   >
                     {link.label}
@@ -118,13 +111,13 @@ export default function Header() {
         </nav>
         
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-2 border-r border-white/10 pr-3">
+          <div className="hidden md:flex items-center gap-2 border-r border-gray-200 pr-3">
             <a 
               href="https://x.com/versatehq" 
               target="_blank" 
               rel="noopener noreferrer" 
               aria-label="X (Twitter)" 
-              className="p-2 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+              className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <Twitter className="h-5 w-5" />
             </a>
@@ -133,7 +126,7 @@ export default function Header() {
               target="_blank" 
               rel="noopener noreferrer" 
               aria-label="Instagram" 
-              className="p-2 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+              className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <Instagram className="h-5 w-5" />
             </a>
@@ -144,7 +137,7 @@ export default function Header() {
             size="icon"
             aria-label="Toggle theme"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="text-white/70 hover:text-white hover:bg-white/5 rounded-lg"
+            className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
           >
             {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
@@ -158,14 +151,14 @@ export default function Header() {
               <SignInButton mode="modal">
                 <Button 
                   variant="outline" 
-                  className="bg-transparent border-white/20 text-white/90 hover:bg-white/10 hover:text-white transition-all font-medium px-4 h-9 rounded-lg"
+                  className="bg-transparent border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-all font-medium px-4 h-9 rounded-lg"
                 >
                   Sign In
                 </Button>
               </SignInButton>
               <SignUpButton mode="modal">
                 <Button 
-                  className="bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:opacity-90 hover:shadow-lg hover:shadow-purple-500/20 transition-all font-medium px-5 h-9 rounded-lg"
+                  className="bg-gray-200 text-gray-900 hover:opacity-90 hover:shadow-lg hover:shadow-gray-500/20 transition-all font-medium px-5 h-9 rounded-lg"
                 >
                   Get Started
                 </Button>
